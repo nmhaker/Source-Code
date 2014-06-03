@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/pozadina">
+        <file>pozadina.jpg</file>
+    </qresource>
+</RCC>
