@@ -30,6 +30,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 
 private:
     Ui::MainWindow *ui;
@@ -49,6 +50,8 @@ private:
     QTimer *timer;
 
     QString mode;
+
+    bool novePoruke;
 
 
 public slots:

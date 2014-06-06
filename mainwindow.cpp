@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     this->mode = "DEPLOY";
+    this->novePoruke = true;
 
     this->prepareConnection();
 
@@ -51,6 +52,18 @@ void MainWindow::closeEvent(QCloseEvent *e)
     }
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_F1)
+        this->ulogujSe();
+    else if(e->key() == Qt::Key_F2)
+        this->izlogujSe();
+    else if(e->key() == Qt::Key_F3)
+        this->registrujSe();
+    else if(e->key() == Qt::Key_F4)
+        this->izadji();
+}
+
 void MainWindow::prepareConnection()
 {
     this->networkAccessManager = new QNetworkAccessManager(this);
@@ -58,7 +71,7 @@ void MainWindow::prepareConnection()
     connect(this->networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleRequestResponse(QNetworkReply*)));
 
     if(this->mode == "DEVELOPMENT")
-        this->networkRequest = new QNetworkRequest(QUrl("http://localhost/milutinac/Server.php"));
+        this->networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
     else if(this->mode == "DEPLOY")
         this->networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server.php"));
 
@@ -68,7 +81,6 @@ void MainWindow::prepareConnection()
 void MainWindow::loginUser(const QString korisnicko_ime, const QString sifra)
 {
     this->_korisnicko_ime = korisnicko_ime;
-    this->_online = true;
 
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
@@ -79,11 +91,6 @@ void MainWindow::loginUser(const QString korisnicko_ime, const QString sifra)
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
     this->networkAccessManager->post(*(this->networkRequest), data);
-
-    this->ui->actionUloguj_Se->setDisabled(true);
-    this->ui->actionIzloguj_Se->setDisabled(false);
-
-    timer->start();
 }
 
 void MainWindow::logOutUser(const QString korisnicko_ime)
@@ -98,9 +105,6 @@ void MainWindow::logOutUser(const QString korisnicko_ime)
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
     this->networkAccessManager->post(*(this->networkRequest), data);
-
-    this->ui->actionIzloguj_Se->setDisabled(true);
-    this->ui->actionUloguj_Se->setDisabled(false);
 
     this->timer->stop();
 }
@@ -158,11 +162,40 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
     for(int i=0;i<msg.length();i++)
         str.append(msg.at(i));
 
-    //Handling response
-    //if(str.contains())
-
-
-    this->ui->listWidget->addItem(str);
+    if(str.contains("ERROR_103"))
+    {
+        QMessageBox::warning(this, "Greska", "Neispravno korisnicko ime", QMessageBox::Ok);
+        this->ulogujSe();
+    }else if(str.contains("RESPONSE_100"))
+    {
+        if(this->novePoruke)
+        {
+            QMessageBox::information(this, "Obavestenje", "Nemate novih poruka", QMessageBox::Ok);
+            this->novePoruke = false;
+        }
+    }
+    else if(str.contains("RESPONSE_101"))
+    {
+        str.remove("RESPONSE_101");
+        this->ui->listWidget->addItem(str);
+    }else if(str.contains("RESPONSE_102"))
+    {
+        QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
+        this->ui->actionIzloguj_Se->setDisabled(true);
+        this->ui->actionUloguj_Se->setDisabled(false);
+    }else if(str.contains("RESPONSE_103"))
+    {
+        QMessageBox::information(this, "Obavestenje", "Uspesno ste se registrovali!", QMessageBox::Ok);
+        this->ulogujSe();
+    }else if(str.contains("RESPONSE_104"))
+    {
+        QMessageBox::information(this,"Obavestenje",  "Uspesno ste se ulogovali", QMessageBox::Ok);
+        this->ui->actionUloguj_Se->setDisabled(true);
+        this->ui->actionIzloguj_Se->setDisabled(false);
+        this->_online = true;
+        timer->start();
+    }else
+        this->ui->listWidget->addItem(str);
 }
 
 void MainWindow::ulogujSe()
@@ -192,6 +225,7 @@ void MainWindow::izlogujSe()
     }
 }
 
+
 void MainWindow::registrujSe()
 {
     this->registerForm = new RegisterForm();
@@ -199,21 +233,23 @@ void MainWindow::registrujSe()
     this->registerForm->show();
 }
 
+
 void MainWindow::izadji()
 {
     if(this->_online)
     {
-        this->izlogujSe();
-        this->close();
+        QMessageBox::warning(this, "Upozorenje", "Prvo se izlogujte!!!", QMessageBox::Ok);
     }
     else
         this->close();
 }
 
+
 void MainWindow::posaljiPoruku()
 {
     //this->sendMessage(this->_korisnicko_ime,   , this->ui->lineEdit->text());
 }
+
 
 void MainWindow::primiPoruku()
 {
