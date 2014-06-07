@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->mode = "DEPLOY";
+    this->mode = "DEVELOPMENT";
     this->novePoruke = true;
 
     this->prepareConnection();
