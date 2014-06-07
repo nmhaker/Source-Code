@@ -194,8 +194,7 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         this->ui->actionIzloguj_Se->setDisabled(false);
         this->_online = true;
         timer->start();
-    }else
-        this->ui->listWidget->addItem(str);
+    }
 }
 
 void MainWindow::ulogujSe()
