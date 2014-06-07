@@ -31,6 +31,11 @@ MainWindow::MainWindow(QWidget *parent) :
     int x = (screenGeometry.width()-this->width()) / 2;
     int y = (screenGeometry.height()-this->height()) / 2;
     this->move(x, y);
+
+    if(this->mode == "DEVELOPMENT")
+    {
+        this->loginUser("nmhaker", "comrade123");
+    }
 }
 
 MainWindow::~MainWindow()
@@ -71,7 +76,9 @@ void MainWindow::prepareConnection()
     connect(this->networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleRequestResponse(QNetworkReply*)));
 
     if(this->mode == "DEVELOPMENT")
+    {
         this->networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
+    }
     else if(this->mode == "DEPLOY")
         this->networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server.php"));
 
@@ -148,6 +155,43 @@ void MainWindow::receiveMessage(const QString korisnicko_ime)
     params.addQueryItem("action", "3");
     params.addQueryItem("korisnicko_ime", korisnicko_ime);
 
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->networkAccessManager->post(*(this->networkRequest), data);
+}
+
+void MainWindow::updateStatusPoruke(const QString id, const QString status)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "8");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("idPoruke", id);
+    params.addQueryItem("status", status);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->networkAccessManager->post(*(this->networkRequest), data);
+}
+
+void MainWindow::getFriends()
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "6");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->networkAccessManager->post(*(this->networkRequest), data);
+}
+
+void MainWindow::getMyFriends(const QString korisnicko_ime)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "7");
+    params.addQueryItem("korisnicko_ime", korisnicko_ime);
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -166,6 +210,11 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
     {
         QMessageBox::warning(this, "Greska", "Neispravno korisnicko ime", QMessageBox::Ok);
         this->ulogujSe();
+    }else if(str.contains("ERROR_106"))
+    {
+        qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
+        QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
+        this->close();
     }else if(str.contains("RESPONSE_100"))
     {
         if(this->novePoruke)
@@ -176,13 +225,39 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
     }
     else if(str.contains("RESPONSE_101"))
     {
-        str.remove("RESPONSE_101");
-        this->ui->listWidget->addItem(str);
+        if(str.contains("RESPONSE_101_1"))
+        {
+            QStringList list = str.split("\n");
+            //list.removeAt(0);
+            this->ui->listWidget->addItem(list.value(2));
+            QString id  = list.value(1);
+            primljenePoruke.append(id);
+            this->updateStatusPoruke(id, "primljeno");
+        }
+        QStringList list = str.split("\n");
+        //list.removeAt(0);
+        this->ui->listWidget->addItem(list.value(2));
+        QString id  =list.value(1);
+        primljenePoruke.append(id);
+        this->updateStatusPoruke(id, "primljeno");
+    }else if(str.contains("RESPONSE_101_2"))
+    {
+        qDebug() << "Uspesno updateovana poruka" << endl;
+        this->primiPoruku();
     }else if(str.contains("RESPONSE_102"))
     {
         QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
+
+        foreach(QString id, primljenePoruke)
+            this->updateStatusPoruke(id, "neprimljeno");
+
         this->ui->actionIzloguj_Se->setDisabled(true);
         this->ui->actionUloguj_Se->setDisabled(false);
+
+        this->ui->listWidget->clear();
+        this->ui->listWidget_2->clear();
+
+
     }else if(str.contains("RESPONSE_103"))
     {
         QMessageBox::information(this, "Obavestenje", "Uspesno ste se registrovali!", QMessageBox::Ok);
@@ -193,8 +268,26 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         this->ui->actionUloguj_Se->setDisabled(true);
         this->ui->actionIzloguj_Se->setDisabled(false);
         this->_online = true;
+
+        this->getFriends();
+
         timer->start();
+    }else if(str.contains("RESPONSE_108"))
+    {
+        QStringList list = str.split("\n");
+        list.removeAt(0);
+        foreach (QString item, list) {
+            if(item != "")
+                this->ui->listWidget_2->addItem(item);
+            qDebug() << item;
+        }
+    }else
+    {
+        qDebug() << str << endl;
+        QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
+        this->close();
     }
+
 }
 
 void MainWindow::ulogujSe()

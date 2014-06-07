@@ -53,6 +53,8 @@ private:
 
     bool novePoruke;
 
+    QStringList primljenePoruke;
+
 
 public slots:
     void handleRequestResponse(QNetworkReply *r);
@@ -69,6 +71,9 @@ public slots:
     void logOutUser(const QString korisnicko_ime);
     void sendMessage(const QString korisnicko_ime, const QString primalac, const QString poruka);
     void receiveMessage(const QString korisnicko_ime);
+    void updateStatusPoruke(const QString id, const QString status);
+    void getFriends();
+    void getMyFriends(const QString korisnicko_ime);
 
 };
 
