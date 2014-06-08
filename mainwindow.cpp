@@ -9,6 +9,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->mode = "DEVELOPMENT";
     this->novePoruke = true;
+    this->spremnoZaIzlogovanje = false;
+
+    this->brojSpremnihPoruka = 0;
 
     this->prepareConnection();
 
@@ -24,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->actionIzloguj_Se->setDisabled(true);
 
     timer = new QTimer(this);
-    timer->setInterval(4000);
+    timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
@@ -215,48 +218,56 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
         QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
         this->close();
+    }else if(str.contains("ERROR_107"))
+    {
+        qDebug() << "Nisam ulogovan";
+        QMessageBox::warning(this, "UPOZORENJE" , "Niste ulogovani, moguca greska u programu", QMessageBox::Ok);
+        this->close();
     }else if(str.contains("RESPONSE_100"))
     {
         if(this->novePoruke)
         {
             QMessageBox::information(this, "Obavestenje", "Nemate novih poruka", QMessageBox::Ok);
             this->novePoruke = false;
+            timer->setInterval(4000);
         }
     }
     else if(str.contains("RESPONSE_101"))
     {
-        if(str.contains("RESPONSE_101_1"))
+        timer->setInterval(1000);
+        if(str.contains("RESPONSE_109"))
         {
             QStringList list = str.split("\n");
             //list.removeAt(0);
             this->ui->listWidget->addItem(list.value(2));
             QString id  = list.value(1);
             primljenePoruke.append(id);
-            this->updateStatusPoruke(id, "primljeno");
-        }
+            this->updateStatusPoruke(id, "primljeno");        
+        }else{
         QStringList list = str.split("\n");
         //list.removeAt(0);
         this->ui->listWidget->addItem(list.value(2));
         QString id  =list.value(1);
         primljenePoruke.append(id);
         this->updateStatusPoruke(id, "primljeno");
-    }else if(str.contains("RESPONSE_101_2"))
+        }
+    }else if(str.contains("RESPONSE_110"))
     {
-        qDebug() << "Uspesno updateovana poruka" << endl;
-        this->primiPoruku();
+        qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
+    }else if(str.contains("RESPONSE_111"))
+    {
+        qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
+        this->brojSpremnihPoruka++;
+        this->izlogujSe();
     }else if(str.contains("RESPONSE_102"))
     {
         QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
-
-        foreach(QString id, primljenePoruke)
-            this->updateStatusPoruke(id, "neprimljeno");
 
         this->ui->actionIzloguj_Se->setDisabled(true);
         this->ui->actionUloguj_Se->setDisabled(false);
 
         this->ui->listWidget->clear();
         this->ui->listWidget_2->clear();
-
 
     }else if(str.contains("RESPONSE_103"))
     {
@@ -313,9 +324,19 @@ void MainWindow::izlogujSe()
        QMessageBox::warning(this, "Upozorenje" ,"Vec ste izlogovani", QMessageBox::Ok);
     else
     {
-        this->logOutUser(this->_korisnicko_ime);
+        this->timer->stop();
+        if(spremnoZaIzlogovanje)
+        {
+            this->primljenePoruke.clear();
+            this->brojSpremnihPoruka = 0;
+            this->spremnoZaIzlogovanje = false;
+            this->logOutUser(this->_korisnicko_ime);
+        }else{
+            pripremiZaGasenje();
+        }
     }
 }
+
 
 
 void MainWindow::registrujSe()
@@ -346,5 +367,17 @@ void MainWindow::posaljiPoruku()
 void MainWindow::primiPoruku()
 {
     this->receiveMessage(this->_korisnicko_ime);
+}
+
+void MainWindow::pripremiZaGasenje()
+{
+    if(this->brojSpremnihPoruka <= primljenePoruke.length())
+        this->updateStatusPoruke(primljenePoruke.value(brojSpremnihPoruka), "neprimljeno");
+
+    if(brojSpremnihPoruka == primljenePoruke.length())
+        this->spremnoZaIzlogovanje = true;
+
+    qDebug() << brojSpremnihPoruka << endl;
+    qDebug() << primljenePoruke << endl;
 }
 

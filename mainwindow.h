@@ -53,7 +53,10 @@ private:
 
     bool novePoruke;
 
+    bool spremnoZaIzlogovanje;
+
     QStringList primljenePoruke;
+    int brojSpremnihPoruka;
 
 
 public slots:
@@ -65,6 +68,7 @@ public slots:
     void izadji();
     void posaljiPoruku();
     void primiPoruku();
+    void pripremiZaGasenje();
 
     void loginUser(const QString korisnicko_ime, const QString sifra);
     void registerUser(const QString ime, const QString prezime, const QString korisnicko_ime,const QString sifra, const QString mobilni);
