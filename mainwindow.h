@@ -12,6 +12,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDesktopWidget>
+#include <QListWidgetItem>
 
 #include "loginform.h"
 #include "registerform.h"
@@ -45,6 +46,9 @@ private:
     RegisterForm *registerForm;
 
     QString _korisnicko_ime;
+
+    QString _primaoc;
+
     bool _online;
 
     QTimer *timer;
@@ -59,6 +63,8 @@ private:
     int brojSpremnihPoruka;
 
 
+
+
 public slots:
     void handleRequestResponse(QNetworkReply *r);
 
@@ -69,6 +75,8 @@ public slots:
     void posaljiPoruku();
     void primiPoruku();
     void pripremiZaGasenje();
+
+    void postaviPrimaoca(QListWidgetItem *primaoc);
 
     void loginUser(const QString korisnicko_ime, const QString sifra);
     void registerUser(const QString ime, const QString prezime, const QString korisnicko_ime,const QString sifra, const QString mobilni);

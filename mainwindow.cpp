@@ -7,9 +7,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->mode = "DEVELOPMENT";
+    this->mode = "DEPLOY";
     this->novePoruke = true;
     this->spremnoZaIzlogovanje = false;
+
+    this->_primaoc = "NONE";
 
     this->brojSpremnihPoruka = 0;
 
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->actionIzloguj_Se, SIGNAL(triggered()), this, SLOT(izlogujSe()));
     connect(this->ui->actionRegistruj_Se, SIGNAL(triggered()), this, SLOT(registrujSe()));
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
+    connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
 
     this->_korisnicko_ime = "NOT_SET";
     this->_online = false;
@@ -360,7 +363,10 @@ void MainWindow::izadji()
 
 void MainWindow::posaljiPoruku()
 {
-    //this->sendMessage(this->_korisnicko_ime,   , this->ui->lineEdit->text());
+    if(this->_primaoc == "NONE")
+        QMessageBox::warning(this, "Upozorenje", "Morate izabrati primaoca poruke, sa desne strane!", QMessageBox::Ok);
+    else
+        this->sendMessage(this->_korisnicko_ime, this->_primaoc, this->ui->lineEdit->text());
 }
 
 
@@ -379,5 +385,10 @@ void MainWindow::pripremiZaGasenje()
 
     qDebug() << brojSpremnihPoruka << endl;
     qDebug() << primljenePoruke << endl;
+}
+
+void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
+{
+    this->_primaoc = primaoc->text();
 }
 
