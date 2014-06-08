@@ -286,6 +286,9 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         this->getFriends();
 
         timer->start();
+    }else if(str.contains("RESPONSE_105"))
+    {
+        qDebug() << "Poruka je uspesno poslata" << endl;
     }else if(str.contains("RESPONSE_108"))
     {
         QStringList list = str.split("\n");
