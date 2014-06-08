@@ -60,7 +60,10 @@ private:
     bool spremnoZaIzlogovanje;
 
     QStringList primljenePoruke;
+    QStringList primljenePoruke2;
+
     int brojSpremnihPoruka;
+    int brojSpremnihPoruka2;
 
 
 
@@ -84,6 +87,7 @@ public slots:
     void sendMessage(const QString korisnicko_ime, const QString primalac, const QString poruka);
     void receiveMessage(const QString korisnicko_ime);
     void updateStatusPoruke(const QString id, const QString status);
+    void updateStatusPoruke2(const QString id, const QString status2);
     void getFriends();
     void getMyFriends(const QString korisnicko_ime);
 
