@@ -109,8 +109,6 @@ void MainWindow::loginUser(const QString korisnicko_ime, const QString sifra)
 
 void MainWindow::logOutUser(const QString korisnicko_ime)
 {
-    this->_online = false;
-
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
     params.addQueryItem("action", "5");
@@ -120,7 +118,7 @@ void MainWindow::logOutUser(const QString korisnicko_ime)
 
     this->networkAccessManager->post(*(this->networkRequest), data);
 
-    this->timer->stop();
+    this->_online = false;
 }
 
 void MainWindow::registerUser(const QString ime, const QString prezime, const QString korisnicko_ime, const QString sifra, const QString mobilni )
@@ -221,52 +219,70 @@ void MainWindow::getMyFriends(const QString korisnicko_ime)
 
 void MainWindow::handleRequestResponse(QNetworkReply *r)
 {
-    QByteArray msg = r->readAll();
-    QString str;
 
-    for(int i=0;i<msg.length();i++)
-        str.append(msg.at(i));
+        QByteArray msg = r->readAll();
+        QString str;
 
-    if(str.contains("ERROR_3"))
-    {
-        QMessageBox::warning(this, "Kriticna Greska", "PRAZNE POST PROMENLJIVE GASIM PROGRAM!", QMessageBox::Ok);
-    }else
-    if(str.contains("ERROR_101"))
-    {
-        QMessageBox::warning(this, "Kriticna Greska", "Greska u upitu u bazi podataka, GASIM PROGRAM!", QMessageBox::Ok);
-    }else
-    if(str.contains("ERROR_103"))
-    {
-        QMessageBox::warning(this, "Greska", "Neispravno korisnicko ime", QMessageBox::Ok);
-        this->ulogujSe();
-    }else if(str.contains("ERROR_106"))
-    {
-        qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
-        QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
-        this->close();
-    }else if(str.contains("ERROR_107"))
-    {
-        qDebug() << "Nisam ulogovan";
-        QMessageBox::warning(this, "UPOZORENJE" , "Niste ulogovani, moguca greska u programu", QMessageBox::Ok);
-        this->close();
-    }else if(str.contains("RESPONSE_100"))
-    {
-        if(this->novePoruke)
+        for(int i=0;i<msg.length();i++)
+            str.append(msg.at(i));
+
+        if(str.contains("ERROR_3"))
         {
-            QMessageBox::information(this, "Obavestenje", "Nemate novih poruka", QMessageBox::Ok);
-            this->novePoruke = false;
-            timer->setInterval(4000);
+            QMessageBox::warning(this, "Kriticna Greska", "PRAZNE POST PROMENLJIVE GASIM PROGRAM!", QMessageBox::Ok);
+        }else
+        if(str.contains("ERROR_101"))
+        {
+            QMessageBox::warning(this, "Kriticna Greska", "Greska u upitu u bazi podataka, GASIM PROGRAM!", QMessageBox::Ok);
+        }else
+        if(str.contains("ERROR_103"))
+        {
+            QMessageBox::warning(this, "Greska", "Neispravno korisnicko ime", QMessageBox::Ok);
+            this->ulogujSe();
+        }else if(str.contains("ERROR_106"))
+        {
+            qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
+            QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
+            this->close();
+        }else if(str.contains("ERROR_107"))
+        {
+            qDebug() << "Nisam ulogovan";
+            QMessageBox::warning(this, "UPOZORENJE" , "Niste ulogovani, moguca greska u programu", QMessageBox::Ok);
+            this->close();
+        }else if(str.contains("RESPONSE_100"))
+        {
+            if(this->novePoruke)
+            {
+                this->novePoruke = false;
+                timer->setInterval(4000);
+            }
         }
-    }
-    else if(str.contains("RESPONSE_101"))
-    {
-        timer->setInterval(1000);
-        if(str.contains("RESPONSE_109"))
+        else if(str.contains("RESPONSE_101"))
         {
+            timer->setInterval(1000);
+            if(str.contains("RESPONSE_109"))
+            {
+                QStringList list = str.split("\n");
+                //list.removeAt(0);
+                this->ui->listWidget->addItem(list.value(2));
+                QString id = list.value(1);
+                if(id != "")
+                {
+                    QStringList from = list.value(2).split(":");
+                    if(from.value(0) != _korisnicko_ime)
+                    {
+                        primljenePoruke.append(id);
+                        this->updateStatusPoruke(id, "primljeno");
+                    }
+                    else{
+                        primljenePoruke2.append(id);
+                        this->updateStatusPoruke2(id, "primljeno");
+                    }
+                }
+            }else{
             QStringList list = str.split("\n");
             //list.removeAt(0);
             this->ui->listWidget->addItem(list.value(2));
-            QString id  = list.value(1);
+            QString id = list.value(1);
             if(id != "")
             {
                 QStringList from = list.value(2).split(":");
@@ -280,83 +296,65 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
                     this->updateStatusPoruke2(id, "primljeno");
                 }
             }
-        }else{
-        QStringList list = str.split("\n");
-        //list.removeAt(0);
-        this->ui->listWidget->addItem(list.value(2));
-        QString id  =list.value(1);
-        if(id != "")
+            }
+        }else if(str.contains("SRESPONSE_110") || str.contains("S2RESPONSE_110"))
         {
-            QStringList from = list.value(2).split(":");
-            if(from.value(0) != _korisnicko_ime)
+            qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
+        }else if(str.contains("RESPONSE_111"))
+        {
+            if(str.contains("SRESPONSE_111"))
             {
-                primljenePoruke.append(id);
-                this->updateStatusPoruke(id, "primljeno");
+                qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
+                if(this->_online)
+                    this->izlogujSe();
+            }else if(str.contains("S2RESPONSE_111"))
+            {
+                qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
+                if(this->_online)
+                    this->izlogujSe();
             }
-            else{
-                primljenePoruke2.append(id);
-                this->updateStatusPoruke2(id, "primljeno");
+        }else if(str.contains("RESPONSE_102"))
+        {
+            QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
+
+            this->ui->actionIzloguj_Se->setDisabled(true);
+            this->ui->actionUloguj_Se->setDisabled(false);
+
+            this->ui->listWidget->clear();
+            this->ui->listWidget_2->clear();
+
+        }else if(str.contains("RESPONSE_103"))
+        {
+            QMessageBox::information(this, "Obavestenje", "Uspesno ste se registrovali!", QMessageBox::Ok);
+            this->ulogujSe();
+        }else if(str.contains("RESPONSE_104"))
+        {
+            QMessageBox::information(this,"Obavestenje",  "Uspesno ste se ulogovali", QMessageBox::Ok);
+            this->ui->actionUloguj_Se->setDisabled(true);
+            this->ui->actionIzloguj_Se->setDisabled(false);
+            this->_online = true;
+
+            this->getFriends();
+
+            timer->start();
+        }else if(str.contains("RESPONSE_105"))
+        {
+            qDebug() << "Poruka je uspesno poslata" << endl;
+        }else if(str.contains("RESPONSE_108"))
+        {
+            QStringList list = str.split("\n");
+            list.removeAt(0);
+            foreach (QString item, list) {
+                if(item != "")
+                    this->ui->listWidget_2->addItem(item);
+                qDebug() << item;
             }
-        }
-        }
-    }else if(str.contains("SRESPONSE_110") || str.contains("S2RESPONSE_110"))
-    {
-        qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
-    }else if(str.contains("RESPONSE_111"))
-    {
-        if(str.contains("SRESPONSE_111"))
+        }else
         {
-            qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
-            this->brojSpremnihPoruka++;
-            this->izlogujSe();
-        }else if(str.contains("S2RESPONSE_111"))
-        {
-            qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
-            this->brojSpremnihPoruka2++;
-            this->izlogujSe();
+            qDebug() << str << endl;
+            QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
+            this->close();
         }
-    }else if(str.contains("RESPONSE_102"))
-    {
-        QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
-
-        this->ui->actionIzloguj_Se->setDisabled(true);
-        this->ui->actionUloguj_Se->setDisabled(false);
-
-        this->ui->listWidget->clear();
-        this->ui->listWidget_2->clear();
-
-    }else if(str.contains("RESPONSE_103"))
-    {
-        QMessageBox::information(this, "Obavestenje", "Uspesno ste se registrovali!", QMessageBox::Ok);
-        this->ulogujSe();
-    }else if(str.contains("RESPONSE_104"))
-    {
-        QMessageBox::information(this,"Obavestenje",  "Uspesno ste se ulogovali", QMessageBox::Ok);
-        this->ui->actionUloguj_Se->setDisabled(true);
-        this->ui->actionIzloguj_Se->setDisabled(false);
-        this->_online = true;
-
-        this->getFriends();
-
-        timer->start();
-    }else if(str.contains("RESPONSE_105"))
-    {
-        qDebug() << "Poruka je uspesno poslata" << endl;
-    }else if(str.contains("RESPONSE_108"))
-    {
-        QStringList list = str.split("\n");
-        list.removeAt(0);
-        foreach (QString item, list) {
-            if(item != "")
-                this->ui->listWidget_2->addItem(item);
-            qDebug() << item;
-        }
-    }else
-    {
-        qDebug() << str << endl;
-        QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
-        this->close();
-    }
 
 }
 
@@ -435,14 +433,23 @@ void MainWindow::primiPoruku()
 
 void MainWindow::pripremiZaGasenje()
 {
-    if(this->brojSpremnihPoruka <= primljenePoruke.length())
-        this->updateStatusPoruke(primljenePoruke.value(brojSpremnihPoruka), "neprimljeno");
+    if(this->_online)
+    {
+        if(this->brojSpremnihPoruka < primljenePoruke.count())
+        {
+            this->updateStatusPoruke(primljenePoruke.value(brojSpremnihPoruka), "neprimljeno");
+            this->brojSpremnihPoruka++;
+        }
 
-    if(this->brojSpremnihPoruka2 <= primljenePoruke2.length())
-        this->updateStatusPoruke2(primljenePoruke2.value(brojSpremnihPoruka2), "neprimljeno");
+        if(this->brojSpremnihPoruka2 < primljenePoruke2.count())
+        {
+            this->updateStatusPoruke2(primljenePoruke2.value(brojSpremnihPoruka2), "neprimljeno");
+            this->brojSpremnihPoruka2++;
+        }
 
-    if((brojSpremnihPoruka == primljenePoruke.length()) and (brojSpremnihPoruka2 == primljenePoruke2.length()))
-        this->spremnoZaIzlogovanje = true;
+        if((brojSpremnihPoruka == primljenePoruke.count()) and (brojSpremnihPoruka2 == primljenePoruke2.count()))
+            this->spremnoZaIzlogovanje = true;
+    }
 
     qDebug() << "Broj spremnih poruka: " << brojSpremnihPoruka << endl;
     qDebug() << "brojSpremnihPoruka2" << brojSpremnihPoruka2 << endl;
