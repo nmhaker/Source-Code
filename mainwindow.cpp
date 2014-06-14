@@ -13,8 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->_primaoc = "NONE";
 
-    this->brojSpremnihPoruka = 0;
-    this->brojSpremnihPoruka2 = 0;
+    this->brojSpremnihPorukaPrijatelja = 0;
+    this->brojSpremnihPorukaKorisnika = 0;
 
     this->prepareConnection();
 
@@ -165,7 +165,7 @@ void MainWindow::receiveMessage(const QString korisnicko_ime)
     this->networkAccessManager->post(*(this->networkRequest), data);
 }
 
-void MainWindow::updateStatusPoruke(const QString id, const QString status)
+void MainWindow::updateStatusPorukePrijatelja(const QString id, const QString status)
 {
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
@@ -179,7 +179,7 @@ void MainWindow::updateStatusPoruke(const QString id, const QString status)
     this->networkAccessManager->post(*(this->networkRequest), data);
 }
 
-void MainWindow::updateStatusPoruke2(const QString id, const QString status2)
+void MainWindow::updateStatusPorukeKorisnika(const QString id, const QString status2)
 {
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
@@ -270,12 +270,12 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
                     QStringList from = list.value(2).split(":");
                     if(from.value(0) != _korisnicko_ime)
                     {
-                        primljenePoruke.append(id);
-                        this->updateStatusPoruke(id, "primljeno");
+                        primljenePorukePrijatelja.append(id);
+                        this->updateStatusPorukePrijatelja(id, "primljeno");
                     }
                     else{
-                        primljenePoruke2.append(id);
-                        this->updateStatusPoruke2(id, "primljeno");
+                        primljenePorukeKorisnika.append(id);
+                        this->updateStatusPorukeKorisnika(id, "primljeno");
                     }
                 }
             }else{
@@ -288,12 +288,12 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
                 QStringList from = list.value(2).split(":");
                 if(from.value(0) != _korisnicko_ime)
                 {
-                    primljenePoruke.append(id);
-                    this->updateStatusPoruke(id, "primljeno");
+                    primljenePorukePrijatelja.append(id);
+                    this->updateStatusPorukePrijatelja(id, "primljeno");
                 }
                 else{
-                    primljenePoruke2.append(id);
-                    this->updateStatusPoruke2(id, "primljeno");
+                    primljenePorukeKorisnika.append(id);
+                    this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
             }
             }
@@ -384,10 +384,10 @@ void MainWindow::izlogujSe()
         this->timer->stop();
         if(spremnoZaIzlogovanje)
         {
-            this->primljenePoruke.clear();
-            this->primljenePoruke2.clear();
-            this->brojSpremnihPoruka = 0;
-            this->brojSpremnihPoruka2 = 0;
+            this->primljenePorukePrijatelja.clear();
+            this->primljenePorukeKorisnika.clear();
+            this->brojSpremnihPorukaPrijatelja = 0;
+            this->brojSpremnihPorukaKorisnika = 0;
             this->spremnoZaIzlogovanje = false;
             this->logOutUser(this->_korisnicko_ime);
         }else{
@@ -396,15 +396,12 @@ void MainWindow::izlogujSe()
     }
 }
 
-
-
 void MainWindow::registrujSe()
 {
     this->registerForm = new RegisterForm();
     connect(this->registerForm, SIGNAL(salji(QString,QString,QString,QString,QString)), this, SLOT(registerUser(QString,QString,QString,QString,QString)));
     this->registerForm->show();
 }
-
 
 void MainWindow::izadji()
 {
@@ -416,7 +413,6 @@ void MainWindow::izadji()
         this->close();
 }
 
-
 void MainWindow::posaljiPoruku()
 {
     if(this->_primaoc == "NONE")
@@ -424,7 +420,6 @@ void MainWindow::posaljiPoruku()
     else
         this->sendMessage(this->_korisnicko_ime, this->_primaoc, this->ui->lineEdit->text());
 }
-
 
 void MainWindow::primiPoruku()
 {
@@ -435,26 +430,26 @@ void MainWindow::pripremiZaGasenje()
 {
     if(this->_online)
     {
-        if(this->brojSpremnihPoruka < primljenePoruke.count())
+        if(this->brojSpremnihPorukaPrijatelja < primljenePorukePrijatelja.count())
         {
-            this->updateStatusPoruke(primljenePoruke.value(brojSpremnihPoruka), "neprimljeno");
-            this->brojSpremnihPoruka++;
+            this->updateStatusPorukePrijatelja(primljenePorukePrijatelja.value(brojSpremnihPorukaPrijatelja), "neprimljeno");
+            this->brojSpremnihPorukaPrijatelja++;
         }
 
-        if(this->brojSpremnihPoruka2 < primljenePoruke2.count())
+        if(this->brojSpremnihPorukaKorisnika < primljenePorukeKorisnika.count())
         {
-            this->updateStatusPoruke2(primljenePoruke2.value(brojSpremnihPoruka2), "neprimljeno");
-            this->brojSpremnihPoruka2++;
+            this->updateStatusPorukeKorisnika(primljenePorukeKorisnika.value(brojSpremnihPorukaKorisnika), "neprimljeno");
+            this->brojSpremnihPorukaKorisnika++;
         }
 
-        if((brojSpremnihPoruka == primljenePoruke.count()) and (brojSpremnihPoruka2 == primljenePoruke2.count()))
+        if((brojSpremnihPorukaPrijatelja == primljenePorukePrijatelja.count()) and (brojSpremnihPorukaKorisnika == primljenePorukeKorisnika.count()))
             this->spremnoZaIzlogovanje = true;
     }
 
-    qDebug() << "Broj spremnih poruka: " << brojSpremnihPoruka << endl;
-    qDebug() << "brojSpremnihPoruka2" << brojSpremnihPoruka2 << endl;
-    qDebug() << "primljenePoruke" << primljenePoruke << endl;
-    qDebug() << "primljenePoruke2" << primljenePoruke2 << endl;
+    qDebug() << "Broj spremnih poruka: " << brojSpremnihPorukaPrijatelja << endl;
+    qDebug() << "brojSpremnihPoruka2" << brojSpremnihPorukaKorisnika << endl;
+    qDebug() << "primljenePoruke" << primljenePorukePrijatelja << endl;
+    qDebug() << "primljenePoruke2" << primljenePorukeKorisnika << endl;
 }
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
