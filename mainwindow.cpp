@@ -9,7 +9,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->mode = "DEVELOPMENT";
     this->novePoruke = true;
+    this->imaViseOdJednePorukeZaPrimiti = false;
     this->spremnoZaIzlogovanje = false;
+
+    obavestenje = new QLabel(this);
+    obavestenje->setGeometry(QRect(349, 0, 489, 20));
+    obavestenje->setStyleSheet("background-color:red;text:black;");
+    obavestenje->setVisible(false);
 
     this->_primaoc = "NONE";
 
@@ -47,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    delete obavestenje;
     delete ui;
 }
 
@@ -263,6 +270,7 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
             this->close();
         }else if(str.contains("RESPONSE_100"))
         {
+            obavestenje->setText("Nemate novih poruka");
             if(this->novePoruke)
             {
                 this->novePoruke = false;
@@ -273,23 +281,42 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         {
             timer->setInterval(1000);
             QStringList list = str.split("\n");
-            //this->ui->listWidget->addItem(list.value(2));
+            QString broj = list.value(1);
+            if(broj != "")
+            {
+                obavestenje->setText("Imate " + broj + " novih poruka");
+                obavestenje->show();
+            }
+        }else if(str.contains("RESPONSE_112"))
+        {
+            QStringList list = str.split("\n");
             QString id = list.value(1);
+            this->ui->listWidget->addItem(list.value(3));
             if(id != "")
             {
-                if(list.value(2) != _korisnicko_ime)
+                if(list.value(2) != _korisnicko_ime )
                 {
                     primljenePorukePrijatelja.append(id);
                     this->updateStatusPorukePrijatelja(id, "primljeno");
-                }
-                else{
+                }else
+                {
                     primljenePorukeKorisnika.append(id);
                     this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
             }
+
+            if(str.contains("RESPONSE_113"))
+            {
+                this->imaViseOdJednePorukeZaPrimiti = true;
+            }
         }else if(str.contains("SRESPONSE_110") || str.contains("S2RESPONSE_110"))
         {
             qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
+            if(this->imaViseOdJednePorukeZaPrimiti)
+            {
+                this->receiveMessageFrom(this->_korisnicko_ime, this->_primaoc);
+                this->imaViseOdJednePorukeZaPrimiti = false;
+            }
         }else if(str.contains("RESPONSE_111"))
         {
             if(str.contains("SRESPONSE_111"))
@@ -441,5 +468,6 @@ void MainWindow::pripremiZaGasenje()
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
     this->_primaoc = primaoc->text();
+    this->receiveMessageFrom(this->_korisnicko_ime, this->_primaoc);
 }
 

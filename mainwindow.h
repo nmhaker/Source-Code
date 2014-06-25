@@ -55,7 +55,10 @@ private:
 
     QString mode;
 
+    QLabel *obavestenje ;
+
     bool novePoruke;
+    bool imaViseOdJednePorukeZaPrimiti;
 
     bool spremnoZaIzlogovanje;
 
