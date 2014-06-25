@@ -153,12 +153,25 @@ void MainWindow::sendMessage(const QString korisnicko_ime, const QString primala
     this->networkAccessManager->post(*(this->networkRequest), data);
 }
 
-void MainWindow::receiveMessage(const QString korisnicko_ime)
+void MainWindow::checkForNewMessages(const QString korisnicko_ime)
 {
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
     params.addQueryItem("action", "3");
     params.addQueryItem("korisnicko_ime", korisnicko_ime);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->networkAccessManager->post(*(this->networkRequest), data);
+}
+
+void MainWindow::receiveMessageFrom(const QString korisnicko_ime, const QString od)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "9");
+    params.addQueryItem("korisnicko_ime", korisnicko_ime);
+    params.addQueryItem("od", od);
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -259,34 +272,12 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         else if(str.contains("RESPONSE_101"))
         {
             timer->setInterval(1000);
-            if(str.contains("RESPONSE_109"))
-            {
-                QStringList list = str.split("\n");
-                //list.removeAt(0);
-                this->ui->listWidget->addItem(list.value(2));
-                QString id = list.value(1);
-                if(id != "")
-                {
-                    QStringList from = list.value(2).split(":");
-                    if(from.value(0) != _korisnicko_ime)
-                    {
-                        primljenePorukePrijatelja.append(id);
-                        this->updateStatusPorukePrijatelja(id, "primljeno");
-                    }
-                    else{
-                        primljenePorukeKorisnika.append(id);
-                        this->updateStatusPorukeKorisnika(id, "primljeno");
-                    }
-                }
-            }else{
             QStringList list = str.split("\n");
-            //list.removeAt(0);
-            this->ui->listWidget->addItem(list.value(2));
+            //this->ui->listWidget->addItem(list.value(2));
             QString id = list.value(1);
             if(id != "")
             {
-                QStringList from = list.value(2).split(":");
-                if(from.value(0) != _korisnicko_ime)
+                if(list.value(2) != _korisnicko_ime)
                 {
                     primljenePorukePrijatelja.append(id);
                     this->updateStatusPorukePrijatelja(id, "primljeno");
@@ -295,7 +286,6 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
                     primljenePorukeKorisnika.append(id);
                     this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
-            }
             }
         }else if(str.contains("SRESPONSE_110") || str.contains("S2RESPONSE_110"))
         {
@@ -423,7 +413,7 @@ void MainWindow::posaljiPoruku()
 
 void MainWindow::primiPoruku()
 {
-    this->receiveMessage(this->_korisnicko_ime);
+    this->checkForNewMessages(this->_korisnicko_ime);
 }
 
 void MainWindow::pripremiZaGasenje()
@@ -446,10 +436,6 @@ void MainWindow::pripremiZaGasenje()
             this->spremnoZaIzlogovanje = true;
     }
 
-    qDebug() << "Broj spremnih poruka: " << brojSpremnihPorukaPrijatelja << endl;
-    qDebug() << "brojSpremnihPoruka2" << brojSpremnihPorukaKorisnika << endl;
-    qDebug() << "primljenePoruke" << primljenePorukePrijatelja << endl;
-    qDebug() << "primljenePoruke2" << primljenePorukeKorisnika << endl;
 }
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)

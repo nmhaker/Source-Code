@@ -85,7 +85,8 @@ public slots:
     void registerUser(const QString ime, const QString prezime, const QString korisnicko_ime,const QString sifra, const QString mobilni);
     void logOutUser(const QString korisnicko_ime);
     void sendMessage(const QString korisnicko_ime, const QString primalac, const QString poruka);
-    void receiveMessage(const QString korisnicko_ime);
+    void checkForNewMessages(const QString korisnicko_ime);
+    void receiveMessageFrom(const QString korisnicko_ime, const QString od);
     void updateStatusPorukePrijatelja(const QString id, const QString status);
     void updateStatusPorukeKorisnika(const QString id, const QString status2);
     void getFriends();
