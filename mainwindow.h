@@ -38,7 +38,6 @@ private:
 
     void prepareConnection();
 
-
     QNetworkAccessManager *networkAccessManager;
     QNetworkRequest *networkRequest;
 

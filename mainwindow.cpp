@@ -369,7 +369,7 @@ void MainWindow::handleRequestResponse(QNetworkReply *r)
         }else
         {
             qDebug() << str << endl;
-            QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
+            QMessageBox::warning(this, "UPOZORENJE" , "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan", QMessageBox::Ok);
             this->close();
         }
 
@@ -435,7 +435,11 @@ void MainWindow::posaljiPoruku()
     if(this->_primaoc == "NONE")
         QMessageBox::warning(this, "Upozorenje", "Morate izabrati primaoca poruke, sa desne strane!", QMessageBox::Ok);
     else
+    {
+        this->ui->listWidget->addItem(this->ui->lineEdit->text());
         this->sendMessage(this->_korisnicko_ime, this->_primaoc, this->ui->lineEdit->text());
+        this->ui->lineEdit->clear();
+    }
 }
 
 void MainWindow::primiPoruku()

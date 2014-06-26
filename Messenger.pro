@@ -15,11 +15,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     loginform.cpp \
-    registerform.cpp
+    registerform.cpp \
+    mtabwidget.cpp \
+    networkhandle.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
-    registerform.h
+    registerform.h \
+    mtabwidget.h \
+    networkhandle.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
