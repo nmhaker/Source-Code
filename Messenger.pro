@@ -17,13 +17,15 @@ SOURCES += main.cpp\
     loginform.cpp \
     registerform.cpp \
     mtabwidget.cpp \
-    networkhandle.cpp
+    networkhandle.cpp \
+    storagehandle.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
     registerform.h \
     mtabwidget.h \
-    networkhandle.h
+    networkhandle.h \
+    storagehandle.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

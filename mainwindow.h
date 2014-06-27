@@ -2,10 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QUrlQuery>
 #include <QDebug>
 #include <QByteArray>
 #include <QCloseEvent>
@@ -14,8 +10,12 @@
 #include <QDesktopWidget>
 #include <QListWidgetItem>
 
+#include "networkhandle.h"
+#include "storagehandle.h"
+#include "mtabwidget.h"
 #include "loginform.h"
 #include "registerform.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -29,49 +29,26 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-protected:
-    void closeEvent(QCloseEvent *e);
-    void keyPressEvent(QKeyEvent *e);
-
-private:
     Ui::MainWindow *ui;
 
-    void prepareConnection();
-
-    QNetworkAccessManager *networkAccessManager;
-    QNetworkRequest *networkRequest;
+    NetworkHandle *networkHandle;
+    StorageHandle *_storageHandle;
 
     LoginForm *loginForm;
     RegisterForm *registerForm;
 
-    QString _korisnicko_ime;
-
-    QString _primaoc;
-
-    bool _online;
-
     QTimer *timer;
-
-    QString mode;
 
     QLabel *obavestenje ;
 
-    bool novePoruke;
-    bool imaViseOdJednePorukeZaPrimiti;
-
     bool spremnoZaIzlogovanje;
 
-    QStringList primljenePorukePrijatelja;
-    QStringList primljenePorukeKorisnika;
+protected:
 
-    int brojSpremnihPorukaPrijatelja;
-    int brojSpremnihPorukaKorisnika;
-
-
-
+    void closeEvent(QCloseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
 
 public slots:
-    void handleRequestResponse(QNetworkReply *r);
 
     void ulogujSe();
     void izlogujSe();
@@ -82,18 +59,14 @@ public slots:
     void pripremiZaGasenje();
 
     void postaviPrimaoca(QListWidgetItem *primaoc);
-
-    void loginUser(const QString korisnicko_ime, const QString sifra);
-    void registerUser(const QString ime, const QString prezime, const QString korisnicko_ime,const QString sifra, const QString mobilni);
-    void logOutUser(const QString korisnicko_ime);
-    void sendMessage(const QString korisnicko_ime, const QString primalac, const QString poruka);
-    void checkForNewMessages(const QString korisnicko_ime);
-    void receiveMessageFrom(const QString korisnicko_ime, const QString od);
-    void updateStatusPorukePrijatelja(const QString id, const QString status);
-    void updateStatusPorukeKorisnika(const QString id, const QString status2);
-    void getFriends();
-    void getMyFriends(const QString korisnicko_ime);
-
+    void izbaciObavestenje(const QString s);
+    void prikaziObavestenje();
+    void prikaziPoruku(QString p, QString pp);
+    void postaviIntervalTajmera(int msec);
+    void dodajNovuPorukuUlistWidget(QString p);
+    void dodajPrijateljeUlistWidget2(QString p);
+    void ubaciIdPorukeKorisnika(QString id);
+    void ubaciIdPorukePrijatelja(QString id);
 };
 
 #endif // MAINWINDOW_H

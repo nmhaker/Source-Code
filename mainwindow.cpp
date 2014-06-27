@@ -1,28 +1,23 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    this->mode = "DEVELOPMENT";
-    this->novePoruke = true;
-    this->imaViseOdJednePorukeZaPrimiti = false;
+    this->networkHandle = new NetworkHandle();
+    this->_storageHandle = new StorageHandle();
+
+    timer = new QTimer(this);
+    timer->setInterval(1000);
+    connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
+
     this->spremnoZaIzlogovanje = false;
 
     obavestenje = new QLabel(this);
     obavestenje->setGeometry(QRect(349, 0, 489, 20));
     obavestenje->setStyleSheet("background-color:red;text:black;");
     obavestenje->setVisible(false);
-
-    this->_primaoc = "NONE";
-
-    this->brojSpremnihPorukaPrijatelja = 0;
-    this->brojSpremnihPorukaKorisnika = 0;
-
-    this->prepareConnection();
 
     connect(this->ui->actionUloguj_Se, SIGNAL(triggered()), this, SLOT(ulogujSe()));
     connect(this->ui->actionIzadji, SIGNAL(triggered()), this, SLOT(izadji()));
@@ -31,24 +26,31 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
 
-    this->_korisnicko_ime = "NOT_SET";
-    this->_online = false;
+    connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(izadji()));
+    connect(this->networkHandle, SIGNAL(notification(QString)), this, SLOT(izbaciObavestenje(QString)));
+    connect(this->networkHandle, SIGNAL(showStatusNotification()), this, SLOT(prikaziObavestenje()));
+    connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
+    connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
+    connect(this->networkHandle, SIGNAL(novaPoruka(QString)), this, SLOT(dodajNovuPorukuUlistWidget(QString)));
+    connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
+    connect(this->networkHandle, SIGNAL(ocistiListWidget()), this->ui->listWidget, SLOT(clear()));
+    connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
+    connect(this->networkHandle, SIGNAL(potrebnoJeIzlogovatiSe()), this, SLOT(izlogujSe()));
+    connect(this->networkHandle, SIGNAL(potrebnoJePonovoUlogovatiSe()), this, SLOT(ulogujSe()));
+    connect(this->networkHandle, SIGNAL(promeniStanjeActionIzlogujSe(bool)), this->ui->actionIzloguj_Se, SLOT(setEnabled(bool)));
+    connect(this->networkHandle, SIGNAL(promeniStanjeActionUlogujSe(bool)), this->ui->actionUloguj_Se, SLOT(setEnabled(bool)));
+    connect(this->networkHandle, SIGNAL(startTimer()), this->timer, SLOT(start()));
+    connect(this->networkHandle, SIGNAL(ubaciIdPorukeKorisnika(QString)), this, SLOT(ubaciIdPorukeKorisnika(QString)));
+    connect(this->networkHandle, SIGNAL(ubaciIdPorukePrijatelja(QString)), this, SLOT(ubaciIdPorukePrijatelja(QString)));
 
     this->ui->actionIzloguj_Se->setDisabled(true);
-
-    timer = new QTimer(this);
-    timer->setInterval(1000);
-    connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
     int x = (screenGeometry.width()-this->width()) / 2;
     int y = (screenGeometry.height()-this->height()) / 2;
     this->move(x, y);
 
-    if(this->mode == "DEVELOPMENT")
-    {
-        this->loginUser("nmhaker", "comrade123");
-    }
+    qDebug() << "Izlazim iz mainwindow konstruktora" << endl;
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +61,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    if(this->_online)
+    if(this->networkHandle->isOnline())
     {
         QMessageBox::StandardButton resBtn = QMessageBox::warning( this, "Messenger", tr("Prvo se izlogujte, pre nego sto zatvorite aplikaciju"), QMessageBox::Yes);
         if (resBtn == QMessageBox::Yes) {
@@ -83,306 +85,64 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->izadji();
 }
 
-void MainWindow::prepareConnection()
+
+
+void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
-    this->networkAccessManager = new QNetworkAccessManager(this);
-
-    connect(this->networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleRequestResponse(QNetworkReply*)));
-
-    if(this->mode == "DEVELOPMENT")
-    {
-        this->networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
-    }
-    else if(this->mode == "DEPLOY")
-        this->networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server.php"));
-
-    this->networkRequest->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+    this->networkHandle->postaviPrimaoca(primaoc->text());
+    this->networkHandle->receiveMessageFrom();
 }
 
-void MainWindow::loginUser(const QString korisnicko_ime, const QString sifra)
+void MainWindow::izbaciObavestenje(const QString s)
 {
-    this->_korisnicko_ime = korisnicko_ime;
-
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "2");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-    params.addQueryItem("sifra", sifra);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->obavestenje->setText(s);
 }
 
-void MainWindow::logOutUser(const QString korisnicko_ime)
+void MainWindow::prikaziObavestenje()
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "5");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
-
-    this->_online = false;
+    this->obavestenje->show();
 }
 
-void MainWindow::registerUser(const QString ime, const QString prezime, const QString korisnicko_ime, const QString sifra, const QString mobilni )
+void MainWindow::prikaziPoruku(QString p, QString pp)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "1");
-    params.addQueryItem("ime", ime);
-    params.addQueryItem("prezime", prezime);
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-    params.addQueryItem("sifra", sifra);
-    params.addQueryItem("mobilni", mobilni);
-
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    QMessageBox::information(this, p, pp, QMessageBox::Ok);
 }
 
-void MainWindow::sendMessage(const QString korisnicko_ime, const QString primalac, const QString poruka)
+void MainWindow::postaviIntervalTajmera(int msec)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "4");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-    params.addQueryItem("primalac", primalac);
-    params.addQueryItem("poruka", poruka);
-
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->timer->setInterval(msec);
 }
 
-void MainWindow::checkForNewMessages(const QString korisnicko_ime)
+void MainWindow::dodajNovuPorukuUlistWidget(QString p)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "3");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->ui->listWidget->addItem(p);
 }
 
-void MainWindow::receiveMessageFrom(const QString korisnicko_ime, const QString od)
+void MainWindow::dodajPrijateljeUlistWidget2(QString p)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "9");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-    params.addQueryItem("od", od);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->ui->listWidget_2->addItem(p);
 }
 
-void MainWindow::updateStatusPorukePrijatelja(const QString id, const QString status)
+void MainWindow::ubaciIdPorukeKorisnika(QString id)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "8");
-    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("idPoruke", id);
-    params.addQueryItem("status", status);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->_storageHandle->primljenePorukeKorisnika.append(id);
 }
 
-void MainWindow::updateStatusPorukeKorisnika(const QString id, const QString status2)
+void MainWindow::ubaciIdPorukePrijatelja(QString id)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "8");
-    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("idPoruke", id);
-    params.addQueryItem("status2", status2);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
+    this->_storageHandle->primljenePorukePrijatelja.append(id);
 }
 
-void MainWindow::getFriends()
-{
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "6");
-    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
 
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
-}
-
-void MainWindow::getMyFriends(const QString korisnicko_ime)
-{
-    QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
-    params.addQueryItem("action", "7");
-    params.addQueryItem("korisnicko_ime", korisnicko_ime);
-
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
-
-    this->networkAccessManager->post(*(this->networkRequest), data);
-}
-
-void MainWindow::handleRequestResponse(QNetworkReply *r)
-{
-
-        QByteArray msg = r->readAll();
-        QString str;
-
-        for(int i=0;i<msg.length();i++)
-            str.append(msg.at(i));
-
-        if(str.contains("ERROR_3"))
-        {
-            QMessageBox::warning(this, "Kriticna Greska", "PRAZNE POST PROMENLJIVE GASIM PROGRAM!", QMessageBox::Ok);
-        }else
-        if(str.contains("ERROR_101"))
-        {
-            QMessageBox::warning(this, "Kriticna Greska", "Greska u upitu u bazi podataka, GASIM PROGRAM!", QMessageBox::Ok);
-        }else
-        if(str.contains("ERROR_103"))
-        {
-            QMessageBox::warning(this, "Greska", "Neispravno korisnicko ime", QMessageBox::Ok);
-            this->ulogujSe();
-        }else if(str.contains("ERROR_106"))
-        {
-            qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
-            QMessageBox::warning(this, "UPOZORENJE" , "Greska u programu", QMessageBox::Ok);
-            this->close();
-        }else if(str.contains("ERROR_107"))
-        {
-            qDebug() << "Nisam ulogovan";
-            QMessageBox::warning(this, "UPOZORENJE" , "Niste ulogovani, moguca greska u programu", QMessageBox::Ok);
-            this->close();
-        }else if(str.contains("RESPONSE_100"))
-        {
-            obavestenje->setText("Nemate novih poruka");
-            if(this->novePoruke)
-            {
-                this->novePoruke = false;
-                timer->setInterval(4000);
-            }
-        }
-        else if(str.contains("RESPONSE_101"))
-        {
-            timer->setInterval(1000);
-            QStringList list = str.split("\n");
-            QString broj = list.value(1);
-            if(broj != "")
-            {
-                obavestenje->setText("Imate " + broj + " novih poruka");
-                obavestenje->show();
-            }
-        }else if(str.contains("RESPONSE_112"))
-        {
-            QStringList list = str.split("\n");
-            QString id = list.value(1);
-            this->ui->listWidget->addItem(list.value(3));
-            if(id != "")
-            {
-                if(list.value(2) != _korisnicko_ime )
-                {
-                    primljenePorukePrijatelja.append(id);
-                    this->updateStatusPorukePrijatelja(id, "primljeno");
-                }else
-                {
-                    primljenePorukeKorisnika.append(id);
-                    this->updateStatusPorukeKorisnika(id, "primljeno");
-                }
-            }
-
-            if(str.contains("RESPONSE_113"))
-            {
-                this->imaViseOdJednePorukeZaPrimiti = true;
-            }
-        }else if(str.contains("SRESPONSE_110") || str.contains("S2RESPONSE_110"))
-        {
-            qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
-            if(this->imaViseOdJednePorukeZaPrimiti)
-            {
-                this->receiveMessageFrom(this->_korisnicko_ime, this->_primaoc);
-                this->imaViseOdJednePorukeZaPrimiti = false;
-            }
-        }else if(str.contains("RESPONSE_111"))
-        {
-            if(str.contains("SRESPONSE_111"))
-            {
-                qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
-                if(this->_online)
-                    this->izlogujSe();
-            }else if(str.contains("S2RESPONSE_111"))
-            {
-                qDebug() << "Uspesno updateovana poruka na 'neprimljeno' " << endl;
-                if(this->_online)
-                    this->izlogujSe();
-            }
-        }else if(str.contains("RESPONSE_102"))
-        {
-            QMessageBox::information(this, "Obavestenje", "Uspesno ste se izlogovali", QMessageBox::Ok);
-
-            this->ui->actionIzloguj_Se->setDisabled(true);
-            this->ui->actionUloguj_Se->setDisabled(false);
-
-            this->ui->listWidget->clear();
-            this->ui->listWidget_2->clear();
-
-        }else if(str.contains("RESPONSE_103"))
-        {
-            QMessageBox::information(this, "Obavestenje", "Uspesno ste se registrovali!", QMessageBox::Ok);
-            this->ulogujSe();
-        }else if(str.contains("RESPONSE_104"))
-        {
-            QMessageBox::information(this,"Obavestenje",  "Uspesno ste se ulogovali", QMessageBox::Ok);
-            this->ui->actionUloguj_Se->setDisabled(true);
-            this->ui->actionIzloguj_Se->setDisabled(false);
-            this->_online = true;
-
-            this->getFriends();
-
-            timer->start();
-        }else if(str.contains("RESPONSE_105"))
-        {
-            qDebug() << "Poruka je uspesno poslata" << endl;
-        }else if(str.contains("RESPONSE_108"))
-        {
-            QStringList list = str.split("\n");
-            list.removeAt(0);
-            foreach (QString item, list) {
-                if(item != "")
-                    this->ui->listWidget_2->addItem(item);
-                qDebug() << item;
-            }
-        }else
-        {
-            qDebug() << str << endl;
-            QMessageBox::warning(this, "UPOZORENJE" , "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan", QMessageBox::Ok);
-            this->close();
-        }
-
-}
 
 void MainWindow::ulogujSe()
 {
-    if(!this->_online)
+    if(!this->networkHandle->isOnline())
     {
         this->loginForm = new LoginForm();
         this->loginForm->setGeometry(this->x() + this->width()/3, this->y() + this->height()/3, loginForm->width(), loginForm->height());
 
-        connect(this->loginForm, SIGNAL(salji(QString,QString)), this, SLOT(loginUser(QString,QString)));
+        connect(this->loginForm, SIGNAL(salji(QString,QString)), this->networkHandle, SLOT(loginUser(QString,QString)));
 
         this->loginForm->show();
 
@@ -394,21 +154,21 @@ void MainWindow::ulogujSe()
 
 void MainWindow::izlogujSe()
 {
-    if(this->_online == false)
+    if(this->networkHandle->isOnline() == false)
        QMessageBox::warning(this, "Upozorenje" ,"Vec ste izlogovani", QMessageBox::Ok);
     else
     {
         this->timer->stop();
         if(spremnoZaIzlogovanje)
         {
-            this->primljenePorukePrijatelja.clear();
-            this->primljenePorukeKorisnika.clear();
-            this->brojSpremnihPorukaPrijatelja = 0;
-            this->brojSpremnihPorukaKorisnika = 0;
+            this->_storageHandle->primljenePorukePrijatelja.clear();
+            this->_storageHandle->primljenePorukeKorisnika.clear();
+            this->_storageHandle->brojSpremnihPorukaPrijatelja = 0;
+            this->_storageHandle->brojSpremnihPorukaKorisnika = 0;
             this->spremnoZaIzlogovanje = false;
-            this->logOutUser(this->_korisnicko_ime);
+            this->networkHandle->logOutUser();
         }else{
-            pripremiZaGasenje();
+            this->pripremiZaGasenje();
         }
     }
 }
@@ -416,13 +176,13 @@ void MainWindow::izlogujSe()
 void MainWindow::registrujSe()
 {
     this->registerForm = new RegisterForm();
-    connect(this->registerForm, SIGNAL(salji(QString,QString,QString,QString,QString)), this, SLOT(registerUser(QString,QString,QString,QString,QString)));
+    connect(this->registerForm, SIGNAL(salji(QString,QString,QString,QString,QString)), this->networkHandle, SLOT(registerUser(QString,QString,QString,QString,QString)));
     this->registerForm->show();
 }
 
 void MainWindow::izadji()
 {
-    if(this->_online)
+    if(this->networkHandle->isOnline())
     {
         QMessageBox::warning(this, "Upozorenje", "Prvo se izlogujte!!!", QMessageBox::Ok);
     }
@@ -432,46 +192,41 @@ void MainWindow::izadji()
 
 void MainWindow::posaljiPoruku()
 {
-    if(this->_primaoc == "NONE")
+    if(this->networkHandle->getPrimaoca() == "NONE")
         QMessageBox::warning(this, "Upozorenje", "Morate izabrati primaoca poruke, sa desne strane!", QMessageBox::Ok);
     else
     {
         this->ui->listWidget->addItem(this->ui->lineEdit->text());
-        this->sendMessage(this->_korisnicko_ime, this->_primaoc, this->ui->lineEdit->text());
+        this->networkHandle->sendMessage(this->ui->lineEdit->text());
         this->ui->lineEdit->clear();
     }
 }
 
 void MainWindow::primiPoruku()
 {
-    this->checkForNewMessages(this->_korisnicko_ime);
+    this->networkHandle->checkForNewMessages();
 }
 
 void MainWindow::pripremiZaGasenje()
 {
-    if(this->_online)
+    if(this->networkHandle->isOnline())
     {
-        if(this->brojSpremnihPorukaPrijatelja < primljenePorukePrijatelja.count())
+        if(this->_storageHandle->brojSpremnihPorukaPrijatelja < this->_storageHandle->primljenePorukePrijatelja.count())
         {
-            this->updateStatusPorukePrijatelja(primljenePorukePrijatelja.value(brojSpremnihPorukaPrijatelja), "neprimljeno");
-            this->brojSpremnihPorukaPrijatelja++;
+            this->networkHandle->updateStatusPorukePrijatelja(this->_storageHandle->primljenePorukePrijatelja.value(this->_storageHandle->brojSpremnihPorukaPrijatelja), "neprimljeno");
+            this->_storageHandle->brojSpremnihPorukaPrijatelja++;
         }
 
-        if(this->brojSpremnihPorukaKorisnika < primljenePorukeKorisnika.count())
+        if(this->_storageHandle->brojSpremnihPorukaKorisnika < this->_storageHandle->primljenePorukeKorisnika.count())
         {
-            this->updateStatusPorukeKorisnika(primljenePorukeKorisnika.value(brojSpremnihPorukaKorisnika), "neprimljeno");
-            this->brojSpremnihPorukaKorisnika++;
+            this->networkHandle->updateStatusPorukeKorisnika(this->_storageHandle->primljenePorukeKorisnika.value(this->_storageHandle->brojSpremnihPorukaKorisnika), "neprimljeno");
+            this->_storageHandle->brojSpremnihPorukaKorisnika++;
         }
 
-        if((brojSpremnihPorukaPrijatelja == primljenePorukePrijatelja.count()) and (brojSpremnihPorukaKorisnika == primljenePorukeKorisnika.count()))
+        if((this->_storageHandle->brojSpremnihPorukaPrijatelja == this->_storageHandle->primljenePorukePrijatelja.count()) and (this->_storageHandle->brojSpremnihPorukaKorisnika == this->_storageHandle->primljenePorukeKorisnika.count()))
             this->spremnoZaIzlogovanje = true;
     }
 
 }
 
-void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
-{
-    this->_primaoc = primaoc->text();
-    this->receiveMessageFrom(this->_korisnicko_ime, this->_primaoc);
-}
 
