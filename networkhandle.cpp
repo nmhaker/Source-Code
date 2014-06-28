@@ -295,6 +295,8 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             emit promeniStanjeActionIzlogujSe(false);
             emit promeniStanjeActionUlogujSe(true);
 
+            emit omoguciKontroluZaSlanjePoruka(false);
+
             emit ocistiListWidget();
             emit ocistiListWidget2();
 
@@ -308,6 +310,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             emit promeniStanjeActionUlogujSe(false);
             emit promeniStanjeActionIzlogujSe(true);
             this->_online = true;
+            emit omoguciKontroluZaSlanjePoruka(true);
 
             this->getFriends();
 

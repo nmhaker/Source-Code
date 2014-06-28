@@ -70,6 +70,8 @@ public slots:
     void ubaciIdPorukeKorisnika(QString id);
     void ubaciIdPorukePrijatelja(QString id);
 
+    void omoguciKontroluZaSlanjePoruka(bool p);
+
 signals:
     void poveziKreatora();
 };

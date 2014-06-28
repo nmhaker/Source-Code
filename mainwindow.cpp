@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(ubaciIdPorukePrijatelja(QString)), this, SLOT(ubaciIdPorukePrijatelja(QString)));
 
     this->ui->actionIzloguj_Se->setDisabled(true);
+    this->ui->lineEdit->setDisabled(true);
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
     int x = (screenGeometry.width()-this->width()) / 2;
@@ -146,6 +147,14 @@ void MainWindow::ubaciIdPorukeKorisnika(QString id)
 void MainWindow::ubaciIdPorukePrijatelja(QString id)
 {
     this->_storageHandle->primljenePorukePrijatelja.append(id);
+}
+
+void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)
+{
+    if(p)
+        this->ui->lineEdit->setDisabled(false);
+    else
+        this->ui->lineEdit->setDisabled(true);
 }
 
 

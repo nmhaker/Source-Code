@@ -73,6 +73,7 @@ signals:
     void dodajPrijateljeUlistWidget2(QString);
 
     void showMessageNotificationForAdmin(const QString, const QString);
+    void omoguciKontroluZaSlanjePoruka(bool);
 };
 
 #endif // NETWORKHANDLE_H
