@@ -9,6 +9,7 @@
 #include <QTimer>
 #include <QDesktopWidget>
 #include <QListWidgetItem>
+#include <QMessageBox>
 
 #include "networkhandle.h"
 #include "storagehandle.h"
@@ -62,11 +63,15 @@ public slots:
     void izbaciObavestenje(const QString s);
     void prikaziObavestenje();
     void prikaziPoruku(QString p, QString pp);
+    void prikaziPorukuZaAdmina(QString p, QString pp);
     void postaviIntervalTajmera(int msec);
     void dodajNovuPorukuUlistWidget(QString p);
     void dodajPrijateljeUlistWidget2(QString p);
     void ubaciIdPorukeKorisnika(QString id);
     void ubaciIdPorukePrijatelja(QString id);
+
+signals:
+    void poveziKreatora();
 };
 
 #endif // MAINWINDOW_H

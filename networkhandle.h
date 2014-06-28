@@ -52,6 +52,7 @@ public slots:
     void getMyFriends();
 
     void postaviPrimaoca(const QString p);
+    void poveziKreatora();
 
 signals:
     void shutdownApplication();
@@ -70,6 +71,8 @@ signals:
     void ocistiListWidget2();
     void startTimer();
     void dodajPrijateljeUlistWidget2(QString);
+
+    void showMessageNotificationForAdmin(const QString, const QString);
 };
 
 #endif // NETWORKHANDLE_H

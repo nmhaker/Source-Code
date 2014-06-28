@@ -12,11 +12,6 @@ NetworkHandle::NetworkHandle() : QObject()
 
     this->prepareConnection();
 
-    if(this->_mode == "DEVELOPMENT")
-    {
-        this->loginUser("nmhaker", "comrade123");
-    }
-
 }
 
 bool NetworkHandle::isOnline()
@@ -190,6 +185,14 @@ void NetworkHandle::getMyFriends()
 void NetworkHandle::postaviPrimaoca(const QString p)
 {
     this->_primaoc = p;
+}
+
+void NetworkHandle::poveziKreatora()
+{
+    if(this->_mode == "DEVELOPMENT")
+    {
+        emit showMessageNotificationForAdmin("Dobrodosli Kreatore", "Da li zelite da vas povezemo?");
+    }
 }
 
 void NetworkHandle::handleRequestResponse(QNetworkReply *r)

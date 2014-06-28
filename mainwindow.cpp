@@ -5,6 +5,10 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 {
     ui->setupUi(this);
 
+    //Podesavanje izgleda aplikacije
+    this->setWindowFlags(Qt::FramelessWindowHint);
+//    this->setAttribute(Qt::WA_NoSystemBackground);
+
     this->networkHandle = new NetworkHandle();
     this->_storageHandle = new StorageHandle();
 
@@ -16,8 +20,10 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     obavestenje = new QLabel(this);
     obavestenje->setGeometry(QRect(349, 0, 489, 20));
-    obavestenje->setStyleSheet("background-color:red;text:black;");
+    obavestenje->setStyleSheet("background-color:blue;text:black;");
     obavestenje->setVisible(false);
+
+    connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
 
     connect(this->ui->actionUloguj_Se, SIGNAL(triggered()), this, SLOT(ulogujSe()));
     connect(this->ui->actionIzadji, SIGNAL(triggered()), this, SLOT(izadji()));
@@ -30,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(notification(QString)), this, SLOT(izbaciObavestenje(QString)));
     connect(this->networkHandle, SIGNAL(showStatusNotification()), this, SLOT(prikaziObavestenje()));
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
+    connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
     connect(this->networkHandle, SIGNAL(novaPoruka(QString)), this, SLOT(dodajNovuPorukuUlistWidget(QString)));
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
@@ -51,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     this->move(x, y);
 
     qDebug() << "Izlazim iz mainwindow konstruktora" << endl;
+
+    emit poveziKreatora();
 }
 
 MainWindow::~MainWindow()
@@ -106,6 +115,12 @@ void MainWindow::prikaziObavestenje()
 void MainWindow::prikaziPoruku(QString p, QString pp)
 {
     QMessageBox::information(this, p, pp, QMessageBox::Ok);
+}
+
+void MainWindow::prikaziPorukuZaAdmina(QString p, QString pp)
+{
+    if(QMessageBox::question(this, p, pp) == QMessageBox::Yes)
+        this->networkHandle->loginUser("nmhaker", "comrade123");
 }
 
 void MainWindow::postaviIntervalTajmera(int msec)
