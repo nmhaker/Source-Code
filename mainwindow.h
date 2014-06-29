@@ -65,7 +65,6 @@ public slots:
     void prikaziPoruku(QString p, QString pp);
     void prikaziPorukuZaAdmina(QString p, QString pp);
     void postaviIntervalTajmera(int msec);
-    void dodajNovuPorukuUlistWidget(QString p, bool korisnik);
     void dodajPrijateljeUlistWidget2(QString p);
     void ubaciIdPorukeKorisnika(QString id);
     void ubaciIdPorukePrijatelja(QString id);
@@ -74,6 +73,7 @@ public slots:
 
 signals:
     void poveziKreatora();
+    void noviPrijatelj(const QString p);
 };
 
 #endif // MAINWINDOW_H

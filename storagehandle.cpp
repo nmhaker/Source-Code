@@ -73,3 +73,23 @@ void StorageHandle::resetujSve()
     this->primljenePorukeKorisnika.clear();
     this->primljenePorukePrijatelja.clear();
 }
+
+QStringListModel* StorageHandle::getModelPrijatelja(const QString p)
+{
+    return this->mapaModela.value(p);
+}
+
+void StorageHandle::kreirajModel(const QString p)
+{
+    this->mapaModela[p] = new QStringListModel(this);
+    this->mapaListaZaModele[p] = new QStringList();
+    emit getMessageForModel(p);
+
+    qDebug() << "Kreiran model za prijatelja " << p << endl;
+}
+
+void StorageHandle::addMessageInModel(const QString p, const QString m)
+{
+    this->mapaListaZaModele[p]->append(m);
+    this->mapaModela[p]->setStringList(*(this->mapaListaZaModele[p]));
+}

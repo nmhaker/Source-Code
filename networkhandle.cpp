@@ -6,6 +6,7 @@ NetworkHandle::NetworkHandle() : QObject()
     this->_mode = "DEVELOPMENT";
     this->_online = false;
 
+    this->_primaoc = "NONE";
 
     this->_novePoruke = true;
     this->_imaViseOdJednePorukeZaPrimiti = false;
@@ -117,13 +118,15 @@ void NetworkHandle::checkForNewMessages()
     this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
 
-void NetworkHandle::receiveMessageFrom()
+void NetworkHandle::receiveMessageFrom(const QString p)
 {
+    this->_primaoc = p;
+
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
     params.addQueryItem("action", "9");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("od", _primaoc);
+    params.addQueryItem("od", p);
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -253,12 +256,12 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             {
                 if(list.value(2) != _korisnicko_ime )
                 {
-                    emit novaPoruka(list.value(3), false);
+                    emit novaPoruka(list.value(3), list.value(2));
                     emit ubaciIdPorukePrijatelja(id);
                     this->updateStatusPorukePrijatelja(id, "primljeno");
                 }else
                 {
-                    emit novaPoruka(list.value(3), true);
+                    emit novaPoruka(list.value(3), list.value(2));
                     emit ubaciIdPorukeKorisnika(id);
                     this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
@@ -273,7 +276,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             qDebug() << "Uspesno updateovana poruka na 'primljeno' " << endl;
             if(this->_imaViseOdJednePorukeZaPrimiti)
             {
-                this->receiveMessageFrom();
+                this->receiveMessageFrom(this->_primaoc);
                 this->_imaViseOdJednePorukeZaPrimiti = false;
             }
         }else if(str.contains("RESPONSE_111"))
@@ -298,7 +301,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
 
             emit omoguciKontroluZaSlanjePoruka(false);
 
-            emit ocistiListWidget();
+            emit ocistiListView();
             emit ocistiListWidget2();
 
         }else if(str.contains("RESPONSE_103"))

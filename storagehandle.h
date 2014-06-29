@@ -2,9 +2,16 @@
 #define STORAGEHANDLE_H
 
 #include <QStringList>
+#include <QStringListModel>
+#include <QMap>
+#include <QObject>
+#include <QDebug>
 
-class StorageHandle
+
+class StorageHandle : public QObject
 {
+    Q_OBJECT
+
 public:
     StorageHandle();
 
@@ -25,6 +32,8 @@ public:
 
     void resetujSve();
 
+    QStringListModel* getModelPrijatelja(const QString p);
+
 private:
 
     QStringList primljenePorukePrijatelja;
@@ -32,6 +41,16 @@ private:
 
     int brojSpremnihPorukaPrijatelja;
     int brojSpremnihPorukaKorisnika;
+
+    QMap<QString, QStringList*> mapaListaZaModele;
+    QMap<QString, QStringListModel*> mapaModela;
+
+public slots:
+    void kreirajModel(const QString p);
+    void addMessageInModel(const QString p, const QString m);
+
+signals:
+    void getMessageForModel(const QString p);
 };
 
 #endif // STORAGEHANDLE_H

@@ -26,19 +26,6 @@
    <property name="styleSheet">
     <string notr="true">background-color: rgb(106, 106, 106);</string>
    </property>
-   <widget class="QListWidget" name="listWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>321</width>
-      <height>201</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
-    </property>
-   </widget>
    <widget class="QListWidget" name="listWidget_2">
     <property name="geometry">
      <rect>
@@ -90,6 +77,16 @@ color: black;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QListView" name="listView">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>10</y>
+      <width>321</width>
+      <height>201</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -97,7 +94,7 @@ color: black;</string>
      <x>0</x>
      <y>0</y>
      <width>489</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>

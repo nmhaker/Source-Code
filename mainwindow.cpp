@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->ui->actionRegistruj_Se, SIGNAL(triggered()), this, SLOT(registrujSe()));
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
+    connect(this, SIGNAL(noviPrijatelj(QString)), this->_storageHandle, SLOT(kreirajModel(QString)));
+
+    connect(this->_storageHandle, SIGNAL(getMessageForModel(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
 
     connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(izadji()));
     connect(this->networkHandle, SIGNAL(notification(QString)), this, SLOT(izbaciObavestenje(QString)));
@@ -38,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
-    connect(this->networkHandle, SIGNAL(novaPoruka(QString, bool)), this, SLOT(dodajNovuPorukuUlistWidget(QString, bool)));
+    connect(this->networkHandle, SIGNAL(novaPoruka(QString, QString)), this->_storageHandle, SLOT(addMessageInModel(QString,QString)));
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
-    connect(this->networkHandle, SIGNAL(ocistiListWidget()), this->ui->listWidget, SLOT(clear()));
+    connect(this->networkHandle, SIGNAL(ocistiListView()), this->ui->listView, SLOT(clearSelection()));
     connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
     connect(this->networkHandle, SIGNAL(potrebnoJeIzlogovatiSe()), this, SLOT(izlogujSe()));
     connect(this->networkHandle, SIGNAL(potrebnoJePonovoUlogovatiSe()), this, SLOT(ulogujSe()));
@@ -99,10 +102,9 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
-    this->ui->listWidget->clear();
     this->networkHandle->postaviPrimaoca(primaoc->text());
-    this->networkHandle->receiveMessageFrom();
     this->ui->lineEdit->setEnabled(true);
+    this->ui->listView->setModel(this->_storageHandle->getModelPrijatelja(primaoc->text()));
 }
 
 void MainWindow::izbaciObavestenje(const QString s)
@@ -131,27 +133,10 @@ void MainWindow::postaviIntervalTajmera(int msec)
     this->timer->setInterval(msec);
 }
 
-void MainWindow::dodajNovuPorukuUlistWidget(QString p, bool korisnik)
-{
-    QListWidgetItem *item = new QListWidgetItem(p);
-    if(korisnik)
-    {
-        item->setBackground(QBrush(QColor(200,157,0,255)));
-        item->setTextAlignment(Qt::AlignLeft);
-    }
-    else
-    {
-        item->setBackground(QBrush(QColor(100, 157, 0, 255)));
-        item->setTextAlignment(Qt::AlignRight);
-    }
-
-    this->ui->listWidget->addItem(item);
-    //delete item;
-}
-
 void MainWindow::dodajPrijateljeUlistWidget2(QString p)
 {
     this->ui->listWidget_2->addItem(p);
+    emit noviPrijatelj(p);
 }
 
 void MainWindow::ubaciIdPorukeKorisnika(QString id)
@@ -232,7 +217,7 @@ void MainWindow::posaljiPoruku()
         QMessageBox::warning(this, "Upozorenje", "Morate izabrati primaoca poruke, sa desne strane!", QMessageBox::Ok);
     else
     {
-        this->ui->listWidget->addItem(this->ui->lineEdit->text());
+        //this->ui->listWidget->addItem(this->ui->lineEdit->text());
         this->networkHandle->sendMessage(this->ui->lineEdit->text());
         this->ui->lineEdit->clear();
     }

@@ -45,7 +45,7 @@ public slots:
     void logOutUser();
     void sendMessage(const QString poruka);
     void checkForNewMessages();
-    void receiveMessageFrom();
+    void receiveMessageFrom(const QString p);
     void updateStatusPorukePrijatelja(const QString id, const QString status);
     void updateStatusPorukeKorisnika(const QString id, const QString status2);
     void getFriends();
@@ -62,12 +62,12 @@ signals:
     void showStatusNotification();
     void showMessageNotification(const QString, const QString);
     void setTimerInterval(int msec);
-    void novaPoruka(QString, bool);
+    void novaPoruka(const QString, const QString);
     void ubaciIdPorukePrijatelja(QString);
     void ubaciIdPorukeKorisnika(QString);
     void promeniStanjeActionIzlogujSe(bool);
     void promeniStanjeActionUlogujSe(bool);
-    void ocistiListWidget();
+    void ocistiListView();
     void ocistiListWidget2();
     void startTimer();
     void dodajPrijateljeUlistWidget2(QString);
