@@ -62,7 +62,7 @@ signals:
     void showStatusNotification();
     void showMessageNotification(const QString, const QString);
     void setTimerInterval(int msec);
-    void novaPoruka(QString);
+    void novaPoruka(QString, bool);
     void ubaciIdPorukePrijatelja(QString);
     void ubaciIdPorukeKorisnika(QString);
     void promeniStanjeActionIzlogujSe(bool);

@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
-    connect(this->networkHandle, SIGNAL(novaPoruka(QString)), this, SLOT(dodajNovuPorukuUlistWidget(QString)));
+    connect(this->networkHandle, SIGNAL(novaPoruka(QString, bool)), this, SLOT(dodajNovuPorukuUlistWidget(QString, bool)));
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
     connect(this->networkHandle, SIGNAL(ocistiListWidget()), this->ui->listWidget, SLOT(clear()));
     connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
@@ -99,8 +99,10 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
+    this->ui->listWidget->clear();
     this->networkHandle->postaviPrimaoca(primaoc->text());
     this->networkHandle->receiveMessageFrom();
+    this->ui->lineEdit->setEnabled(true);
 }
 
 void MainWindow::izbaciObavestenje(const QString s)
@@ -129,9 +131,22 @@ void MainWindow::postaviIntervalTajmera(int msec)
     this->timer->setInterval(msec);
 }
 
-void MainWindow::dodajNovuPorukuUlistWidget(QString p)
+void MainWindow::dodajNovuPorukuUlistWidget(QString p, bool korisnik)
 {
-    this->ui->listWidget->addItem(p);
+    QListWidgetItem *item = new QListWidgetItem(p);
+    if(korisnik)
+    {
+        item->setBackground(QBrush(QColor(200,157,0,255)));
+        item->setTextAlignment(Qt::AlignLeft);
+    }
+    else
+    {
+        item->setBackground(QBrush(QColor(100, 157, 0, 255)));
+        item->setTextAlignment(Qt::AlignRight);
+    }
+
+    this->ui->listWidget->addItem(item);
+    //delete item;
 }
 
 void MainWindow::dodajPrijateljeUlistWidget2(QString p)
@@ -141,12 +156,12 @@ void MainWindow::dodajPrijateljeUlistWidget2(QString p)
 
 void MainWindow::ubaciIdPorukeKorisnika(QString id)
 {
-    this->_storageHandle->primljenePorukeKorisnika.append(id);
+    this->_storageHandle->addPorukuKorisnika(id);
 }
 
 void MainWindow::ubaciIdPorukePrijatelja(QString id)
 {
-    this->_storageHandle->primljenePorukePrijatelja.append(id);
+    this->_storageHandle->addPorukuPrijatelja(id);
 }
 
 void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)
@@ -185,10 +200,7 @@ void MainWindow::izlogujSe()
         this->timer->stop();
         if(spremnoZaIzlogovanje)
         {
-            this->_storageHandle->primljenePorukePrijatelja.clear();
-            this->_storageHandle->primljenePorukeKorisnika.clear();
-            this->_storageHandle->brojSpremnihPorukaPrijatelja = 0;
-            this->_storageHandle->brojSpremnihPorukaKorisnika = 0;
+            this->_storageHandle->resetujSve();
             this->spremnoZaIzlogovanje = false;
             this->networkHandle->logOutUser();
         }else{
@@ -235,19 +247,19 @@ void MainWindow::pripremiZaGasenje()
 {
     if(this->networkHandle->isOnline())
     {
-        if(this->_storageHandle->brojSpremnihPorukaPrijatelja < this->_storageHandle->primljenePorukePrijatelja.count())
+        if(this->_storageHandle->getBrojSpremnihPorukaPrijatelja() < this->_storageHandle->getBrojPrimljenihPorukaPrijatelja())
         {
-            this->networkHandle->updateStatusPorukePrijatelja(this->_storageHandle->primljenePorukePrijatelja.value(this->_storageHandle->brojSpremnihPorukaPrijatelja), "neprimljeno");
-            this->_storageHandle->brojSpremnihPorukaPrijatelja++;
+            this->networkHandle->updateStatusPorukePrijatelja(this->_storageHandle->getPorukuPrijatelja(), "neprimljeno");
+            this->_storageHandle->incrementPorukePrijatelja();
         }
 
-        if(this->_storageHandle->brojSpremnihPorukaKorisnika < this->_storageHandle->primljenePorukeKorisnika.count())
+        if(this->_storageHandle->getBrojSpremnihPorukaKorisnika() < this->_storageHandle->getBrojPrimljenihPorukaKorisnika())
         {
-            this->networkHandle->updateStatusPorukeKorisnika(this->_storageHandle->primljenePorukeKorisnika.value(this->_storageHandle->brojSpremnihPorukaKorisnika), "neprimljeno");
-            this->_storageHandle->brojSpremnihPorukaKorisnika++;
+            this->networkHandle->updateStatusPorukeKorisnika(this->_storageHandle->getPorukuKorisnika(), "neprimljeno");
+            this->_storageHandle->incrementPorukeKorisnika();
         }
 
-        if((this->_storageHandle->brojSpremnihPorukaPrijatelja == this->_storageHandle->primljenePorukePrijatelja.count()) and (this->_storageHandle->brojSpremnihPorukaKorisnika == this->_storageHandle->primljenePorukeKorisnika.count()))
+        if((this->_storageHandle->getBrojSpremnihPorukaPrijatelja() == this->_storageHandle->getBrojPrimljenihPorukaPrijatelja()) and (this->_storageHandle->getBrojSpremnihPorukaKorisnika() == this->_storageHandle->getBrojPrimljenihPorukaKorisnika()))
             this->spremnoZaIzlogovanje = true;
     }
 

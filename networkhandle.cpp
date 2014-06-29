@@ -249,15 +249,16 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         {
             QStringList list = str.split("\n");
             QString id = list.value(1);
-            emit novaPoruka(list.value(3));
             if(id != "")
             {
                 if(list.value(2) != _korisnicko_ime )
                 {
+                    emit novaPoruka(list.value(3), false);
                     emit ubaciIdPorukePrijatelja(id);
                     this->updateStatusPorukePrijatelja(id, "primljeno");
                 }else
                 {
+                    emit novaPoruka(list.value(3), true);
                     emit ubaciIdPorukeKorisnika(id);
                     this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
