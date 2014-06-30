@@ -76,6 +76,12 @@ void StorageHandle::resetujSve()
 
 QStringListModel* StorageHandle::getModelPrijatelja(const QString p)
 {
+    this->_zadnjeKoriscenModel = p;
+
+    emit getMessageForModel(p);
+
+    qDebug() << "Uzet model za prijatelja " << p << " i emitovan signal za primanje poruka" << endl;
+
     return this->mapaModela.value(p);
 }
 
@@ -83,13 +89,12 @@ void StorageHandle::kreirajModel(const QString p)
 {
     this->mapaModela[p] = new QStringListModel(this);
     this->mapaListaZaModele[p] = new QStringList();
-    emit getMessageForModel(p);
 
     qDebug() << "Kreiran model za prijatelja " << p << endl;
 }
 
-void StorageHandle::addMessageInModel(const QString p, const QString m)
+void StorageHandle::addMessageInModel(const QString m, const QString p)
 {
-    this->mapaListaZaModele[p]->append(m);
-    this->mapaModela[p]->setStringList(*(this->mapaListaZaModele[p]));
+    this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
+    this->mapaModela[this->_zadnjeKoriscenModel]->setStringList(*(this->mapaListaZaModele[this->_zadnjeKoriscenModel]));
 }

@@ -185,6 +185,17 @@ void NetworkHandle::getMyFriends()
     this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
 
+void NetworkHandle::fixDatabase()
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "10");
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
 void NetworkHandle::postaviPrimaoca(const QString p)
 {
     this->_primaoc = p;
@@ -194,6 +205,7 @@ void NetworkHandle::poveziKreatora()
 {
     if(this->_mode == "DEVELOPMENT")
     {
+        this->fixDatabase();
         emit showMessageNotificationForAdmin("Dobrodosli Kreatore", "Da li zelite da vas povezemo?");
     }
 }
@@ -331,7 +343,11 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
                     emit dodajPrijateljeUlistWidget2(item);
                 qDebug() << item;
             }
-        }else
+        }else if(str.contains("RESPONSE_114"))
+        {
+            qDebug() << "Uspesno je popravljena baza podataka" << endl;
+        }
+        else
         {
             qDebug() << str << endl;
             emit showMessageNotification("UPOZORENJE" , "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan");

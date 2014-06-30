@@ -51,6 +51,8 @@ public slots:
     void getFriends();
     void getMyFriends();
 
+    void fixDatabase();
+
     void postaviPrimaoca(const QString p);
     void poveziKreatora();
 

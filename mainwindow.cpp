@@ -105,6 +105,7 @@ void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
     this->networkHandle->postaviPrimaoca(primaoc->text());
     this->ui->lineEdit->setEnabled(true);
     this->ui->listView->setModel(this->_storageHandle->getModelPrijatelja(primaoc->text()));
+
 }
 
 void MainWindow::izbaciObavestenje(const QString s)
@@ -186,7 +187,7 @@ void MainWindow::izlogujSe()
         if(spremnoZaIzlogovanje)
         {
             this->_storageHandle->resetujSve();
-            this->spremnoZaIzlogovanje = false;
+
             this->networkHandle->logOutUser();
         }else{
             this->pripremiZaGasenje();
@@ -245,7 +246,10 @@ void MainWindow::pripremiZaGasenje()
         }
 
         if((this->_storageHandle->getBrojSpremnihPorukaPrijatelja() == this->_storageHandle->getBrojPrimljenihPorukaPrijatelja()) and (this->_storageHandle->getBrojSpremnihPorukaKorisnika() == this->_storageHandle->getBrojPrimljenihPorukaKorisnika()))
+        {
             this->spremnoZaIzlogovanje = true;
+            this->izlogujSe();
+        }
     }
 
 }
