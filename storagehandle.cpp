@@ -90,15 +90,19 @@ QStringListModel* StorageHandle::getModelPrijatelja(const QString p)
 void StorageHandle::kreirajModel(const QString p)
 {
     this->mapaModela[p] = new QStringListModel(this);
-    this->mapaListaZaModele[p] = new QStringList();
+//    this->mapaListaZaModele[p] = new QStringList();
 
     qDebug() << "Kreiran model za prijatelja " << p << endl;
 }
 
 void StorageHandle::addMessageInModel(const QString m, const QString p)
 {
-    this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
-    this->mapaModela[this->_zadnjeKoriscenModel]->setStringList(*(this->mapaListaZaModele[this->_zadnjeKoriscenModel]));
+    //this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
+    QStringListModel *model = this->mapaModela[this->_zadnjeKoriscenModel];
+
+    model->insertRow(model->rowCount()+1);
+    model->setData(model->index(model->rowCount()+1), m);
+
 }
 
 void StorageHandle::setKorisnickoIme(const QString k)
