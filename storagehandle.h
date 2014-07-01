@@ -36,6 +36,8 @@ public:
 
 private:
 
+    QString _korisnik;
+
     QString _zadnjeKoriscenModel;
 
     QStringList primljenePorukePrijatelja;
@@ -50,6 +52,7 @@ private:
 public slots:
     void kreirajModel(const QString p);
     void addMessageInModel(const QString m, const QString p);
+    void setKorisnickoIme(const QString k);
 
 signals:
     void getMessageForModel(const QString p);

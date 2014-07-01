@@ -49,6 +49,8 @@ void NetworkHandle::loginUser(const QString korisnicko_ime, const QString sifra)
 {
     this->_korisnicko_ime = korisnicko_ime;
 
+    emit korisnickoIme(this->_korisnicko_ime);
+
     QUrlQuery params;
     params.addQueryItem("key", "SIFRA");
     params.addQueryItem("action", "2");

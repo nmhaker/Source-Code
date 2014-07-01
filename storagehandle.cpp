@@ -4,6 +4,8 @@ StorageHandle::StorageHandle()
 {
     this->brojSpremnihPorukaPrijatelja = 0;
     this->brojSpremnihPorukaKorisnika = 0;
+
+    this->_korisnik = "NONE";
 }
 
 bool StorageHandle::addPorukuPrijatelja(const QString p)
@@ -97,4 +99,9 @@ void StorageHandle::addMessageInModel(const QString m, const QString p)
 {
     this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
     this->mapaModela[this->_zadnjeKoriscenModel]->setStringList(*(this->mapaListaZaModele[this->_zadnjeKoriscenModel]));
+}
+
+void StorageHandle::setKorisnickoIme(const QString k)
+{
+    this->_korisnik = k;
 }

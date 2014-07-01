@@ -76,6 +76,8 @@ signals:
 
     void showMessageNotificationForAdmin(const QString, const QString);
     void omoguciKontroluZaSlanjePoruka(bool);
+
+    void korisnickoIme(QString);
 };
 
 #endif // NETWORKHANDLE_H
