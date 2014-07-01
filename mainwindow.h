@@ -39,6 +39,7 @@ public:
     RegisterForm *registerForm;
 
     QTimer *timer;
+    QTimer *timerZaGasenje;
 
     QLabel *obavestenje ;
 

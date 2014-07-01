@@ -6,6 +6,8 @@ StorageHandle::StorageHandle()
     this->brojSpremnihPorukaKorisnika = 0;
 
     this->_korisnik = "NONE";
+
+    this->model = new QStringListModel(this);
 }
 
 bool StorageHandle::addPorukuPrijatelja(const QString p)
@@ -76,36 +78,36 @@ void StorageHandle::resetujSve()
     this->primljenePorukePrijatelja.clear();
 }
 
-QStringListModel* StorageHandle::getModelPrijatelja(const QString p)
+QStringListModel* StorageHandle::getModel()
 {
-    this->_zadnjeKoriscenModel = p;
-
-    emit getMessageForModel(p);
-
-    qDebug() << "Uzet model za prijatelja " << p << " i emitovan signal za primanje poruka" << endl;
-
-    return this->mapaModela.value(p);
+    return this->model;
 }
 
 void StorageHandle::kreirajModel(const QString p)
 {
-    this->mapaModela[p] = new QStringListModel(this);
-//    this->mapaListaZaModele[p] = new QStringList();
 
-    qDebug() << "Kreiran model za prijatelja " << p << endl;
+    this->mapaListaZaModele[p] = new QStringList();
+
+    qDebug() << "Kreiran QStringList za model za prijatelja " << p << endl;
 }
 
 void StorageHandle::addMessageInModel(const QString m, const QString p)
 {
-    //this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
-    QStringListModel *model = this->mapaModela[this->_zadnjeKoriscenModel];
+    this->mapaListaZaModele[this->_zadnjeKoriscenModel]->append(m);
 
-    model->insertRow(model->rowCount()+1);
-    model->setData(model->index(model->rowCount()+1), m);
+    this->model->setStringList(*(this->mapaListaZaModele[this->_zadnjeKoriscenModel]));
 
+    qDebug() << "Dodajem poruku u model" << endl;
 }
 
 void StorageHandle::setKorisnickoIme(const QString k)
 {
     this->_korisnik = k;
+}
+
+void StorageHandle::postaviListuZaModel(const QString p)
+{
+    this->_zadnjeKoriscenModel = p;
+
+    emit getMessageForModel(p);
 }

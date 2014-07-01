@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
 
+    timerZaGasenje = new QTimer(this);
+    connect(timerZaGasenje, SIGNAL(timeout()), this, SLOT(izlogujSe()));
+
     this->spremnoZaIzlogovanje = false;
 
     obavestenje = new QLabel(this);
@@ -63,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     int y = (screenGeometry.height()-this->height()) / 2;
     this->move(x, y);
 
+    this->ui->listView->setModel(this->_storageHandle->getModel());
+
     qDebug() << "Izlazim iz mainwindow konstruktora" << endl;
 
     emit poveziKreatora();
@@ -106,8 +111,8 @@ void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
     this->networkHandle->postaviPrimaoca(primaoc->text());
     this->ui->lineEdit->setEnabled(true);
-    this->ui->listView->setModel(this->_storageHandle->getModelPrijatelja(primaoc->text()));
-
+    this->_storageHandle->postaviListuZaModel(primaoc->text());
+    this->ui->listView->repaint();
 }
 
 void MainWindow::izbaciObavestenje(const QString s)
@@ -182,7 +187,12 @@ void MainWindow::ulogujSe()
 void MainWindow::izlogujSe()
 {
     if(this->networkHandle->isOnline() == false)
-       QMessageBox::warning(this, "Upozorenje" ,"Vec ste izlogovani", QMessageBox::Ok);
+    {
+        if(timerZaGasenje->isActive())
+            timerZaGasenje->stop();
+        else
+            qDebug() << "Vec ste izlogovani" << endl;
+    }
     else
     {
         this->timer->stop();
@@ -250,7 +260,8 @@ void MainWindow::pripremiZaGasenje()
         if((this->_storageHandle->getBrojSpremnihPorukaPrijatelja() == this->_storageHandle->getBrojPrimljenihPorukaPrijatelja()) and (this->_storageHandle->getBrojSpremnihPorukaKorisnika() == this->_storageHandle->getBrojPrimljenihPorukaKorisnika()))
         {
             this->spremnoZaIzlogovanje = true;
-            this->izlogujSe();
+            timerZaGasenje->setSingleShot(true);
+            timerZaGasenje->start(2000);
         }
     }
 

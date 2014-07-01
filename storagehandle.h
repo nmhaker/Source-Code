@@ -32,7 +32,7 @@ public:
 
     void resetujSve();
 
-    QStringListModel* getModelPrijatelja(const QString p);
+    QStringListModel* getModel();
 
 private:
 
@@ -47,12 +47,14 @@ private:
     int brojSpremnihPorukaKorisnika;
 
     QMap<QString, QStringList*> mapaListaZaModele;
-    QMap<QString, QStringListModel*> mapaModela;
+    QStringListModel* model;
 
 public slots:
     void kreirajModel(const QString p);
     void addMessageInModel(const QString m, const QString p);
     void setKorisnickoIme(const QString k);
+
+    void postaviListuZaModel(const QString p);
 
 signals:
     void getMessageForModel(const QString p);
