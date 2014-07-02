@@ -18,14 +18,17 @@ SOURCES += main.cpp\
     registerform.cpp \
     mtabwidget.cpp \
     networkhandle.cpp \
-    storagehandle.cpp
+    storagehandle.cpp \
+    model.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
     registerform.h \
     mtabwidget.h \
     networkhandle.h \
-    storagehandle.h
+    storagehandle.h \
+    model.h \
+    Poruka.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

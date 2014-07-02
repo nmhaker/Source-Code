@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     this->networkHandle = new NetworkHandle();
     this->_storageHandle = new StorageHandle();
+    this->model = new Model();
 
     timer = new QTimer(this);
     timer->setInterval(1000);
@@ -34,9 +35,11 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->ui->actionRegistruj_Se, SIGNAL(triggered()), this, SLOT(registrujSe()));
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
-    connect(this, SIGNAL(noviPrijatelj(QString)), this->_storageHandle, SLOT(kreirajModel(QString)));
+    connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
 
-    connect(this->_storageHandle, SIGNAL(getMessageForModel(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
+    connect(this->model, SIGNAL(primiPoruku(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
+    connect(this->networkHandle, SIGNAL(novaPoruka(QString,QString)), this->model, SLOT(dodajPoruku(QString,QString)));
+    connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->model, SLOT(postaviKorisnika(QString)));
 
     connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(izadji()));
     connect(this->networkHandle, SIGNAL(notification(QString)), this, SLOT(izbaciObavestenje(QString)));
@@ -44,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
-    connect(this->networkHandle, SIGNAL(novaPoruka(QString, QString)), this->_storageHandle, SLOT(addMessageInModel(QString,QString)));
+
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
     connect(this->networkHandle, SIGNAL(ocistiListView()), this->ui->listView, SLOT(clearSelection()));
     connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
@@ -57,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(ubaciIdPorukePrijatelja(QString)), this, SLOT(ubaciIdPorukePrijatelja(QString)));
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->_storageHandle, SLOT(setKorisnickoIme(QString)));
 
+    this->ui->listView->setModel(model);
 
     this->ui->actionIzloguj_Se->setDisabled(true);
     this->ui->lineEdit->setDisabled(true);
@@ -65,8 +69,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     int x = (screenGeometry.width()-this->width()) / 2;
     int y = (screenGeometry.height()-this->height()) / 2;
     this->move(x, y);
-
-    this->ui->listView->setModel(this->_storageHandle->getModel());
 
     qDebug() << "Izlazim iz mainwindow konstruktora" << endl;
 
@@ -111,7 +113,7 @@ void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
     this->networkHandle->postaviPrimaoca(primaoc->text());
     this->ui->lineEdit->setEnabled(true);
-    this->_storageHandle->postaviListuZaModel(primaoc->text());
+    this->model->postaviPrijatelja(primaoc->text());
     this->ui->listView->repaint();
 }
 

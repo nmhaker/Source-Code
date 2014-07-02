@@ -16,7 +16,7 @@
 #include "mtabwidget.h"
 #include "loginform.h"
 #include "registerform.h"
-
+#include "model.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +34,7 @@ public:
 
     NetworkHandle *networkHandle;
     StorageHandle *_storageHandle;
+    Model *model;
 
     LoginForm *loginForm;
     RegisterForm *registerForm;
