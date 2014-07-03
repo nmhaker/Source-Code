@@ -3,7 +3,7 @@
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEPLOY";
+    this->_mode = "DEVELOPMENT";
     this->_online = false;
 
     this->_primaoc = "NONE";

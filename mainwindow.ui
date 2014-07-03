@@ -6,14 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>489</width>
-    <height>316</height>
+    <width>500</width>
+    <height>400</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>500</width>
+    <height>400</height>
+   </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>489</width>
-    <height>316</height>
+    <width>500</width>
+    <height>400</height>
+   </size>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>500</width>
+    <height>400</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -93,8 +105,8 @@ color: black;</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>489</width>
-     <height>25</height>
+     <width>500</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

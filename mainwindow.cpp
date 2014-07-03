@@ -8,6 +8,11 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     //Podesavanje izgleda aplikacije
     this->setWindowFlags(Qt::FramelessWindowHint);
 //    this->setAttribute(Qt::WA_NoSystemBackground);
+    QBitmap bitmap;
+    if(!bitmap.load("maskaAplikacije.jpg"))
+        qDebug() << "neuspesno ucitavanje maske" << endl;
+    else
+        this->setMask(bitmap.createMaskFromColor(Qt::white));
 
     this->networkHandle = new NetworkHandle();
     this->_storageHandle = new StorageHandle();

@@ -10,6 +10,7 @@
 #include <QDesktopWidget>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QBitmap>
 
 #include "networkhandle.h"
 #include "storagehandle.h"
