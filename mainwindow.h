@@ -11,6 +11,7 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QBitmap>
+#include <QPushButton>
 
 #include "networkhandle.h"
 #include "storagehandle.h"
@@ -51,6 +52,12 @@ protected:
 
     void closeEvent(QCloseEvent *e);
     void keyPressEvent(QKeyEvent *e);
+
+private:
+    QPushButton *dugmeLogIn;
+    QPushButton *dugmeLogOut;
+    QPushButton *dugmeRegister;
+    QPushButton *dugmeExit;
 
 public slots:
 

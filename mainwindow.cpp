@@ -14,6 +14,49 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     else
         this->setMask(bitmap.createMaskFromColor(Qt::white));
 
+    //Namestanje dugmadi
+    dugmeLogIn = new QPushButton("Log In", this);
+    dugmeLogIn->setStyleSheet("");
+    dugmeLogIn->setVisible(true);
+    dugmeLogIn->setGeometry(-2,0,87,68);
+    QBitmap bitmap2;
+    if(!bitmap2.load("images/Dugme_01.jpg"))
+        qDebug() << "Nije ucitana maska za dugme" << endl;
+    else
+        dugmeLogIn->setMask(bitmap2.createMaskFromColor(Qt::white));
+
+    connect(dugmeLogIn, SIGNAL(clicked()), this, SLOT(ulogujSe()));
+
+    dugmeLogOut = new QPushButton("Log Out", this);
+    dugmeLogOut->setVisible(true);
+    dugmeLogOut->setGeometry(77,1,93,60);
+    if(!bitmap2.load("images/Dugme_06.jpg"))
+        qDebug() << "Nije ucitana maska za dugme" << endl;
+    else
+        dugmeLogOut->setMask(bitmap2.createMaskFromColor(Qt::white));
+
+    connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
+
+    dugmeRegister = new QPushButton("Register", this);
+    dugmeRegister->setVisible(true);
+    dugmeRegister->setGeometry(347,0,90,62);
+    if(!bitmap2.load("images/Dugme_04.jpg"))
+        qDebug() << "Nije ucitana maska za dugme" << endl;
+    else
+        dugmeRegister->setMask(bitmap2.createMaskFromColor(Qt::white));
+
+    connect(dugmeRegister, SIGNAL(clicked()), this, SLOT(registrujSe()));
+
+    dugmeExit = new QPushButton("Exit", this);
+    dugmeExit->setVisible(true);
+    dugmeExit->setGeometry(432,0,70,67);
+    if(!bitmap2.load("images/Dugme_05.jpg"))
+        qDebug() << "Nije ucitana maska za dugme" << endl;
+    else
+        dugmeExit->setMask(bitmap2.createMaskFromColor(Qt::white));
+
+    connect(dugmeExit, SIGNAL(clicked()), this, SLOT(izadji()));
+
     this->networkHandle = new NetworkHandle();
     this->_storageHandle = new StorageHandle();
     this->model = new Model();
@@ -34,10 +77,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
 
-    connect(this->ui->actionUloguj_Se, SIGNAL(triggered()), this, SLOT(ulogujSe()));
-    connect(this->ui->actionIzadji, SIGNAL(triggered()), this, SLOT(izadji()));
-    connect(this->ui->actionIzloguj_Se, SIGNAL(triggered()), this, SLOT(izlogujSe()));
-    connect(this->ui->actionRegistruj_Se, SIGNAL(triggered()), this, SLOT(registrujSe()));
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
     connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
@@ -67,15 +106,12 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     this->ui->listView->setModel(model);
 
-    this->ui->actionIzloguj_Se->setDisabled(true);
     this->ui->lineEdit->setDisabled(true);
 
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
     int x = (screenGeometry.width()-this->width()) / 2;
     int y = (screenGeometry.height()-this->height()) / 2;
     this->move(x, y);
-
-    qDebug() << "Izlazim iz mainwindow konstruktora" << endl;
 
     emit poveziKreatora();
 }

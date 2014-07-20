@@ -52,7 +52,7 @@ int Model::rowCount(const QModelIndex &parent) const
 {
     if(this->_prijatelj == "NONE")
     {
-        qDebug() << "Nije postavljen _prijatelj, greska u rowCount()" << endl;
+        //qDebug() << "Nije postavljen _prijatelj, greska u rowCount()" << endl;
         return 0;
     }
     else
