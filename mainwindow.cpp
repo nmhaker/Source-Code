@@ -10,7 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 //    this->setAttribute(Qt::WA_NoSystemBackground);
     QBitmap bitmap;
     if(!bitmap.load("maskaAplikacije.jpg"))
-        qDebug() << "neuspesno ucitavanje maske" << endl;
+        qDebug() << "Neuspesno ucitavanje maske aplikacije" << endl;
     else
         this->setMask(bitmap.createMaskFromColor(Qt::white));
 
