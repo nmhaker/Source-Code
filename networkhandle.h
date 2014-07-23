@@ -20,6 +20,7 @@ public:
 
     bool isOnline();
     QString getPrimaoca();
+    QString getKorisnika();
 
 private:
 
@@ -57,6 +58,7 @@ public slots:
     void poveziKreatora();
 
 signals:
+    void uspesnoUlogovanje();
     void shutdownApplication();
     void potrebnoJePonovoUlogovatiSe();
     void potrebnoJeIzlogovatiSe();

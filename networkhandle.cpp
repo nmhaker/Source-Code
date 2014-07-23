@@ -28,6 +28,11 @@ QString NetworkHandle::getPrimaoca()
     return this->_primaoc;
 }
 
+QString NetworkHandle::getKorisnika()
+{
+    return this->_korisnicko_ime;
+}
+
 
 void NetworkHandle::prepareConnection()
 {
@@ -325,6 +330,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         }else if(str.contains("RESPONSE_104"))
         {
             emit showMessageNotification("Obavestenje",  "Uspesno ste se ulogovali");
+            emit uspesnoUlogovanje();
             emit promeniStanjeActionUlogujSe(false);
             emit promeniStanjeActionIzlogujSe(true);
             this->_online = true;

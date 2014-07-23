@@ -70,10 +70,11 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     this->spremnoZaIzlogovanje = false;
 
-    obavestenje = new QLabel(this);
-    obavestenje->setGeometry(QRect(349, 0, 489, 20));
-    obavestenje->setStyleSheet("background-color:blue;text:black;");
-    obavestenje->setVisible(false);
+    userState = new QLabel(this);
+    userState->setGeometry(QRect(240,10,100,50));
+    userState->setStyleSheet("background-color:rgba(255,255,255,0);text:white;font-size:20px;");
+    userState->setText("offline");
+    userState->setVisible(true);
 
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
 
@@ -86,8 +87,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->model, SLOT(postaviKorisnika(QString)));
 
     connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(izadji()));
-    connect(this->networkHandle, SIGNAL(notification(QString)), this, SLOT(izbaciObavestenje(QString)));
-    connect(this->networkHandle, SIGNAL(showStatusNotification()), this, SLOT(prikaziObavestenje()));
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
@@ -103,6 +102,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(ubaciIdPorukeKorisnika(QString)), this, SLOT(ubaciIdPorukeKorisnika(QString)));
     connect(this->networkHandle, SIGNAL(ubaciIdPorukePrijatelja(QString)), this, SLOT(ubaciIdPorukePrijatelja(QString)));
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->_storageHandle, SLOT(setKorisnickoIme(QString)));
+    connect(this->networkHandle, SIGNAL(uspesnoUlogovanje()), this, SLOT(changeState()));
 
     this->ui->listView->setModel(model);
 
@@ -118,7 +118,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
 MainWindow::~MainWindow()
 {
-    delete obavestenje;
+    delete userState;
+
     delete ui;
 }
 
@@ -158,15 +159,6 @@ void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
     this->ui->listView->repaint();
 }
 
-void MainWindow::izbaciObavestenje(const QString s)
-{
-    this->obavestenje->setText(s);
-}
-
-void MainWindow::prikaziObavestenje()
-{
-    this->obavestenje->show();
-}
 
 void MainWindow::prikaziPoruku(QString p, QString pp)
 {
@@ -198,6 +190,12 @@ void MainWindow::ubaciIdPorukeKorisnika(QString id)
 void MainWindow::ubaciIdPorukePrijatelja(QString id)
 {
     this->_storageHandle->addPorukuPrijatelja(id);
+}
+
+void MainWindow::changeState()
+{
+    this->userState->setText("Online");
+    userState->setStyleSheet("background-color:rgba(255,255,255,0);text:green;font-size:20px;");
 }
 
 void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)

@@ -44,7 +44,7 @@ public:
     QTimer *timer;
     QTimer *timerZaGasenje;
 
-    QLabel *obavestenje ;
+    QLabel *userState;
 
     bool spremnoZaIzlogovanje;
 
@@ -70,14 +70,14 @@ public slots:
     void pripremiZaGasenje();
 
     void postaviPrimaoca(QListWidgetItem *primaoc);
-    void izbaciObavestenje(const QString s);
-    void prikaziObavestenje();
     void prikaziPoruku(QString p, QString pp);
     void prikaziPorukuZaAdmina(QString p, QString pp);
     void postaviIntervalTajmera(int msec);
     void dodajPrijateljeUlistWidget2(QString p);
     void ubaciIdPorukeKorisnika(QString id);
     void ubaciIdPorukePrijatelja(QString id);
+
+    void changeState();
 
     void omoguciKontroluZaSlanjePoruka(bool p);
 
