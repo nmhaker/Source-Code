@@ -71,8 +71,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     this->spremnoZaIzlogovanje = false;
 
     userState = new QLabel(this);
-    userState->setGeometry(QRect(240,10,100,50));
-    userState->setStyleSheet("background-color:rgba(255,255,255,0);text:white;font-size:20px;");
+    userState->setGeometry(QRect(220,10,100,50));
+    userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
     userState->setText("offline");
     userState->setVisible(true);
 
@@ -81,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
     connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
+    connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(repaint()));
+    connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(update()));
 
     connect(this->model, SIGNAL(primiPoruku(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
     connect(this->networkHandle, SIGNAL(novaPoruka(QString,QString)), this->model, SLOT(dodajPoruku(QString,QString)));
@@ -103,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(ubaciIdPorukePrijatelja(QString)), this, SLOT(ubaciIdPorukePrijatelja(QString)));
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->_storageHandle, SLOT(setKorisnickoIme(QString)));
     connect(this->networkHandle, SIGNAL(uspesnoUlogovanje()), this, SLOT(changeState()));
+    connect(this->networkHandle, SIGNAL(uspesnoIzlogovanje()), this, SLOT(changeState()));
 
     this->ui->listView->setModel(model);
 
@@ -194,8 +197,16 @@ void MainWindow::ubaciIdPorukePrijatelja(QString id)
 
 void MainWindow::changeState()
 {
-    this->userState->setText("Online");
-    userState->setStyleSheet("background-color:rgba(255,255,255,0);text:green;font-size:20px;");
+
+    if(userState->text() == "Dobrodosli \n " + this->networkHandle->getKorisnika())
+    {
+        this->userState->setText("Offline");
+        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:black;font-size:20px;");
+    }else
+    {
+        this->userState->setText("Dobrodosli \n " + this->networkHandle->getKorisnika());
+        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(100,100,255);font-size:20px;");
+    }
 }
 
 void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)

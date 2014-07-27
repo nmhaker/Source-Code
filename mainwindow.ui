@@ -36,8 +36,8 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(106, 106, 106);
-</string>
+    <string notr="true">background-color: rgb(200, 200, 200);
+			</string>
    </property>
    <widget class="QListWidget" name="listWidget_2">
     <property name="geometry">
@@ -62,7 +62,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(255, 157, 0);
+     <string notr="true">background-color: rgb(100, 100, 255);
 color: black;</string>
     </property>
    </widget>

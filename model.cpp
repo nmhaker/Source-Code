@@ -72,9 +72,9 @@ QVariant Model::data(const QModelIndex &index, int role) const
             return this->mapaPoruka[this->_prijatelj]->value(index.row()).poruka;
         case Qt::BackgroundRole:
             if(this->mapaPoruka[this->_prijatelj]->value(index.row()).korisnik == this->_korisnik)
-                return QBrush(QColor(100,100,255,255));
-            else
                 return QBrush(QColor(255,70,70,255));
+            else
+                return QBrush(QColor(100,100,255,255));
         break;
     }
     return QVariant();

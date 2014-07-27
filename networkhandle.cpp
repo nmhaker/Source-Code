@@ -315,6 +315,8 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         {
             emit showMessageNotification("Obavestenje", "Uspesno ste se izlogovali");
 
+            emit uspesnoIzlogovanje();
+
             emit promeniStanjeActionIzlogujSe(false);
             emit promeniStanjeActionUlogujSe(true);
 
@@ -342,6 +344,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         }else if(str.contains("RESPONSE_105"))
         {
             qDebug() << "Poruka je uspesno poslata" << endl;
+            emit poslataPoruka();
         }else if(str.contains("RESPONSE_108"))
         {
             QStringList list = str.split("\n");

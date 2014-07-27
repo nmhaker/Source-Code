@@ -58,7 +58,9 @@ public slots:
     void poveziKreatora();
 
 signals:
+    void poslataPoruka();
     void uspesnoUlogovanje();
+    void uspesnoIzlogovanje();
     void shutdownApplication();
     void potrebnoJePonovoUlogovatiSe();
     void potrebnoJeIzlogovatiSe();
