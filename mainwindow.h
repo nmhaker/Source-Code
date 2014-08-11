@@ -56,6 +56,7 @@ protected:
 private:
     QPushButton *dugmeLogIn;
     QPushButton *dugmeLogOut;
+    QPushButton *dugmeSrednje;
     QPushButton *dugmeRegister;
     QPushButton *dugmeExit;
 
@@ -78,6 +79,7 @@ public slots:
     void ubaciIdPorukePrijatelja(QString id);
 
     void changeState();
+    void refreshujMessageView();
 
     void omoguciKontroluZaSlanjePoruka(bool p);
 

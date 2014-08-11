@@ -37,6 +37,14 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
+    dugmeSrednje = new QPushButton(this);
+    dugmeSrednje->setVisible(true);
+    dugmeSrednje->setGeometry(180,0,350,70);
+    if(!bitmap2.load("images/Dugme_03.jpg"))
+        qDebug() << "Nije ucitana maska za srednje dugme" << endl;
+    else
+        dugmeSrednje->setMask(bitmap2.createMaskFromColor(Qt::white));
+
     dugmeRegister = new QPushButton("Register", this);
     dugmeRegister->setVisible(true);
     dugmeRegister->setGeometry(347,0,90,62);
@@ -71,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     this->spremnoZaIzlogovanje = false;
 
     userState = new QLabel(this);
-    userState->setGeometry(QRect(220,10,100,50));
+    userState->setGeometry(QRect(210,5,100,50));
     userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
     userState->setText("offline");
     userState->setVisible(true);
@@ -81,8 +89,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
     connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
-    connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(repaint()));
     connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(update()));
+    connect(this->networkHandle, SIGNAL(poslataPoruka()), this, SLOT(refreshujMessageView()));
 
     connect(this->model, SIGNAL(primiPoruku(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
     connect(this->networkHandle, SIGNAL(novaPoruka(QString,QString)), this->model, SLOT(dodajPoruku(QString,QString)));
@@ -205,8 +213,13 @@ void MainWindow::changeState()
     }else
     {
         this->userState->setText("Dobrodosli \n " + this->networkHandle->getKorisnika());
-        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(100,100,255);font-size:20px;");
+        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(0,255,0);font-size:20px;");
     }
+}
+
+void MainWindow::refreshujMessageView()
+{
+    this->ui->listView->setModel(model);
 }
 
 void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)

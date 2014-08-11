@@ -32,12 +32,17 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true"/>
+   <string notr="true">QMainWindow{
+background-image: url(:/pozadina/pozadina.jpg);
+}
+MainWindow{
+background-image:url(:/pozadina/pozadina.jpg);
+}</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(200, 200, 200);
-			</string>
+    <string notr="true">
+</string>
    </property>
    <widget class="QListWidget" name="listWidget_2">
     <property name="geometry">
@@ -49,7 +54,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
@@ -62,8 +67,7 @@
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: rgb(100, 100, 255);
-color: black;</string>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -81,7 +85,7 @@ color: black;</string>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">color: white;</string>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
     <property name="text">
      <string>Prijatelji</string>
@@ -98,6 +102,9 @@ color: black;</string>
       <width>321</width>
       <height>211</height>
      </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
     </property>
    </widget>
   </widget>
