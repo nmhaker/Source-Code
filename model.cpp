@@ -5,9 +5,22 @@ Model::Model()
     this->_prijatelj = "NONE";
 }
 
+void Model::clear()
+{
+    QMapIterator<QString, QList<Poruka>*> i(this->mapaPoruka);
+    qDebug() << "Unutar Clear() funkcije" << endl;
+    while (i.hasNext()) {
+        i.next();
+        qDebug() << i.key() << ": " << i.value() << endl;
+        i.value()->clear();
+        qDebug() << "i.value()->clear()" << endl;
+    }
+}
+
 void Model::dodajPrijatelja(QString k)
 {
     this->mapaPoruka[k] = new QList<Poruka>;
+    emit refreshedModel();
 }
 
 void Model::dodajPoruku(QString p, QString k)
@@ -30,6 +43,7 @@ void Model::dodajPoruku(QString p, QString k)
     }
 
     emit dataChanged(index, index);
+    emit refreshedModel();
 }
 
 void Model::postaviPrijatelja(QString p)
@@ -70,11 +84,21 @@ QVariant Model::data(const QModelIndex &index, int role) const
     {
         case Qt::DisplayRole:
             return this->mapaPoruka[this->_prijatelj]->value(index.row()).poruka;
-        case Qt::BackgroundRole:
+//        case Qt::BackgroundRole:
+//            if(this->mapaPoruka[this->_prijatelj]->value(index.row()).korisnik == this->_korisnik)
+//                return QBrush(QColor(255,70,70,255));
+//            else
+//                return QBrush(QColor(100,100,255,255));
+        case Qt::TextColorRole:
             if(this->mapaPoruka[this->_prijatelj]->value(index.row()).korisnik == this->_korisnik)
-                return QBrush(QColor(255,70,70,255));
+                return QBrush(QColor(255,10,10));
             else
-                return QBrush(QColor(100,100,255,255));
+                return QBrush(QColor(100,100,255));
+        case Qt::TextAlignmentRole:
+            if(this->mapaPoruka[this->_prijatelj]->value(index.row()).korisnik == this->_korisnik)
+                return Qt::AlignLeft;
+            else
+                return Qt::AlignRight;
         break;
     }
     return QVariant();

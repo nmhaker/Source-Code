@@ -12,6 +12,7 @@ TARGET = Messenger
 TEMPLATE = app
 
 
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     loginform.cpp \
@@ -19,7 +20,11 @@ SOURCES += main.cpp\
     mtabwidget.cpp \
     networkhandle.cpp \
     storagehandle.cpp \
-    model.cpp
+    model.cpp \
+    splashscreen.cpp \
+    buttonaddfriend.cpp \
+    dialogzadodavanjeprijatelja.cpp \
+    pomerac.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -28,11 +33,16 @@ HEADERS  += mainwindow.h \
     networkhandle.h \
     storagehandle.h \
     model.h \
-    Poruka.h
+    Poruka.h \
+    splashscreen.h \
+    buttonaddfriend.h \
+    dialogzadodavanjeprijatelja.h \
+    pomerac.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
-    registerform.ui
+    registerform.ui \
+    dialogzadodavanjeprijatelja.ui
 
 RESOURCES += \
     slike.qrc

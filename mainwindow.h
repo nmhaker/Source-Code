@@ -11,7 +11,9 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QBitmap>
+#include <QPainter>
 #include <QPushButton>
+#include <QPalette>
 
 #include "networkhandle.h"
 #include "storagehandle.h"
@@ -19,6 +21,9 @@
 #include "loginform.h"
 #include "registerform.h"
 #include "model.h"
+#include "buttonaddfriend.h"
+#include "dialogzadodavanjeprijatelja.h"
+#include "pomerac.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,7 +37,23 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+
+    void closeEvent(QCloseEvent *e);
+    void keyPressEvent(QKeyEvent *e);
+    void paintEvent(QPaintEvent *e);
+    void enterEvent(QEvent *);
+
+private:
+
     Ui::MainWindow *ui;
+
+    QPushButton *dugmeLogIn;
+    QPushButton *dugmeLogOut;
+    QPushButton *dugmeSrednje;
+    QPushButton *dugmeRegister;
+    QPushButton *dugmeExit;
+    QPushButton *buttonAddFriend;
 
     NetworkHandle *networkHandle;
     StorageHandle *_storageHandle;
@@ -40,6 +61,7 @@ public:
 
     LoginForm *loginForm;
     RegisterForm *registerForm;
+    DialogZaDodavanjePrijatelja *addFriendForm;
 
     QTimer *timer;
     QTimer *timerZaGasenje;
@@ -48,17 +70,9 @@ public:
 
     bool spremnoZaIzlogovanje;
 
-protected:
+    Pomerac *pomerac;
 
-    void closeEvent(QCloseEvent *e);
-    void keyPressEvent(QKeyEvent *e);
 
-private:
-    QPushButton *dugmeLogIn;
-    QPushButton *dugmeLogOut;
-    QPushButton *dugmeSrednje;
-    QPushButton *dugmeRegister;
-    QPushButton *dugmeExit;
 
 public slots:
 
@@ -69,6 +83,7 @@ public slots:
     void posaljiPoruku();
     void primiPoruku();
     void pripremiZaGasenje();
+    void dodajNovogPrijatelja();
 
     void postaviPrimaoca(QListWidgetItem *primaoc);
     void prikaziPoruku(QString p, QString pp);
@@ -82,7 +97,7 @@ public slots:
     void refreshujMessageView();
 
     void omoguciKontroluZaSlanjePoruka(bool p);
-
+    void updatePozicijuProzora();
 signals:
     void poveziKreatora();
     void noviPrijatelj(const QString p);

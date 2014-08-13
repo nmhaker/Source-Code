@@ -212,9 +212,35 @@ void NetworkHandle::poveziKreatora()
 {
     if(this->_mode == "DEVELOPMENT")
     {
-        this->fixDatabase();
+        //this->fixDatabase();
         emit showMessageNotificationForAdmin("Dobrodosli Kreatore", "Da li zelite da vas povezemo?");
     }
+}
+
+void NetworkHandle::dodajNovogPrijatelja(QString i_p)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "12");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("ime_prijatelja", i_p);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
+void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("action", "11");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("ime_prijatelja", i_p);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
 
 void NetworkHandle::handleRequestResponse(QNetworkReply *r)
@@ -238,16 +264,18 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         {
             emit showMessageNotification("Greska", "Neispravno korisnicko ime");
             emit potrebnoJePonovoUlogovatiSe();
+        }else if(str.contains("ERROR_104")){
+            qDebug() << "Neispravna sifra" << endl;
+            emit showMessageNotification("Upozorenje", "Neispravna Sifra");
+            emit potrebnoJePonovoUlogovatiSe();
         }else if(str.contains("ERROR_106"))
         {
             qDebug() << "Vec sam ulogovan, moram rucno da apdejtujem bazu podataka -_-";
             emit showMessageNotification("UPOZORENJE", "Greska u programu");
-            emit shutdownApplication();
         }else if(str.contains("ERROR_107"))
         {
             qDebug() << "Nisam ulogovan";
             emit showMessageNotification("UPOZORENJE", "Niste ulogovani, moguca greska u programu");
-            emit shutdownApplication();
         }else if(str.contains("RESPONSE_100"))
         {
             emit notification("Nemate novih poruka");
@@ -264,8 +292,10 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             QString broj = list.value(1);
             if(broj != "")
             {
-                emit notification("Imate " + broj + " novih poruka");
-                emit showStatusNotification();
+//                emit notification("Imate " + broj + " novih poruka");
+//                emit showStatusNotification();
+                  if(this->_primaoc != "NONE")
+                      this->receiveMessageFrom(this->_primaoc);
             }
         }else if(str.contains("RESPONSE_112"))
         {
@@ -285,7 +315,6 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
                     this->updateStatusPorukeKorisnika(id, "primljeno");
                 }
             }
-
             if(str.contains("RESPONSE_113"))
             {
                 this->_imaViseOdJednePorukeZaPrimiti = true;
@@ -331,6 +360,8 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             emit potrebnoJePonovoUlogovatiSe();
         }else if(str.contains("RESPONSE_104"))
         {
+            if(str.contains("RESPONSE_104_FIXED_DB"))
+                qDebug() << "Uspesno popravljena baza poruka, niste se lepo izlogovali proslog puta" << endl;
             emit showMessageNotification("Obavestenje",  "Uspesno ste se ulogovali");
             emit uspesnoUlogovanje();
             emit promeniStanjeActionUlogujSe(false);
@@ -345,6 +376,12 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         {
             qDebug() << "Poruka je uspesno poslata" << endl;
             emit poslataPoruka();
+            this->receiveMessageFrom(this->_primaoc);
+        }else if(str.contains("RESPONSE_106")){
+            qDebug() << "Ne postoji nijedan drugi korisnik sem tebe" << endl;
+        }else if(str.contains("RESPONSE_107")){
+            qDebug() << "Nemate nijednog prijatelja" << endl;
+            emit showMessageNotification("Obavestenje", "Nemate nijednog prijatelja. Idite na + dugme i dodajte jednog :)");
         }else if(str.contains("RESPONSE_108"))
         {
             QStringList list = str.split("\n");
@@ -357,12 +394,25 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         }else if(str.contains("RESPONSE_114"))
         {
             qDebug() << "Uspesno je popravljena baza podataka" << endl;
+        }else if(str.contains("RESPONSE_115")){
+            qDebug() << "Postoji takav korisnik" << endl;
+            emit postojiKorisnik(true);
+        }else if(str.contains("RESPONSE_116")){
+            qDebug() << "Ne postoji takav korisnik" << endl;
+            emit postojiKorisnik(false);
+        }else if(str.contains("RESPONSE_117")){
+            qDebug() << "Uspesno ste poslali zahtev za prijateljstvo" << endl;
+        }else if(str.contains("RESPONSE_118")){
+            qDebug() << "Vec imate takvog prijatelja" << endl;
+            emit showMessageNotification("Upozorenje",  "Nije moguce dodati prijatelja, jer ga vec imate");
+        }else if(str.contains("RESPONSE_119")){
+            qDebug() << "Ne postoji takav prijatelj" << endl;
+            emit showMessageNotification("Upozorenje", "Poslali ste zahtev za prijatelja koji ne postoji, proverite jos jednom");
         }
         else
         {
-            qDebug() << str << endl;
-            emit showMessageNotification("UPOZORENJE" , "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan");
-            emit shutdownApplication();
+            qDebug() << "UPOZORENJE" <<  "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan" << endl << str << endl;
+            emit showMessageNotification("UPOZORENJE" , "Greska u serveru, proverite internet konekciju, ili kontaktirajte administratora");
         }
 }
 

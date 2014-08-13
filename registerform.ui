@@ -58,7 +58,7 @@
       <item>
        <widget class="QLineEdit" name="lineEdit">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 157, 0);
+         <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
         </property>
        </widget>
@@ -85,7 +85,7 @@ color: black;</string>
       <item>
        <widget class="QLineEdit" name="lineEdit_2">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 157, 0);
+         <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
         </property>
        </widget>
@@ -112,7 +112,7 @@ color: black;</string>
       <item>
        <widget class="QLineEdit" name="lineEdit_3">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 157, 0);
+         <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
         </property>
        </widget>
@@ -139,7 +139,7 @@ color: black;</string>
       <item>
        <widget class="QLineEdit" name="lineEdit_4">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 157, 0);
+         <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
         </property>
        </widget>
@@ -166,7 +166,7 @@ color: black;</string>
       <item>
        <widget class="QLineEdit" name="lineEdit_5">
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 157, 0);
+         <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
         </property>
        </widget>
@@ -177,12 +177,11 @@ color: black;</string>
      <widget class="QPushButton" name="pushButton">
       <property name="font">
        <font>
-        <pointsize>11</pointsize>
+        <pointsize>14</pointsize>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: white;
-color: rgb(255, 157, 0);</string>
+       <string notr="true">color: rgb(255, 157, 0);</string>
       </property>
       <property name="text">
        <string>Registruj se</string>

@@ -3,72 +3,69 @@
 
 MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
 
-    //Podesavanje izgleda aplikacije
+    //Podesavanje izgleda aplikacije, SKIDANJE OKVIRA PROZORA :)
     this->setWindowFlags(Qt::FramelessWindowHint);
-//    this->setAttribute(Qt::WA_NoSystemBackground);
-    QBitmap bitmap;
-    if(!bitmap.load("maskaAplikacije.jpg"))
-        qDebug() << "Neuspesno ucitavanje maske aplikacije" << endl;
-    else
-        this->setMask(bitmap.createMaskFromColor(Qt::white));
 
-    //Namestanje dugmadi
+    //Namestanje dugmadi------------------------------
+
     dugmeLogIn = new QPushButton("Log In", this);
-    dugmeLogIn->setStyleSheet("");
+    dugmeLogIn->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeLogIn->setVisible(true);
-    dugmeLogIn->setGeometry(-2,0,87,68);
-    QBitmap bitmap2;
-    if(!bitmap2.load("images/Dugme_01.jpg"))
-        qDebug() << "Nije ucitana maska za dugme" << endl;
-    else
-        dugmeLogIn->setMask(bitmap2.createMaskFromColor(Qt::white));
+    dugmeLogIn->setGeometry(0,0,100,60);
 
     connect(dugmeLogIn, SIGNAL(clicked()), this, SLOT(ulogujSe()));
 
     dugmeLogOut = new QPushButton("Log Out", this);
     dugmeLogOut->setVisible(true);
-    dugmeLogOut->setGeometry(77,1,93,60);
-    if(!bitmap2.load("images/Dugme_06.jpg"))
-        qDebug() << "Nije ucitana maska za dugme" << endl;
-    else
-        dugmeLogOut->setMask(bitmap2.createMaskFromColor(Qt::white));
+    dugmeLogOut->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeLogOut->setGeometry(100,0,100,60);
 
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
     dugmeSrednje = new QPushButton(this);
+    dugmeSrednje->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeSrednje->setVisible(true);
-    dugmeSrednje->setGeometry(180,0,350,70);
-    if(!bitmap2.load("images/Dugme_03.jpg"))
-        qDebug() << "Nije ucitana maska za srednje dugme" << endl;
-    else
-        dugmeSrednje->setMask(bitmap2.createMaskFromColor(Qt::white));
+    dugmeSrednje->setGeometry(200,0,100,60);
 
     dugmeRegister = new QPushButton("Register", this);
+    dugmeRegister->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeRegister->setVisible(true);
-    dugmeRegister->setGeometry(347,0,90,62);
-    if(!bitmap2.load("images/Dugme_04.jpg"))
-        qDebug() << "Nije ucitana maska za dugme" << endl;
-    else
-        dugmeRegister->setMask(bitmap2.createMaskFromColor(Qt::white));
+    dugmeRegister->setGeometry(300,0,100,60);
 
     connect(dugmeRegister, SIGNAL(clicked()), this, SLOT(registrujSe()));
 
     dugmeExit = new QPushButton("Exit", this);
+    dugmeExit->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeExit->setVisible(true);
-    dugmeExit->setGeometry(432,0,70,67);
-    if(!bitmap2.load("images/Dugme_05.jpg"))
-        qDebug() << "Nije ucitana maska za dugme" << endl;
-    else
-        dugmeExit->setMask(bitmap2.createMaskFromColor(Qt::white));
+    dugmeExit->setGeometry(400,0,100,60);
 
     connect(dugmeExit, SIGNAL(clicked()), this, SLOT(izadji()));
 
+    buttonAddFriend = new ButtonAddFriend(this->ui->label);
+    buttonAddFriend->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    buttonAddFriend->setVisible(true);
+    //------------------------------------------------
+
+
+    //Srednje dugme za Status korisnika
+    userState = new QLabel(this);
+    userState->setGeometry(QRect(200,5,100,50));
+    userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
+    userState->setAlignment(Qt::AlignCenter);
+    userState->setText("offline");
+    userState->setVisible(true);
+
+
+    //MREZA
     this->networkHandle = new NetworkHandle();
     this->_storageHandle = new StorageHandle();
     this->model = new Model();
+    //
 
+    //Tajmer
     timer = new QTimer(this);
     timer->setInterval(1000);
     connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
@@ -76,14 +73,27 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     timerZaGasenje = new QTimer(this);
     connect(timerZaGasenje, SIGNAL(timeout()), this, SLOT(izlogujSe()));
 
+    //Housekeeping stuff :D
     this->spremnoZaIzlogovanje = false;
 
-    userState = new QLabel(this);
-    userState->setGeometry(QRect(210,5,100,50));
-    userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
-    userState->setText("offline");
-    userState->setVisible(true);
+    this->ui->lineEdit->setDisabled(true);
 
+    //Centriranje ekrana
+//    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+//    int x = (screenGeometry.width()-this->width()) / 2;
+//    int y = (screenGeometry.height()-this->height()) / 2;
+//    this->move(x, y);
+
+    //Namestanje modela za list-view
+    this->ui->listView->setModel(model);
+
+    //Kreiranje pomeraca, da bih mogao da pomeram prozor :), i pomeranje u odnosu na njega
+    this->pomerac = new Pomerac();
+    this->move(pomerac->x(), pomerac->y()+25);
+    this->pomerac->show();
+    connect(this->pomerac, SIGNAL(pozicijaPromenjena()), this, SLOT(updatePozicijuProzora()));
+
+    // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
 
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
@@ -102,7 +112,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
 
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
-    connect(this->networkHandle, SIGNAL(ocistiListView()), this->ui->listView, SLOT(clearSelection()));
+    connect(this->networkHandle, SIGNAL(ocistiListView()), this->model, SLOT(clear()));
+    connect(this->model, SIGNAL(refreshedModel()), this, SLOT(refreshujMessageView()));
     connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
     connect(this->networkHandle, SIGNAL(potrebnoJeIzlogovatiSe()), this, SLOT(izlogujSe()));
     connect(this->networkHandle, SIGNAL(potrebnoJePonovoUlogovatiSe()), this, SLOT(ulogujSe()));
@@ -115,27 +126,24 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(uspesnoUlogovanje()), this, SLOT(changeState()));
     connect(this->networkHandle, SIGNAL(uspesnoIzlogovanje()), this, SLOT(changeState()));
 
-    this->ui->listView->setModel(model);
+    connect(buttonAddFriend, SIGNAL(clicked()), this, SLOT(dodajNovogPrijatelja()));
+    //------------------------------
 
-    this->ui->lineEdit->setDisabled(true);
 
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = (screenGeometry.width()-this->width()) / 2;
-    int y = (screenGeometry.height()-this->height()) / 2;
-    this->move(x, y);
+    //Nakon sto je sve spremno, posalji signal za povezivanje :)
+    //emit poveziKreatora();
 
-    emit poveziKreatora();
 }
 
 MainWindow::~MainWindow()
 {
     delete userState;
-
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
+    //Proveri da li je online, ako jeste prekini gasenje
     if(this->networkHandle->isOnline())
     {
         QMessageBox::StandardButton resBtn = QMessageBox::warning( this, "Messenger", tr("Prvo se izlogujte, pre nego sto zatvorite aplikaciju"), QMessageBox::Yes);
@@ -144,12 +152,14 @@ void MainWindow::closeEvent(QCloseEvent *e)
         }
     }else
     {
+        this->pomerac->close();
         e->accept();
     }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
+    //Podesavanja HOTKEY dugmeta
     if(e->key() == Qt::Key_F1)
         this->ulogujSe();
     else if(e->key() == Qt::Key_F2)
@@ -158,6 +168,21 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->registrujSe();
     else if(e->key() == Qt::Key_F4)
         this->izadji();
+}
+
+void MainWindow::paintEvent(QPaintEvent *e)
+{
+    //Crtanje POZADINE, slika
+    QPainter painter(this);
+    painter.drawPixmap(0, 0, QPixmap(":/pozadina/images/screenshot.jpg").scaled(size()));
+    QWidget::paintEvent(e);
+}
+
+void MainWindow::enterEvent(QEvent *e)
+{
+    this->pomerac->setFocus();
+
+    QMainWindow::enterEvent(e);
 }
 
 
@@ -209,16 +234,19 @@ void MainWindow::changeState()
     if(userState->text() == "Dobrodosli \n " + this->networkHandle->getKorisnika())
     {
         this->userState->setText("Offline");
-        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:black;font-size:20px;");
+        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:white;font-size:15px;");
     }else
     {
         this->userState->setText("Dobrodosli \n " + this->networkHandle->getKorisnika());
-        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(0,255,0);font-size:20px;");
+        this->userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(0,255,0);font-size:15px;");
     }
 }
 
 void MainWindow::refreshujMessageView()
 {
+    this->ui->listView->repaint();
+    this->ui->listView->reset();
+    this->ui->listView->clearSelection();
     this->ui->listView->setModel(model);
 }
 
@@ -228,6 +256,11 @@ void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)
         this->ui->lineEdit->setDisabled(false);
     else
         this->ui->lineEdit->setDisabled(true);
+}
+
+void MainWindow::updatePozicijuProzora()
+{
+    this->move(pomerac->x(), pomerac->y()+25);
 }
 
 
@@ -264,7 +297,6 @@ void MainWindow::izlogujSe()
         if(spremnoZaIzlogovanje)
         {
             this->_storageHandle->resetujSve();
-
             this->networkHandle->logOutUser();
         }else{
             this->pripremiZaGasenje();
@@ -275,6 +307,7 @@ void MainWindow::izlogujSe()
 void MainWindow::registrujSe()
 {
     this->registerForm = new RegisterForm();
+    this->registerForm->setGeometry(this->x() + this->width()/3, this->y() + this->height()/3, registerForm->width(), registerForm->height());
     connect(this->registerForm, SIGNAL(salji(QString,QString,QString,QString,QString)), this->networkHandle, SLOT(registerUser(QString,QString,QString,QString,QString)));
     this->registerForm->show();
 }
@@ -296,7 +329,10 @@ void MainWindow::posaljiPoruku()
     else
     {
         //this->ui->listWidget->addItem(this->ui->lineEdit->text());
-        this->networkHandle->sendMessage(this->ui->lineEdit->text());
+        if(this->ui->lineEdit->text() != "")
+            this->networkHandle->sendMessage(this->ui->lineEdit->text());
+        else
+            QMessageBox::warning(this, "Upozorenje", "Ne mozete slati prazne poruke, radi blokiranja spam-a", QMessageBox::Ok);
         this->ui->lineEdit->clear();
     }
 }
@@ -330,6 +366,15 @@ void MainWindow::pripremiZaGasenje()
         }
     }
 
+}
+
+void MainWindow::dodajNovogPrijatelja()
+{
+    this->addFriendForm = new DialogZaDodavanjePrijatelja();
+    connect(this->addFriendForm, SIGNAL(salji(QString)), this->networkHandle, SLOT(dodajNovogPrijatelja(QString)));
+    connect(this->addFriendForm, SIGNAL(proveri(QString)), this->networkHandle, SLOT(proveriDostupnostImenaKorisnika(QString)));
+    connect(this->networkHandle, SIGNAL(postojiKorisnik(bool)), this->addFriendForm, SLOT(izbaciObavestenje(bool)));
+    this->addFriendForm->show();
 }
 
 

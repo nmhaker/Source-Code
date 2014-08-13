@@ -32,17 +32,11 @@
    <string>MainWindow</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QMainWindow{
-background-image: url(:/pozadina/pozadina.jpg);
-}
-MainWindow{
-background-image:url(:/pozadina/pozadina.jpg);
-}</string>
+   <string notr="true"/>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="styleSheet">
-    <string notr="true">
-</string>
+    <string notr="true"/>
    </property>
    <widget class="QListWidget" name="listWidget_2">
     <property name="geometry">
@@ -54,7 +48,9 @@ background-image:url(:/pozadina/pozadina.jpg);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.474458, y1:0.517, x2:0.469, y2:0, stop:0.473958 rgba(0, 0, 0, 255), stop:1 rgba(42, 42, 42, 255));
+color:white;
+</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit">
@@ -67,7 +63,8 @@ background-image:url(:/pozadina/pozadina.jpg);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.474458, y1:0.517, x2:0.469, y2:0, stop:0.473958 rgba(0, 0, 0, 255), stop:1 rgba(42, 42, 42, 255));
+color:white;</string>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -85,10 +82,13 @@ background-image:url(:/pozadina/pozadina.jpg);
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
+     <string notr="true">QLabel{
+background-color: qlineargradient(spread:reflect, x1:0.474458, y1:0.517, x2:0.469, y2:0, stop:0.473958 rgba(0, 0, 0, 255), stop:1 rgba(42, 42, 42, 255));
+color:white;
+}</string>
     </property>
     <property name="text">
-     <string>Prijatelji</string>
+     <string>Friends</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -104,7 +104,8 @@ background-image:url(:/pozadina/pozadina.jpg);
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.505, y1:0.5, x2:0.505, y2:0, stop:0.0047619 rgba(157, 157, 157, 181), stop:0.961905 rgba(231, 231, 231, 255), stop:1 rgba(255, 255, 255, 255));</string>
+     <string notr="true">background-color: qlineargradient(spread:reflect, x1:0.474458, y1:0.517, x2:0.469, y2:0, stop:0.473958 rgba(0, 0, 0, 255), stop:1 rgba(42, 42, 42, 255));
+color:white;</string>
     </property>
    </widget>
   </widget>

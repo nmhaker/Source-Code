@@ -28,17 +28,16 @@
      <x>10</x>
      <y>80</y>
      <width>221</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>11</pointsize>
+     <pointsize>14</pointsize>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: white;
-color: rgb(255, 157, 0);</string>
+    <string notr="true">color: rgb(255, 157, 0);</string>
    </property>
    <property name="text">
     <string>Uloguj se</string>
@@ -73,7 +72,7 @@ color: rgb(255, 157, 0);</string>
     <item>
      <widget class="QLineEdit" name="lineEdit">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 157, 0);
+       <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
       </property>
       <property name="alignment">
@@ -112,7 +111,7 @@ color: black;</string>
     <item>
      <widget class="QLineEdit" name="lineEdit_2">
       <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 157, 0);
+       <string notr="true">background-color: rgb(180, 180, 255);
 color: black;</string>
       </property>
       <property name="alignment">

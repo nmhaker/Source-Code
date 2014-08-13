@@ -57,6 +57,9 @@ public slots:
     void postaviPrimaoca(const QString p);
     void poveziKreatora();
 
+    void dodajNovogPrijatelja(QString i_p);
+    void proveriDostupnostImenaKorisnika(QString i_p);
+
 signals:
     void poslataPoruka();
     void uspesnoUlogovanje();
@@ -82,6 +85,8 @@ signals:
     void omoguciKontroluZaSlanjePoruka(bool);
 
     void korisnickoIme(QString);
+
+    void postojiKorisnik(bool);
 };
 
 #endif // NETWORKHANDLE_H
