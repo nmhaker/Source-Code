@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/pozadina">
-        <file>pozadina.jpg</file>
         <file>images/screenshot.jpg</file>
     </qresource>
 </RCC>

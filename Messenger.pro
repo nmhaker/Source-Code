@@ -44,5 +44,4 @@ FORMS    += mainwindow.ui \
     registerform.ui \
     dialogzadodavanjeprijatelja.ui
 
-RESOURCES += \
-    slike.qrc
+RESOURCES = slike.qrc

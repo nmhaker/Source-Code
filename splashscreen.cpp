@@ -24,7 +24,7 @@ SplashScreen::SplashScreen(QWidget *parent) :
                          "color:green;"
                          "}"
                          ":hover{"
-                         "background-color:red; "
+                         "background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(75, 75, 75, 255), stop:1 rgba(100, 100, 100, 255));; "
                          "color:black"
                          "}");
     dugme->setText("Messenger");
