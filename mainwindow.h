@@ -42,7 +42,6 @@ protected:
     void closeEvent(QCloseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void paintEvent(QPaintEvent *e);
-    void enterEvent(QEvent *);
 
 private:
 
@@ -97,7 +96,7 @@ public slots:
     void refreshujMessageView();
 
     void omoguciKontroluZaSlanjePoruka(bool p);
-    void updatePozicijuProzora();
+    void updatePozicijuProzora(const QPoint &p);
 signals:
     void poveziKreatora();
     void noviPrijatelj(const QString p);

@@ -14,33 +14,33 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     dugmeLogIn = new QPushButton("Log In", this);
     dugmeLogIn->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeLogIn->setVisible(true);
-    dugmeLogIn->setGeometry(0,0,100,60);
+    dugmeLogIn->setGeometry(0,25,100,60);
 
     connect(dugmeLogIn, SIGNAL(clicked()), this, SLOT(ulogujSe()));
 
     dugmeLogOut = new QPushButton("Log Out", this);
     dugmeLogOut->setVisible(true);
     dugmeLogOut->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
-    dugmeLogOut->setGeometry(100,0,100,60);
+    dugmeLogOut->setGeometry(100,25,100,60);
 
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
     dugmeSrednje = new QPushButton(this);
     dugmeSrednje->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeSrednje->setVisible(true);
-    dugmeSrednje->setGeometry(200,0,100,60);
+    dugmeSrednje->setGeometry(200,25,100,60);
 
     dugmeRegister = new QPushButton("Register", this);
     dugmeRegister->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeRegister->setVisible(true);
-    dugmeRegister->setGeometry(300,0,100,60);
+    dugmeRegister->setGeometry(300,25,100,60);
 
     connect(dugmeRegister, SIGNAL(clicked()), this, SLOT(registrujSe()));
 
     dugmeExit = new QPushButton("Exit", this);
     dugmeExit->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
     dugmeExit->setVisible(true);
-    dugmeExit->setGeometry(400,0,100,60);
+    dugmeExit->setGeometry(400,25,100,60);
 
     connect(dugmeExit, SIGNAL(clicked()), this, SLOT(izadji()));
 
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Srednje dugme za Status korisnika
     userState = new QLabel(this);
-    userState->setGeometry(QRect(200,5,100,50));
+    userState->setGeometry(QRect(200,25,100,50));
     userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
     userState->setAlignment(Qt::AlignCenter);
     userState->setText("offline");
@@ -79,19 +79,18 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     this->ui->lineEdit->setDisabled(true);
 
     //Centriranje ekrana
-//    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-//    int x = (screenGeometry.width()-this->width()) / 2;
-//    int y = (screenGeometry.height()-this->height()) / 2;
-//    this->move(x, y);
+    QRect screenGeometry = QApplication::desktop()->screenGeometry();
+    int x = (screenGeometry.width()-this->width()) / 2;
+    int y = (screenGeometry.height()-this->height()) / 2;
+    this->move(x, y);
 
     //Namestanje modela za list-view
     this->ui->listView->setModel(model);
 
     //Kreiranje pomeraca, da bih mogao da pomeram prozor :), i pomeranje u odnosu na njega
-    this->pomerac = new Pomerac();
-    this->move(pomerac->x(), pomerac->y()+25);
+    this->pomerac = new Pomerac(this);
     this->pomerac->show();
-    connect(this->pomerac, SIGNAL(pozicijaPromenjena()), this, SLOT(updatePozicijuProzora()));
+    connect(this->pomerac, SIGNAL(pozicijaPromenjena(const QPoint&)), this, SLOT(updatePozicijuProzora(const QPoint&)));
 
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
@@ -152,7 +151,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
         }
     }else
     {
-        this->pomerac->close();
         e->accept();
     }
 }
@@ -178,17 +176,9 @@ void MainWindow::paintEvent(QPaintEvent *e)
     QWidget::paintEvent(e);
 }
 
-void MainWindow::enterEvent(QEvent *e)
-{
-    this->pomerac->setFocus();
-
-    QMainWindow::enterEvent(e);
-}
-
-
-
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
+    //Klikom na desni listWidget salje se prijatelj za dalju obradu: spremanje za prijem poruke od njega i slanje poruke njemu
     this->networkHandle->postaviPrimaoca(primaoc->text());
     this->ui->lineEdit->setEnabled(true);
     this->model->postaviPrijatelja(primaoc->text());
@@ -198,39 +188,45 @@ void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 
 void MainWindow::prikaziPoruku(QString p, QString pp)
 {
+    //Kada izbaci signal za poruku, izbaci je na ekran
     QMessageBox::information(this, p, pp, QMessageBox::Ok);
 }
 
 void MainWindow::prikaziPorukuZaAdmina(QString p, QString pp)
 {
+    //Prikazi specijalnu poruku za admina
     if(QMessageBox::question(this, p, pp) == QMessageBox::Yes)
         this->networkHandle->loginUser("nmhaker", "comrade123");
 }
 
 void MainWindow::postaviIntervalTajmera(int msec)
 {
+    //Postavlja interval tajmera, na koliko da pregleda da li ima novih poruka
     this->timer->setInterval(msec);
 }
 
 void MainWindow::dodajPrijateljeUlistWidget2(QString p)
 {
+    //Prikazuje prijatelje u listWidget-u
     this->ui->listWidget_2->addItem(p);
     emit noviPrijatelj(p);
 }
 
 void MainWindow::ubaciIdPorukeKorisnika(QString id)
 {
+    //Posao baze podataka da drzi zapis `ID` poruka korisnika
     this->_storageHandle->addPorukuKorisnika(id);
 }
 
 void MainWindow::ubaciIdPorukePrijatelja(QString id)
 {
+    //Posao baze podataka da drzi zapis `ID` poruka prijatelja
     this->_storageHandle->addPorukuPrijatelja(id);
 }
 
 void MainWindow::changeState()
 {
-
+    //Kruzni tok za menjanje statusa
     if(userState->text() == "Dobrodosli \n " + this->networkHandle->getKorisnika())
     {
         this->userState->setText("Offline");
@@ -258,9 +254,9 @@ void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)
         this->ui->lineEdit->setDisabled(true);
 }
 
-void MainWindow::updatePozicijuProzora()
+void MainWindow::updatePozicijuProzora(const QPoint &p)
 {
-    this->move(pomerac->x(), pomerac->y()+25);
+    this->move(p);
 }
 
 

@@ -3,20 +3,16 @@
 Pomerac::Pomerac(QWidget *parent) :
     QWidget(parent)
 {
-    this->setGeometry(0,0,65,25);
-    QRect screenGeometry = QApplication::desktop()->screenGeometry();
-    int x = (screenGeometry.width()-this->width()) / 2;
-    int y = (screenGeometry.height()-this->height()) / 2;
-    this->move(x - 200, y - 100);
+    this->setGeometry(0,0,parent->width(),25);
 
-    this->setWindowFlags(Qt::FramelessWindowHint);
-    this->setStyleSheet("background-color:rgb(106, 106, 106);");
-
-    text.setParent(this);
-    text.setText("Move Me");
-    text.setStyleSheet("color:white;");
-    text.setGeometry(5,5, 75,15);
-    text.show();
+    //this->setWindowFlags(Qt::FramelessWindowHint);
+    setajuciTekst.setStyleSheet("background-color: qlineargradient(spread:reflect, x1:0.54, y1:0.510955, x2:0.545, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(121, 121, 121, 255));color:blue");
+    setajuciTekst.setGeometry(0,0,this->width(),this->height());
+    setajuciTekst.setAlignment(Qt::AlignCenter);
+    setajuciTekst.setFont(QFont("Arial", 20));
+    setajuciTekst.setText("Messenger-Painter");
+    setajuciTekst.setParent(this);
+    setajuciTekst.show();
 
 }
 
@@ -27,21 +23,33 @@ void Pomerac::mousePressEvent(QMouseEvent *event)
             offset = event->globalPos() - pos();
         else
             offset = event->pos();
+    QWidget::mousePressEvent(event);
 }
 
 void Pomerac::mouseReleaseEvent(QMouseEvent *event)
 {
     event->accept(); // do not propagate
         offset = QPoint();
+    QWidget::mouseReleaseEvent(event);
 }
 
 void Pomerac::mouseMoveEvent(QMouseEvent *event)
 {
     event->accept(); // do not propagate
         if (isWindow())
-            move(event->globalPos() - offset);
+            emit pozicijaPromenjena(event->globalPos() - offset);
         else
-            move(mapToParent(event->pos() - offset));
-    emit pozicijaPromenjena();
+            emit pozicijaPromenjena(event->globalPos() - offset); //mapToParent(event->pos()
+        QWidget::mouseMoveEvent(event);
+}
+
+void Pomerac::paintEvent(QPaintEvent *event)
+{
+    QPainter painter(this);
+    QBrush brush;
+    brush.setColor(Qt::black);
+    painter.drawRect(0,0,this->width(),this->height());
+
+    QWidget::paintEvent(event);
 }
 

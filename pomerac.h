@@ -19,13 +19,13 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
+    void paintEvent(QPaintEvent *event);
 
     QPoint offset;
-
-    QLabel text;
+    QLabel setajuciTekst;
 
 signals:
-    void pozicijaPromenjena();
+    void pozicijaPromenjena(const QPoint &);
 
 public slots:
 
