@@ -3,7 +3,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainWindow)
 {
-
+    this->setFont(QFont("Times New Roman", 15));
     ui->setupUi(this);
 
     //Podesavanje izgleda aplikacije, SKIDANJE OKVIRA PROZORA :)
@@ -52,7 +52,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Srednje dugme za Status korisnika
     userState = new QLabel(this);
-    userState->setGeometry(QRect(200,25,100,50));
+    userState->setGeometry(QRect(200,30,100,50));
     userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
     userState->setAlignment(Qt::AlignCenter);
     userState->setText("offline");
@@ -86,6 +86,9 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Namestanje modela za list-view
     this->ui->listView->setModel(model);
+
+    //Namestanje fonta za label
+    this->ui->label->setFont(QFont("Times New Roman", 15));
 
     //Kreiranje pomeraca, da bih mogao da pomeram prozor :), i pomeranje u odnosu na njega
     this->pomerac = new Pomerac(this);

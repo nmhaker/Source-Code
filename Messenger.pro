@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     splashscreen.cpp \
     buttonaddfriend.cpp \
     dialogzadodavanjeprijatelja.cpp \
-    pomerac.cpp
+    pomerac.cpp \
+    painterholder.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     splashscreen.h \
     buttonaddfriend.h \
     dialogzadodavanjeprijatelja.h \
-    pomerac.h
+    pomerac.h \
+    painterholder.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

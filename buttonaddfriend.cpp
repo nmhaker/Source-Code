@@ -11,7 +11,7 @@ void ButtonAddFriend::paintEvent(QPaintEvent *e)
     QPushButton::paintEvent(e);
     QPainter painter(this);
     painter.setPen(Qt::red);
-    painter.setFont(QFont("Arial", 5,5));
+    painter.setFont(QFont("Times New Roman", 5,5));
     painter.drawLine(15,7,15,this->height()-7);
     painter.drawLine(7,15,23,15);
 }

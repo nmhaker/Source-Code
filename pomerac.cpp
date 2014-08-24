@@ -4,16 +4,14 @@ Pomerac::Pomerac(QWidget *parent) :
     QWidget(parent)
 {
     this->setGeometry(0,0,parent->width(),25);
-
     //this->setWindowFlags(Qt::FramelessWindowHint);
-    setajuciTekst.setStyleSheet("background-color: qlineargradient(spread:reflect, x1:0.54, y1:0.510955, x2:0.545, y2:0, stop:0 rgba(255, 255, 255, 255), stop:1 rgba(121, 121, 121, 255));color:blue");
+    setajuciTekst.setStyleSheet("background-color: qlineargradient(spread:reflect, x1:0.535, y1:0.482864, x2:0.534, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(35, 35, 35, 255));color:blue");
     setajuciTekst.setGeometry(0,0,this->width(),this->height());
     setajuciTekst.setAlignment(Qt::AlignCenter);
     setajuciTekst.setFont(QFont("Arial", 20));
-    setajuciTekst.setText("Messenger-Painter");
+    //setajuciTekst.setText("Messenger-Painter");
     setajuciTekst.setParent(this);
     setajuciTekst.show();
-
 }
 
 void Pomerac::mousePressEvent(QMouseEvent *event)

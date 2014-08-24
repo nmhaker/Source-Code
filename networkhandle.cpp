@@ -3,7 +3,7 @@
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEPLOY";
+    this->_mode = "DEVELOPMENT";
     this->_online = false;
 
     this->_primaoc = "NONE";
@@ -369,7 +369,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             this->_online = true;
             emit omoguciKontroluZaSlanjePoruka(true);
 
-            this->getFriends();
+            this->getMyFriends();
 
             emit startTimer();
         }else if(str.contains("RESPONSE_105"))
@@ -402,6 +402,8 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             emit postojiKorisnik(false);
         }else if(str.contains("RESPONSE_117")){
             qDebug() << "Uspesno ste poslali zahtev za prijateljstvo" << endl;
+            emit ocistiListWidget2();
+            this->getMyFriends();
         }else if(str.contains("RESPONSE_118")){
             qDebug() << "Vec imate takvog prijatelja" << endl;
             emit showMessageNotification("Upozorenje",  "Nije moguce dodati prijatelja, jer ga vec imate");
