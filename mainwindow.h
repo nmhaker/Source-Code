@@ -24,6 +24,7 @@
 #include "buttonaddfriend.h"
 #include "dialogzadodavanjeprijatelja.h"
 #include "pomerac.h"
+#include "painterholder.h"
 
 namespace Ui {
 class MainWindow;
@@ -70,6 +71,8 @@ private:
     bool spremnoZaIzlogovanje;
 
     Pomerac *pomerac;
+
+    PainterHolder *crtac;
 
 
 

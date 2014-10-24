@@ -11,8 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Namestanje dugmadi------------------------------
 
+    QString stylesheetDugmica = "[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}";
+
     dugmeLogIn = new QPushButton("Log In", this);
-    dugmeLogIn->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeLogIn->setStyleSheet(stylesheetDugmica);
     dugmeLogIn->setVisible(true);
     dugmeLogIn->setGeometry(0,25,100,60);
 
@@ -20,25 +22,25 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     dugmeLogOut = new QPushButton("Log Out", this);
     dugmeLogOut->setVisible(true);
-    dugmeLogOut->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeLogOut->setStyleSheet(stylesheetDugmica);
     dugmeLogOut->setGeometry(100,25,100,60);
 
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
     dugmeSrednje = new QPushButton(this);
-    dugmeSrednje->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeSrednje->setStyleSheet(stylesheetDugmica);
     dugmeSrednje->setVisible(true);
     dugmeSrednje->setGeometry(200,25,100,60);
 
     dugmeRegister = new QPushButton("Register", this);
-    dugmeRegister->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeRegister->setStyleSheet(stylesheetDugmica);
     dugmeRegister->setVisible(true);
     dugmeRegister->setGeometry(300,25,100,60);
 
     connect(dugmeRegister, SIGNAL(clicked()), this, SLOT(registrujSe()));
 
     dugmeExit = new QPushButton("Exit", this);
-    dugmeExit->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
+    dugmeExit->setStyleSheet(stylesheetDugmica);
     dugmeExit->setVisible(true);
     dugmeExit->setGeometry(400,25,100,60);
 
@@ -129,6 +131,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(uspesnoIzlogovanje()), this, SLOT(changeState()));
 
     connect(buttonAddFriend, SIGNAL(clicked()), this, SLOT(dodajNovogPrijatelja()));
+
+
     //------------------------------
 
 
@@ -169,6 +173,16 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->registrujSe();
     else if(e->key() == Qt::Key_F4)
         this->izadji();
+    else if(e->key() == Qt::Key_F5)
+    {
+        //OVO JE HARDCODED primaoc da bi proverio kako radi :)
+        this->crtac = new PainterHolder(0, "Nata :)");
+        this->crtac->move(this->x(),this->y());
+        this->crtac->show();
+
+        connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
+        connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
+    }
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)

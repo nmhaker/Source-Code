@@ -24,6 +24,8 @@ public:
 
 private:
 
+    QString _secretKey;
+
     QNetworkAccessManager   *_networkAccessManager;
     QNetworkRequest         *_networkRequest;
 
@@ -52,6 +54,9 @@ public slots:
     void getFriends();
     void getMyFriends();
 
+    void sendCoordinates(QByteArray paket, QString primaocPaketa);
+    void downloadCoordinates(QString posiljaoc);
+
     void fixDatabase();
 
     void postaviPrimaoca(const QString p);
@@ -59,6 +64,7 @@ public slots:
 
     void dodajNovogPrijatelja(QString i_p);
     void proveriDostupnostImenaKorisnika(QString i_p);
+
 
 signals:
     void poslataPoruka();

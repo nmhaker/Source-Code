@@ -11,6 +11,8 @@ NetworkHandle::NetworkHandle() : QObject()
     this->_novePoruke = true;
     this->_imaViseOdJednePorukeZaPrimiti = false;
 
+    this->_secretKey = "SIFRA";
+
     this->prepareConnection();
 
 }
@@ -45,7 +47,7 @@ void NetworkHandle::prepareConnection()
         this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
     }
     else if(this->_mode == "DEPLOY")
-        this->_networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server.php"));
+        this->_networkRequest = new QNetworkRequest(QUrl("http://http://nmhaker.byethost15.com/Server.php"));
 
     this->_networkRequest->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 }
@@ -57,7 +59,7 @@ void NetworkHandle::loginUser(const QString korisnicko_ime, const QString sifra)
     emit korisnickoIme(this->_korisnicko_ime);
 
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "2");
     params.addQueryItem("korisnicko_ime", korisnicko_ime);
     params.addQueryItem("sifra", sifra);
@@ -70,7 +72,7 @@ void NetworkHandle::loginUser(const QString korisnicko_ime, const QString sifra)
 void NetworkHandle::logOutUser()
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "5");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
 
@@ -84,7 +86,7 @@ void NetworkHandle::logOutUser()
 void NetworkHandle::registerUser(const QString ime, const QString prezime, const QString korisnicko_ime, const QString sifra, const QString mobilni )
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "1");
     params.addQueryItem("ime", ime);
     params.addQueryItem("prezime", prezime);
@@ -101,7 +103,7 @@ void NetworkHandle::registerUser(const QString ime, const QString prezime, const
 void NetworkHandle::sendMessage(const QString poruka)
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "4");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("primalac", _primaoc);
@@ -116,7 +118,7 @@ void NetworkHandle::sendMessage(const QString poruka)
 void NetworkHandle::checkForNewMessages()
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "3");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
 
@@ -130,7 +132,7 @@ void NetworkHandle::receiveMessageFrom(const QString p)
     this->_primaoc = p;
 
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "9");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("od", p);
@@ -143,7 +145,7 @@ void NetworkHandle::receiveMessageFrom(const QString p)
 void NetworkHandle::updateStatusPorukePrijatelja(const QString id, const QString status)
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "8");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("idPoruke", id);
@@ -157,7 +159,7 @@ void NetworkHandle::updateStatusPorukePrijatelja(const QString id, const QString
 void NetworkHandle::updateStatusPorukeKorisnika(const QString id, const QString status2)
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "8");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("idPoruke", id);
@@ -171,7 +173,7 @@ void NetworkHandle::updateStatusPorukeKorisnika(const QString id, const QString 
 void NetworkHandle::getFriends()
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "6");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
 
@@ -183,9 +185,36 @@ void NetworkHandle::getFriends()
 void NetworkHandle::getMyFriends()
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "7");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
+void NetworkHandle::sendCoordinates(QByteArray paket, QString primaocPaketa)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", _secretKey);
+    params.addQueryItem("action", "13");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("data", paket);
+    params.addQueryItem("primaoc", primaocPaketa);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
+void NetworkHandle::downloadCoordinates(QString posiljaoc)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", _secretKey);
+    params.addQueryItem("action", "14");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("posiljaoc", posiljaoc);
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -195,7 +224,7 @@ void NetworkHandle::getMyFriends()
 void NetworkHandle::fixDatabase()
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "10");
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
@@ -220,7 +249,7 @@ void NetworkHandle::poveziKreatora()
 void NetworkHandle::dodajNovogPrijatelja(QString i_p)
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "12");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("ime_prijatelja", i_p);
@@ -233,7 +262,7 @@ void NetworkHandle::dodajNovogPrijatelja(QString i_p)
 void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
 {
     QUrlQuery params;
-    params.addQueryItem("key", "SIFRA");
+    params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "11");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
     params.addQueryItem("ime_prijatelja", i_p);
@@ -242,6 +271,8 @@ void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
 
     this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
+
+
 
 void NetworkHandle::handleRequestResponse(QNetworkReply *r)
 {
@@ -410,6 +441,12 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         }else if(str.contains("RESPONSE_119")){
             qDebug() << "Ne postoji takav prijatelj" << endl;
             emit showMessageNotification("Upozorenje", "Poslali ste zahtev za prijatelja koji ne postoji, proverite jos jednom");
+        }else if(str.contains("RESPONSE_120")){
+            qDebug() << "Uspesno poslata koordinata" << endl;
+        }else if(str.contains("RESPONSE_121")){
+            qDebug() << "Primam koordinate: " << str << endl;
+        }else if(str.contains("RESPONSE_122")){
+            qDebug() << "Prazan upit" << endl;
         }
         else
         {

@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     buttonaddfriend.cpp \
     dialogzadodavanjeprijatelja.cpp \
     pomerac.cpp \
-    painterholder.cpp
+    painterholder.cpp \
+    painterscreen.cpp \
+    widget.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -39,11 +41,14 @@ HEADERS  += mainwindow.h \
     buttonaddfriend.h \
     dialogzadodavanjeprijatelja.h \
     pomerac.h \
-    painterholder.h
+    painterholder.h \
+    painterscreen.h \
+    widget.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
     registerform.ui \
-    dialogzadodavanjeprijatelja.ui
+    dialogzadodavanjeprijatelja.ui \
+    widget.ui
 
 RESOURCES = slike.qrc
