@@ -14,7 +14,7 @@ SplashScreen::SplashScreen(QWidget *parent) :
     this->setStyleSheet("background-color: qlineargradient(spread:reflect, x1:0.498, y1:0.510955, x2:0.492, y2:0, stop:0 rgba(200, 200, 200, 255), stop:1 rgba(255, 255, 255, 255));");
 
     tajmer.setSingleShot(true);
-    tajmer.setInterval(4000);
+    tajmer.setInterval(2000);
 
     connect(&tajmer, SIGNAL(timeout()), this, SLOT(zatvoriSplashScreen()));
 

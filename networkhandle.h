@@ -93,6 +93,8 @@ signals:
     void korisnickoIme(QString);
 
     void postojiKorisnik(bool);
+
+    void emitPristigleKoordinate(QByteArray data);
 };
 
 #endif // NETWORKHANDLE_H

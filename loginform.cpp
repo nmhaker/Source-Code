@@ -8,6 +8,8 @@ LoginForm::LoginForm(QWidget *parent) :
     ui->setupUi(this);
 
     connect(this->ui->pushButton, SIGNAL(clicked()), this, SLOT(posaljiPodatke()));
+
+    this->ui->lineEdit->setFocus();
 }
 
 LoginForm::~LoginForm()

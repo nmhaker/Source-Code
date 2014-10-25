@@ -286,10 +286,12 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         if(str.contains("ERROR_3"))
         {
             emit showMessageNotification("Kriticna Greska", "PRAZNE POST PROMENLJIVE GASIM PROGRAM!");
+            emit shutdownApplication();
         }else
         if(str.contains("ERROR_101"))
         {
             emit showMessageNotification("Kriticna Greska", "Greska u upitu u bazi podataka");
+            emit shutdownApplication();
         }else
         if(str.contains("ERROR_103"))
         {
@@ -445,6 +447,8 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
             qDebug() << "Uspesno poslata koordinata" << endl;
         }else if(str.contains("RESPONSE_121")){
             qDebug() << "Primam koordinate: " << str << endl;
+            str.remove(0, 12);
+            emit emitPristigleKoordinate(str.toUtf8());
         }else if(str.contains("RESPONSE_122")){
             qDebug() << "Prazan upit" << endl;
         }
@@ -452,6 +456,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         {
             qDebug() << "UPOZORENJE" <<  "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan" << endl << str << endl;
             emit showMessageNotification("UPOZORENJE" , "Greska u serveru, proverite internet konekciju, ili kontaktirajte administratora");
+            emit shutdownApplication();
         }
 }
 

@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(novaPoruka(QString,QString)), this->model, SLOT(dodajPoruku(QString,QString)));
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->model, SLOT(postaviKorisnika(QString)));
 
-    connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(izadji()));
+    connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(close()));
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
@@ -150,16 +150,16 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     //Proveri da li je online, ako jeste prekini gasenje
-    if(this->networkHandle->isOnline())
-    {
-        QMessageBox::StandardButton resBtn = QMessageBox::warning( this, "Messenger", tr("Prvo se izlogujte, pre nego sto zatvorite aplikaciju"), QMessageBox::Yes);
-        if (resBtn == QMessageBox::Yes) {
-            e->ignore();
-        }
-    }else
-    {
-        e->accept();
-    }
+//    if(this->networkHandle->isOnline())
+//    {
+//        QMessageBox::StandardButton resBtn = QMessageBox::warning( this, "Messenger", tr("Prvo se izlogujte, pre nego sto zatvorite aplikaciju"), QMessageBox::Yes);
+//        if (resBtn == QMessageBox::Yes) {
+//            e->ignore();
+//        }
+//    }else
+//    {
+//        e->accept();
+//    }
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -176,12 +176,13 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     else if(e->key() == Qt::Key_F5)
     {
         //OVO JE HARDCODED primaoc da bi proverio kako radi :)
-        this->crtac = new PainterHolder(0, "Nata :)");
+        this->crtac = new PainterHolder(0, 0);
         this->crtac->move(this->x(),this->y());
         this->crtac->show();
 
         connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
         connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
+        connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
     }
 }
 

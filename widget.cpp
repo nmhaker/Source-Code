@@ -81,7 +81,7 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
         qDebug() << "X = " << e->x() << endl;
         qDebug() << "Y = " << e->y() << endl;
         kordinate.append(QString::number(e->x())).append(delimiter);
-        kordinate.append(QString::number(e->y()));
+        kordinate.append(QString::number(e->y())).append(delimiter);
 //        kordinate.append(QString::number(e->y())).append(delimiter);
 
         //POSALJI QBYTEARRAY KAO JEDNU KOORDINATU
@@ -89,8 +89,6 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
 //        tcpSocketZaSlanje->write(kordinate);
 //        if(!tcpSocketZaSlanje->flush())
 //            qDebug() << tcpSocketZaSlanje->errorString() << endl;
-
-        kordinate.clear();
 
     }
 
@@ -162,5 +160,36 @@ void Widget::readDataFromSocket()
 
 void Widget::ubaciKordinate(QByteArray paket)
 {
+    int brojTacaka;
+    QList<QString> listaTacaka;
+    QString tacka;
+    for(int i=0;i<paket.size();i++){
+        if(paket.at(i) != '%')
+            tacka.append(paket.at(i));
+        else{
+            listaTacaka.append(tacka);
+            brojTacaka++;
+            tacka.clear();
+        }
+    }
 
+    int counter = 0;
+    int iks;
+    int ipsilon;
+
+    for(int i=0; i < listaTacaka.count(); i++){
+        if(i % 2 == 0){
+            iks = listaTacaka.at(i).toInt();
+            counter++;
+        }else{
+            ipsilon = listaTacaka.at(i).toInt();
+            counter++;
+        }
+        if(counter == 2){
+            dotsPrijatelja.append(QPoint(iks, ipsilon));
+            counter = 0;
+        }
+    }
+
+    this->repaint();
 }
