@@ -3,7 +3,7 @@
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEVELOPMENT";
+    this->_mode = "DEPLOY";
     this->_online = false;
 
     this->_primaoc = "NONE";
@@ -47,7 +47,7 @@ void NetworkHandle::prepareConnection()
         this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
     }
     else if(this->_mode == "DEPLOY")
-        this->_networkRequest = new QNetworkRequest(QUrl("http://http://nmhaker.byethost15.com/Server.php"));
+        this->_networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server/Server.php"));
 
     this->_networkRequest->setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 }

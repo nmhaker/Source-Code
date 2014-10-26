@@ -59,6 +59,7 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
     QString delimiter("%");
 
     kordinate.append(QString::number(-100)).append(delimiter);
+    kordinate.append(QString::number(-100)).append(delimiter);
 
 //    tcpSocketZaSlanje->write(kordinate);
 //    if(!tcpSocketZaSlanje->flush())
@@ -82,13 +83,6 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
         qDebug() << "Y = " << e->y() << endl;
         kordinate.append(QString::number(e->x())).append(delimiter);
         kordinate.append(QString::number(e->y())).append(delimiter);
-//        kordinate.append(QString::number(e->y())).append(delimiter);
-
-        //POSALJI QBYTEARRAY KAO JEDNU KOORDINATU
-
-//        tcpSocketZaSlanje->write(kordinate);
-//        if(!tcpSocketZaSlanje->flush())
-//            qDebug() << tcpSocketZaSlanje->errorString() << endl;
 
     }
 
