@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPainter>
 #include <QTimer>
+#include <QPushButton>
 
 #include "widget.h"
 
@@ -14,19 +15,22 @@ class PainterHolder : public QWidget
     Q_OBJECT
 public:
     explicit PainterHolder(QWidget *parent = 0, QString primaoc = "NONE");
-    ~PainterHolder();
+    virtual ~PainterHolder();
 protected:
 
     void resizeEvent(QResizeEvent *e);
+    void keyPressEvent(QKeyEvent *);
 
 private:
     Widget *ekranZaCrtanje;
 
     QString _primaoc;
 
-    QTimer tajmerZaKoordinate;
+    QTimer *tajmerZaKoordinate;
 
     FormaZaPrimaoca *form1;
+
+    QPushButton *zatvoriButton;
 
 signals:
     void saljiPaket(QByteArray paket, QString primaocPaketa);

@@ -10,6 +10,7 @@ LoginForm::LoginForm(QWidget *parent) :
     connect(this->ui->pushButton, SIGNAL(clicked()), this, SLOT(posaljiPodatke()));
 
     this->ui->lineEdit->setFocus();
+    this->ui->lineEdit_2->setEchoMode(QLineEdit::Password);
 }
 
 LoginForm::~LoginForm()

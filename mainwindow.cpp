@@ -138,7 +138,6 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Nakon sto je sve spremno, posalji signal za povezivanje :)
     //emit poveziKreatora();
-
 }
 
 MainWindow::~MainWindow()
@@ -175,15 +174,18 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->izadji();
     else if(e->key() == Qt::Key_F5)
     {
-        //OVO JE HARDCODED primaoc da bi proverio kako radi :)
-        this->crtac = new PainterHolder(0, 0);
-        this->crtac->move(this->x(),this->y());
-        this->crtac->show();
+        if(this->networkHandle->getPrimaoca() != "NOT_SET"){
+            this->crtac = new PainterHolder(0, this->networkHandle->getPrimaoca());
+            this->crtac->move(this->x(),this->y());
+            this->crtac->show();
 
-        connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
-        connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
-        connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
-    }
+            connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
+            connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
+            connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
+        }else
+            QMessageBox::warning(this, "Upozorenje", "Niste izabrali korisnika", QMessageBox::Ok);
+    }else if(e->key() == Qt::Key_F6)
+        emit poveziKreatora();
 }
 
 void MainWindow::paintEvent(QPaintEvent *e)
@@ -276,8 +278,6 @@ void MainWindow::updatePozicijuProzora(const QPoint &p)
 {
     this->move(p);
 }
-
-
 
 void MainWindow::ulogujSe()
 {

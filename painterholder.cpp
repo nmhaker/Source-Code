@@ -7,6 +7,11 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     ekranZaCrtanje = new Widget(this);
     ekranZaCrtanje->show();
 
+    zatvoriButton = new QPushButton("Zatvori prozor", this);
+    zatvoriButton->move(this->width()/2 - this->zatvoriButton->width()/2, this->height()-this->zatvoriButton->height());
+    connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
+    _primaoc = primaoc;
+
     if(_primaoc == 0){
         form1 = new FormaZaPrimaoca(this);
         form1->move(this->x() + 30, this->y() + 30);
@@ -16,15 +21,18 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
 
     connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray)), this, SLOT(preusmeriSignal(QByteArray)));
 
-    tajmerZaKoordinate.setInterval(1000);
-    connect(&tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
+    tajmerZaKoordinate = new QTimer(this);
+    tajmerZaKoordinate->setInterval(1000);
+    connect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
 
-    tajmerZaKoordinate.start();
+    tajmerZaKoordinate->start();
 }
 
 PainterHolder::~PainterHolder()
 {
-    tajmerZaKoordinate.stop();
+    disconnect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
+    tajmerZaKoordinate->stop();
+    delete tajmerZaKoordinate;
     emit gasenjeCrtaca();
 }
 
@@ -33,6 +41,14 @@ void PainterHolder::resizeEvent(QResizeEvent *e)
     this->ekranZaCrtanje->resize(this->width(), this->height());
 
     QWidget::resizeEvent(e);
+}
+
+void PainterHolder::keyPressEvent(QKeyEvent *e)
+{
+    if(e->key() == Qt::Key_Escape)
+        this->tajmerZaKoordinate->stop();
+
+    QWidget::keyPressEvent(e);
 }
 
 void PainterHolder::primiKordinate(QByteArray paket)
@@ -47,18 +63,20 @@ void PainterHolder::preusmeriSignal(QByteArray s)
 
 void PainterHolder::posaljiZahtevZaKoordinate()
 {
-    if(_primaoc != "")
-        emit zahtevZaKoordinate(_primaoc);
-    else{
-        qDebug() << "GRESKA: nije definisan _primaoc u PainterHolder-u" << endl;
-        tajmerZaKoordinate.stop();
+    if(tajmerZaKoordinate->isActive()){
+        if(_primaoc != "")
+            emit zahtevZaKoordinate(_primaoc);
+        else{
+            qDebug() << "GRESKA: nije definisan _primaoc u PainterHolder-u" << endl;
+            tajmerZaKoordinate->stop();
+        }
     }
 }
 
 void PainterHolder::postaviPrimaoca(QString p)
 {
     this->_primaoc = p;
-    tajmerZaKoordinate.start();
+    tajmerZaKoordinate->start();
 }
 
 

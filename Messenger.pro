@@ -17,7 +17,6 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     loginform.cpp \
     registerform.cpp \
-    mtabwidget.cpp \
     networkhandle.cpp \
     storagehandle.cpp \
     model.cpp \
@@ -26,13 +25,12 @@ SOURCES += main.cpp\
     dialogzadodavanjeprijatelja.cpp \
     pomerac.cpp \
     painterholder.cpp \
-    painterscreen.cpp \
-    widget.cpp
+    widget.cpp \
+    listwidgetzaprijatelje.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
     registerform.h \
-    mtabwidget.h \
     networkhandle.h \
     storagehandle.h \
     model.h \
@@ -42,8 +40,8 @@ HEADERS  += mainwindow.h \
     dialogzadodavanjeprijatelja.h \
     pomerac.h \
     painterholder.h \
-    painterscreen.h \
-    widget.h
+    widget.h \
+    listwidgetzaprijatelje.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

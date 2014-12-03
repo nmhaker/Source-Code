@@ -19,7 +19,7 @@ Widget::~Widget()
 void Widget::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
-    painter.setPen(QPen(Qt::white));
+    painter.setPen(QPen(Qt::blue));
     for(int i=0; i < dots.count(); i++){
         if(i > 1){
             if(dots.at(i-1).x() != -100 && dots.at(i).x() != -100)

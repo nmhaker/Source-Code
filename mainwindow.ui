@@ -38,7 +38,7 @@
    <property name="styleSheet">
     <string notr="true"/>
    </property>
-   <widget class="QListWidget" name="listWidget_2">
+   <widget class="ListWidgetZaPrijatelje" name="listWidget_2">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -135,6 +135,13 @@ color:white;</string>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>ListWidgetZaPrijatelje</class>
+   <extends>QListWidget</extends>
+   <header>listwidgetzaprijatelje.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

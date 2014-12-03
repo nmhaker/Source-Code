@@ -65,6 +65,39 @@ public slots:
     void dodajNovogPrijatelja(QString i_p);
     void proveriDostupnostImenaKorisnika(QString i_p);
 
+private slots:
+
+    void handle_empty(QString str);
+    //Error handles
+    void handle_error_3(QString str);
+    void handle_error_101(QString str);
+    void handle_error_103(QString str);
+    void handle_error_104(QString str);
+    void handle_error_106(QString str);
+    void handle_error_107(QString str);
+    //Response handles
+    void handle_response_100(QString str);
+    void handle_response_101(QString str);
+    void handle_response_102(QString str);
+    void handle_response_103(QString str);
+    void handle_response_104(QString str);
+    void handle_response_105(QString str);
+    void handle_response_106(QString str);
+    void handle_response_107(QString str);
+    void handle_response_108(QString str);
+    void handle_response_110(QString str);
+    void handle_response_111(QString str);
+    void handle_response_112(QString str);
+    void handle_response_114(QString str);
+    void handle_response_115(QString str);
+    void handle_response_116(QString str);
+    void handle_response_117(QString str);
+    void handle_response_118(QString str);
+    void handle_response_119(QString str);
+    void handle_response_120(QString str);
+    void handle_response_121(QString str);
+    void handle_response_122(QString str);
+
 
 signals:
     void poslataPoruka();
