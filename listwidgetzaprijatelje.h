@@ -16,7 +16,6 @@ public:
 
 protected:
 
-
 private:
     QVBoxLayout *vLay;
     QPushButton *deleteFriend_button;
@@ -24,6 +23,9 @@ private:
 
 private slots:
     void handle_DeleteFriend();
+
+signals:
+    void obrisiPrijatelja();
 
 };
 
@@ -39,10 +41,18 @@ protected:
 
 private:
     PopupWidgetMenu *popupWidget;
+
+    QPoint lastPoint;
+
+    bool online;
 signals:
+    void posaljiImePrijateljaZaBrisanje(const QString & ime_prijatelja);
+    void potrebnoStanjeLogovanja();
 
 public slots:
     void showMenu(const QPoint &pos);
+    void handleObrisiPrijatelja();
+    void primiStanjeLogovanja(bool p);
 
 };
 

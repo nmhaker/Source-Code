@@ -3,7 +3,7 @@
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEPLOY";
+    this->_mode = "DEVELOPMENT";
     this->_online = false;
 
     this->_primaoc = "NOT_SET";
@@ -257,6 +257,19 @@ void NetworkHandle::dodajNovogPrijatelja(QString i_p)
     this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
 
+void NetworkHandle::obrisiPrijatelja(const QString &ime_prijatelja)
+{
+    QUrlQuery params;
+    params.addQueryItem("key", _secretKey);
+    params.addQueryItem("action", "15");
+    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+    params.addQueryItem("ime_prijatelja", ime_prijatelja);
+
+    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+
+    this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
 void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
 {
     QUrlQuery params;
@@ -268,6 +281,11 @@ void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
     this->_networkAccessManager->post(*(this->_networkRequest), data);
+}
+
+void NetworkHandle::dajStanjeLogovanja()
+{
+    emit posaljistanjeLogovanja(this->_online);
 }
 
 void NetworkHandle::handle_empty(QString str)
@@ -506,6 +524,14 @@ void NetworkHandle::handle_response_122(QString str)
     qDebug() << "Prazan upit" << endl;
 }
 
+void NetworkHandle::handle_response_123(QString str)
+{
+    emit ocistiListView();
+    emit ocistiListWidget2();
+    emit getMyFriends();
+    qDebug() << "Uspesno izbrisan prijatelja " << endl;
+}
+
 void NetworkHandle::handleRequestResponse(QNetworkReply *r)
 {
 
@@ -622,6 +648,10 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         else if(str.contains("RESPONSE_122"))
         {
              handle_response_122(str);
+        }
+        else if(str.contains("RESPONSE_123"))
+        {
+             handle_response_123(str);
         }
         else
         {

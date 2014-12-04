@@ -63,7 +63,10 @@ public slots:
     void poveziKreatora();
 
     void dodajNovogPrijatelja(QString i_p);
+    void obrisiPrijatelja(const QString & ime_prijatelja);
     void proveriDostupnostImenaKorisnika(QString i_p);
+
+    void dajStanjeLogovanja();
 
 private slots:
 
@@ -97,6 +100,7 @@ private slots:
     void handle_response_120(QString str);
     void handle_response_121(QString str);
     void handle_response_122(QString str);
+    void handle_response_123(QString str);
 
 
 signals:
@@ -128,6 +132,8 @@ signals:
     void postojiKorisnik(bool);
 
     void emitPristigleKoordinate(QByteArray data);
+
+    void posaljistanjeLogovanja(bool p);
 };
 
 #endif // NETWORKHANDLE_H

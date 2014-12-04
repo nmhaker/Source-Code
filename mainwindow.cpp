@@ -99,25 +99,26 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
-
+    connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
     connect(this->ui->lineEdit, SIGNAL(returnPressed()), this, SLOT(posaljiPoruku()));
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
-    connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
-    connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(update()));
-    connect(this->networkHandle, SIGNAL(poslataPoruka()), this, SLOT(refreshujMessageView()));
+    connect(this->ui->listWidget_2, SIGNAL(posaljiImePrijateljaZaBrisanje(QString)), this->networkHandle, SLOT(obrisiPrijatelja(QString)));
+    connect(this->ui->listWidget_2, SIGNAL(potrebnoStanjeLogovanja()), this->networkHandle, SLOT(dajStanjeLogovanja()));
 
     connect(this->model, SIGNAL(primiPoruku(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
+    connect(this->model, SIGNAL(refreshedModel()), this, SLOT(refreshujMessageView()));
+
+    connect(this->networkHandle, SIGNAL(posaljistanjeLogovanja(bool)), this->ui->listWidget_2, SLOT(primiStanjeLogovanja(bool)));
+    connect(this->networkHandle, SIGNAL(poslataPoruka()), this->ui->listView, SLOT(update()));
+    connect(this->networkHandle, SIGNAL(poslataPoruka()), this, SLOT(refreshujMessageView()));
     connect(this->networkHandle, SIGNAL(novaPoruka(QString,QString)), this->model, SLOT(dodajPoruku(QString,QString)));
     connect(this->networkHandle, SIGNAL(korisnickoIme(QString)), this->model, SLOT(postaviKorisnika(QString)));
-
     connect(this->networkHandle, SIGNAL(shutdownApplication()), this, SLOT(close()));
     connect(this->networkHandle, SIGNAL(showMessageNotification(QString,QString)), this, SLOT(prikaziPoruku(QString, QString)));
     connect(this->networkHandle, SIGNAL(showMessageNotificationForAdmin(QString,QString)), this, SLOT(prikaziPorukuZaAdmina(QString, QString)));
     connect(this->networkHandle, SIGNAL(setTimerInterval(int)), this, SLOT(postaviIntervalTajmera(int)));
-
     connect(this->networkHandle, SIGNAL(dodajPrijateljeUlistWidget2(QString)), this, SLOT(dodajPrijateljeUlistWidget2(QString)));
     connect(this->networkHandle, SIGNAL(ocistiListView()), this->model, SLOT(clear()));
-    connect(this->model, SIGNAL(refreshedModel()), this, SLOT(refreshujMessageView()));
     connect(this->networkHandle, SIGNAL(ocistiListWidget2()), this->ui->listWidget_2, SLOT(clear()));
     connect(this->networkHandle, SIGNAL(potrebnoJeIzlogovatiSe()), this, SLOT(izlogujSe()));
     connect(this->networkHandle, SIGNAL(potrebnoJePonovoUlogovatiSe()), this, SLOT(ulogujSe()));
