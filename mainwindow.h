@@ -24,6 +24,7 @@
 #include "dialogzadodavanjeprijatelja.h"
 #include "pomerac.h"
 #include "painterholder.h"
+#include "statuswidget.h"
 
 namespace Ui {
 class MainWindow;
@@ -42,6 +43,7 @@ protected:
     void closeEvent(QCloseEvent *e);
     void keyPressEvent(QKeyEvent *e);
     void paintEvent(QPaintEvent *e);
+
 
 private:
 
@@ -73,6 +75,7 @@ private:
 
     PainterHolder *crtac;
 
+    StatusWidget *statusWidget;
 
 
 public slots:
@@ -99,9 +102,13 @@ public slots:
 
     void omoguciKontroluZaSlanjePoruka(bool p);
     void updatePozicijuProzora(const QPoint &p);
+    void otvoriCrtac();
+
+
 signals:
     void poveziKreatora();
     void noviPrijatelj(const QString p);
+
 };
 
 #endif // MAINWINDOW_H

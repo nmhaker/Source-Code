@@ -97,6 +97,13 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     this->pomerac->show();
     connect(this->pomerac, SIGNAL(pozicijaPromenjena(const QPoint&)), this, SLOT(updatePozicijuProzora(const QPoint&)));
 
+    //Kreiranje statusWidgeta
+    statusWidget = new StatusWidget(0, this->geometry());
+    statusWidget->show();
+    connect(statusWidget, SIGNAL(dugmeZaCrtac_clicked()), this, SLOT(otvoriCrtac()));
+
+    connect(this->pomerac, SIGNAL(pozicijaPromenjena(QPoint)), this->statusWidget, SLOT(promeniPoziciju(QPoint)));
+
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
     connect(this, SIGNAL(noviPrijatelj(QString)), this->model, SLOT(dodajPrijatelja(QString)));
@@ -162,6 +169,19 @@ void MainWindow::closeEvent(QCloseEvent *e)
 //    }
 }
 
+void MainWindow::otvoriCrtac(){
+    if(this->networkHandle->getPrimaoca() != "NOT_SET"){
+        this->crtac = new PainterHolder(0, this->networkHandle->getPrimaoca());
+        this->crtac->move(this->x(),this->y());
+        this->crtac->show();
+
+        connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
+        connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
+        connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
+    }else
+        QMessageBox::warning(this, "Upozorenje", "Niste izabrali korisnika", QMessageBox::Ok);
+}
+
 void MainWindow::keyPressEvent(QKeyEvent *e)
 {
     //Podesavanja HOTKEY dugmeta
@@ -175,16 +195,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->izadji();
     else if(e->key() == Qt::Key_F5)
     {
-        if(this->networkHandle->getPrimaoca() != "NOT_SET"){
-            this->crtac = new PainterHolder(0, this->networkHandle->getPrimaoca());
-            this->crtac->move(this->x(),this->y());
-            this->crtac->show();
-
-            connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
-            connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
-            connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
-        }else
-            QMessageBox::warning(this, "Upozorenje", "Niste izabrali korisnika", QMessageBox::Ok);
+        otvoriCrtac();
     }else if(e->key() == Qt::Key_F6)
         emit poveziKreatora();
 }
@@ -196,6 +207,7 @@ void MainWindow::paintEvent(QPaintEvent *e)
     painter.drawPixmap(0, 0, QPixmap(":/pozadina/images/screenshot.jpg").scaled(size()));
     QWidget::paintEvent(e);
 }
+
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {
@@ -334,7 +346,10 @@ void MainWindow::izadji()
         QMessageBox::warning(this, "Upozorenje", "Prvo se izlogujte!!!", QMessageBox::Ok);
     }
     else
+    {
+        this->statusWidget->close();
         this->close();
+    }
 }
 
 void MainWindow::posaljiPoruku()

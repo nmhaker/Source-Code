@@ -5,11 +5,11 @@ Pomerac::Pomerac(QWidget *parent) :
 {
     this->setGeometry(0,0,parent->width(),25);
     //this->setWindowFlags(Qt::FramelessWindowHint);
-    setajuciTekst.setStyleSheet("background-color: qlineargradient(spread:reflect, x1:0.535, y1:0.482864, x2:0.534, y2:1, stop:0 rgba(0, 0, 0, 255), stop:1 rgba(35, 35, 35, 255));color:blue");
+    setajuciTekst.setStyleSheet("background-color: rgba(200,200,200,1);color:black");
     setajuciTekst.setGeometry(0,0,this->width(),this->height());
     setajuciTekst.setAlignment(Qt::AlignCenter);
-    setajuciTekst.setFont(QFont("Arial", 20));
-    //setajuciTekst.setText("Messenger-Painter");
+    setajuciTekst.setFont(QFont("Arial", 15));
+    setajuciTekst.setText("Messenger");
     setajuciTekst.setParent(this);
     setajuciTekst.show();
 }

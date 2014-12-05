@@ -2,4 +2,7 @@
     <qresource prefix="/pozadina">
         <file>images/screenshot.jpg</file>
     </qresource>
+    <qresource prefix="/statusWidget">
+        <file>images/DugmeZaCrtac.jpg</file>
+    </qresource>
 </RCC>

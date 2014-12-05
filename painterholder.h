@@ -48,25 +48,5 @@ public slots:
 
 };
 
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-
-class FormaZaPrimaoca : public QWidget
-{
-    Q_OBJECT
-public:
-    explicit FormaZaPrimaoca(QWidget *parent = 0);
-    ~FormaZaPrimaoca();
-
-    QLabel *label1;
-    QLineEdit *line_edit1;
-    QPushButton *push_button1;
-
-signals:
-    void emitujImePrimaoca(QString d);
-private slots:
-    void posaljiImePrimaoca();
-};
 
 #endif // PAINTERHOLDER_H

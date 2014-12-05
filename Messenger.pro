@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     pomerac.cpp \
     painterholder.cpp \
     widget.cpp \
-    listwidgetzaprijatelje.cpp
+    listwidgetzaprijatelje.cpp \
+    statuswidget.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     pomerac.h \
     painterholder.h \
     widget.h \
-    listwidgetzaprijatelje.h
+    listwidgetzaprijatelje.h \
+    statuswidget.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

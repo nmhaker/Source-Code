@@ -26,6 +26,8 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     connect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
 
     tajmerZaKoordinate->start();
+
+    //this->setWindowFlags(Qt::FramelessWindowHint);
 }
 
 PainterHolder::~PainterHolder()
@@ -79,34 +81,3 @@ void PainterHolder::postaviPrimaoca(QString p)
     tajmerZaKoordinate->start();
 }
 
-
-//KLASA FORMAZAPRIMAOCA--------
-
-
-FormaZaPrimaoca::FormaZaPrimaoca(QWidget *parent) : QWidget(parent)
-{
-
-    label1 = new QLabel("Unesite ime primaoca", this);
-    line_edit1 = new QLineEdit(this);
-    push_button1 = new QPushButton("Ok", this);
-
-    label1->setGeometry(20,100,200,50);
-    line_edit1->setGeometry(240,100,200,50);
-    push_button1->setGeometry(200,220,100,50);
-
-    connect(this->push_button1, SIGNAL(clicked()), this, SLOT(posaljiImePrimaoca()));
-}
-
-FormaZaPrimaoca::~FormaZaPrimaoca()
-{
-    delete label1;
-    delete line_edit1;
-    delete push_button1;
-}
-
-void FormaZaPrimaoca::posaljiImePrimaoca()
-{
-    emit emitujImePrimaoca(this->line_edit1->text());
-
-    this->close();
-}
