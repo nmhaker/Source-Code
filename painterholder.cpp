@@ -10,14 +10,8 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     zatvoriButton = new QPushButton("Zatvori prozor", this);
     zatvoriButton->move(this->width()/2 - this->zatvoriButton->width()/2, this->height()-this->zatvoriButton->height());
     connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
-    _primaoc = primaoc;
 
-    if(_primaoc == 0){
-        form1 = new FormaZaPrimaoca(this);
-        form1->move(this->x() + 30, this->y() + 30);
-        connect(form1, SIGNAL(emitujImePrimaoca(QString)), this, SLOT(postaviPrimaoca(QString)));
-    }else
-        _primaoc = primaoc;
+    _primaoc = primaoc;
 
     connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray)), this, SLOT(preusmeriSignal(QByteArray)));
 
