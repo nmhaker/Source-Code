@@ -68,6 +68,8 @@ public slots:
 
     void dajStanjeLogovanja();
 
+    void obrisiRazgovor();
+
 private slots:
 
     void handle_empty(QString str);
@@ -101,7 +103,7 @@ private slots:
     void handle_response_121(QString str);
     void handle_response_122(QString str);
     void handle_response_123(QString str);
-
+    void handle_response_124(QString str);
 
 signals:
     void poslataPoruka();

@@ -5,4 +5,7 @@
     <qresource prefix="/statusWidget">
         <file>images/DugmeZaCrtac.jpg</file>
     </qresource>
+    <qresource prefix="/dugmadi">
+        <file>images/DugmeZaBrisanje.jpg</file>
+    </qresource>
 </RCC>

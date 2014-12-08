@@ -27,7 +27,10 @@ SOURCES += main.cpp\
     painterholder.cpp \
     widget.cpp \
     listwidgetzaprijatelje.cpp \
-    statuswidget.cpp
+    statuswidget.cpp \
+    listviewzaporuke.cpp \
+    dugmad.cpp \
+    painterHolderTester.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -43,7 +46,9 @@ HEADERS  += mainwindow.h \
     painterholder.h \
     widget.h \
     listwidgetzaprijatelje.h \
-    statuswidget.h
+    statuswidget.h \
+    listviewzaporuke.h \
+    dugmad.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

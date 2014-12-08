@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>500</width>
+    <width>565</width>
     <height>350</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>500</width>
+    <width>565</width>
     <height>350</height>
    </size>
   </property>
@@ -43,7 +43,7 @@
      <rect>
       <x>340</x>
       <y>130</y>
-      <width>141</width>
+      <width>161</width>
       <height>201</height>
      </rect>
     </property>
@@ -73,7 +73,7 @@ color:white;</string>
      <rect>
       <x>340</x>
       <y>90</y>
-      <width>141</width>
+      <width>161</width>
       <height>31</height>
      </rect>
     </property>
@@ -94,7 +94,7 @@ color:white;</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QListView" name="listView">
+   <widget class="ListViewZaPoruke" name="listView">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -140,6 +140,11 @@ color:white;</string>
    <class>ListWidgetZaPrijatelje</class>
    <extends>QListWidget</extends>
    <header>listwidgetzaprijatelje.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ListViewZaPoruke</class>
+   <extends>QListView</extends>
+   <header>listviewzaporuke.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

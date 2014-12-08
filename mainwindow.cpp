@@ -98,11 +98,9 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->pomerac, SIGNAL(pozicijaPromenjena(const QPoint&)), this, SLOT(updatePozicijuProzora(const QPoint&)));
 
     //Kreiranje statusWidgeta
-    statusWidget = new StatusWidget(0, this->geometry());
+    statusWidget = new StatusWidget(this, this->geometry());
     statusWidget->show();
     connect(statusWidget, SIGNAL(dugmeZaCrtac_clicked()), this, SLOT(otvoriCrtac()));
-
-    connect(this->pomerac, SIGNAL(pozicijaPromenjena(QPoint)), this->statusWidget, SLOT(promeniPoziciju(QPoint)));
 
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
@@ -139,6 +137,8 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->networkHandle, SIGNAL(uspesnoIzlogovanje()), this, SLOT(changeState()));
 
     connect(buttonAddFriend, SIGNAL(clicked()), this, SLOT(dodajNovogPrijatelja()));
+
+    connect(this->ui->listView, SIGNAL(obrisiCet()), this->networkHandle, SLOT(obrisiRazgovor()));
 
 
     //------------------------------
@@ -207,7 +207,6 @@ void MainWindow::paintEvent(QPaintEvent *e)
     painter.drawPixmap(0, 0, QPixmap(":/pozadina/images/screenshot.jpg").scaled(size()));
     QWidget::paintEvent(e);
 }
-
 
 void MainWindow::postaviPrimaoca(QListWidgetItem *primaoc)
 {

@@ -44,7 +44,6 @@ protected:
     void keyPressEvent(QKeyEvent *e);
     void paintEvent(QPaintEvent *e);
 
-
 private:
 
     Ui::MainWindow *ui;

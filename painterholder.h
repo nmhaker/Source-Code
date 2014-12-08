@@ -5,10 +5,33 @@
 #include <QPainter>
 #include <QTimer>
 #include <QPushButton>
+#include <QHBoxLayout>
+#include <QColorDialog>
 
 #include "widget.h"
 
-class FormaZaPrimaoca;
+class PanelKontrola : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit PanelKontrola(QWidget *parent = 0);
+
+protected:
+    void paintEvent(QPaintEvent *);
+    void enterEvent(QEvent *);
+
+private:
+    QColorDialog *colorDialog;
+    QPushButton *izaberiBoju;
+
+public slots:
+    void prikaziColorDialog();
+
+
+signals:
+    void izabranaBoja(QColor);
+};
 
 class PainterHolder : public QWidget
 {
@@ -22,15 +45,16 @@ protected:
     void keyPressEvent(QKeyEvent *);
 
 private:
-    Widget *ekranZaCrtanje;
 
     QString _primaoc;
 
     QTimer *tajmerZaKoordinate;
 
-    FormaZaPrimaoca *form1;
-
     QPushButton *zatvoriButton;
+
+    QHBoxLayout *hLay;
+    PanelKontrola *panel;
+    Widget *ekranZaCrtanje;
 
 signals:
     void saljiPaket(QByteArray paket, QString primaocPaketa);
@@ -45,8 +69,11 @@ public slots:
     void posaljiZahtevZaKoordinate();
 
     void postaviPrimaoca(QString p);
+    void primiBojuOlovke(QColor);
 
 };
+
+
 
 
 #endif // PAINTERHOLDER_H

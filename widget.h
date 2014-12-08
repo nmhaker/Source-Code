@@ -8,10 +8,17 @@
 #include <QPoint>
 
 #include <QDebug>
+#include <QColor>
 
 namespace Ui {
 class Widget;
 }
+
+struct Pixel{
+    int x;
+    int y;
+    QColor boja;
+};
 
 using namespace std;
 
@@ -30,6 +37,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
+    void resizeEvent(QResizeEvent *);
+
 private:
     Ui::Widget *ui;
 
@@ -42,13 +51,15 @@ private:
 
     void checkData();
 
+    QColor bojaOlovke;
+
 signals:
     void crtano(QByteArray paket);
 
 public slots:
 
-    void readDataFromSocket();
     void ubaciKordinate(QByteArray paket);
+    void postaviBoju(QColor c);
 };
 
 #endif // WIDGET_H

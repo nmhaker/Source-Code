@@ -8,7 +8,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
 
     pretisnutoDugme = false;
-
+    bojaOlovke = Qt::blue;
 }
 
 Widget::~Widget()
@@ -19,7 +19,13 @@ Widget::~Widget()
 void Widget::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
-    painter.setPen(QPen(Qt::blue));
+
+    //Paint pozadinu
+    painter.setBrush(QBrush(QColor(30,30,30,255)));
+    painter.drawRect(this->rect());
+
+    //Crtaj kordinate korisnika i prijatelja
+    painter.setPen(QPen(bojaOlovke));
     for(int i=0; i < dots.count(); i++){
         if(i > 1){
             if(dots.at(i-1).x() != -100 && dots.at(i).x() != -100)
@@ -83,7 +89,6 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
         qDebug() << "Y = " << e->y() << endl;
         kordinate.append(QString::number(e->x())).append(delimiter);
         kordinate.append(QString::number(e->y())).append(delimiter);
-
     }
 
     this->repaint();
@@ -106,50 +111,16 @@ void Widget::keyPressEvent(QKeyEvent *e)
     QWidget::keyPressEvent(e);
 }
 
+void Widget::resizeEvent(QResizeEvent *e)
+{
+//    this->setGeometry(0,0,e->size().width()-200, e->size().height());
+
+    QWidget::resizeEvent(e);
+}
+
 void Widget::checkData()
 {
 
-}
-
-
-void Widget::readDataFromSocket()
-{
-    QByteArray ba; //= socketHandle->readLine();
-
-    qDebug() <<  "Citam podatke socketa: " << ba << endl;
-
-    int brojTacaka;
-    QList<QString> listaTacaka;
-    QString tacka;
-    for(int i=0;i<ba.size();i++){
-        if(ba.at(i) != '%')
-            tacka.append(ba.at(i));
-        else{
-            listaTacaka.append(tacka);
-            brojTacaka++;
-            tacka.clear();
-        }
-    }
-
-    int counter = 0;
-    int iks;
-    int ipsilon;
-
-    for(int i=0; i < listaTacaka.count(); i++){
-        if(i % 2 == 0){
-            iks = listaTacaka.at(i).toInt();
-            counter++;
-        }else{
-            ipsilon = listaTacaka.at(i).toInt();
-            counter++;
-        }
-        if(counter == 2){
-            dotsPrijatelja.append(QPoint(iks, ipsilon));
-            counter = 0;
-        }
-    }
-
-    this->repaint();
 }
 
 void Widget::ubaciKordinate(QByteArray paket)
@@ -186,4 +157,9 @@ void Widget::ubaciKordinate(QByteArray paket)
     }
 
     this->repaint();
+}
+
+void Widget::postaviBoju(QColor c)
+{
+    this->bojaOlovke = c;
 }
