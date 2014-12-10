@@ -9,6 +9,7 @@ Widget::Widget(QWidget *parent) :
 
     pretisnutoDugme = false;
     bojaOlovke = Qt::blue;
+    poslednjiBrojDots = 0;
 }
 
 Widget::~Widget()
@@ -25,25 +26,36 @@ void Widget::paintEvent(QPaintEvent *e)
     painter.drawRect(this->rect());
 
     //Crtaj kordinate korisnika i prijatelja
-    painter.setPen(QPen(bojaOlovke));
     for(int i=0; i < dots.count(); i++){
         if(i > 1){
-            if(dots.at(i-1).x() != -100 && dots.at(i).x() != -100)
-                painter.drawLine(dots.at(i-1), dots.at(i));
+            if(dots.at(i-1).x != -100 && dots.at(i).x != -100)
+            {
+                painter.setPen(dots.at(i-1).boja);
+                painter.drawLine(QPoint(dots.at(i-1).x, dots.at(i-1).y), QPoint(dots.at(i).x,dots.at(i).y));
+            }
         }else{
-            if(dots.at(i).x() != -100)
-                painter.drawPoint(dots.at(i));
+            if(dots.at(i).x != -100)
+            {
+                painter.setPen(dots.at(i).boja);
+                painter.drawPoint(QPoint(dots.at(i).x, dots.at(i).y));
+            }
         }
     }
 
     painter.setPen(QPen(Qt::red));
     for(int i=0; i < dotsPrijatelja.count(); i++){
         if(i > 1){
-            if(dotsPrijatelja.at(i-1).x() != -100 && dotsPrijatelja.at(i).x() != -100)
-                painter.drawLine(dotsPrijatelja.at(i-1), dotsPrijatelja.at(i));
+            if(dotsPrijatelja.at(i-1).x != -100 && dotsPrijatelja.at(i).x != -100)
+            {
+                painter.setPen(dotsPrijatelja.at(i-1).boja);
+                painter.drawLine(QPoint(dotsPrijatelja.at(i-1).x, dotsPrijatelja.at(i-1).y), QPoint(dotsPrijatelja.at(i).x, dotsPrijatelja.at(i).y));
+            }
         }else{
-            if(dotsPrijatelja.at(i).x() != -100)
-                painter.drawPoint(dotsPrijatelja.at(i));
+            if(dotsPrijatelja.at(i).x != -100)
+            {
+                painter.setPen(dotsPrijatelja.at(i-1).boja);
+                painter.drawPoint(QPoint(dotsPrijatelja.at(i).x, dotsPrijatelja.at(i).y));
+            }
         }
     }
 
@@ -59,21 +71,37 @@ void Widget::mousePressEvent(QMouseEvent *e)
 
 void Widget::mouseReleaseEvent(QMouseEvent *e)
 {
+
     pretisnutoDugme = false;
-    dots.append(QPoint(-100,0));
 
-    QString delimiter("%");
+    QDataStream out(&kordinate, QIODevice::WriteOnly);
 
-    kordinate.append(QString::number(-100)).append(delimiter);
-    kordinate.append(QString::number(-100)).append(delimiter);
+    out << dots.size()+1-poslednjiBrojDots;
+    qDebug() << "Ukupan broj tacaka spremnih za obradu je: " << dots.size()-poslednjiBrojDots+1 << endl;
 
-//    tcpSocketZaSlanje->write(kordinate);
-//    if(!tcpSocketZaSlanje->flush())
-//        qDebug() << tcpSocketZaSlanje->errorString() << endl;
+    foreach(Pixel tacka, dots){
+        out << tacka.x;
+        out << tacka.y;
+        out << tacka.boja;
+        qDebug() << "Unutar foreach" << endl;
+    }
+
+    Pixel p;
+    p.x = -100;
+    p.y = 0;
+    p.boja = Qt::black;
+    dots.append(p);
+
+    out << p.x;
+    out << p.y;
+    out << p.boja;
+    qDebug() << "Size paketa pre samoga slanja je : " << kordinate.size();
+    out.device()->reset();
+    out.device()->close();
 
     emit crtano(kordinate);
 
-    kordinate.clear();
+    poslednjiBrojDots = dots.size();
 
     QWidget::mouseReleaseEvent(e);
 }
@@ -81,34 +109,16 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 void Widget::mouseMoveEvent(QMouseEvent *e)
 {
     if(pretisnutoDugme){
-        dots.append(e->pos());
-
-        QString delimiter("%");
-
-        qDebug() << "X = " << e->x() << endl;
-        qDebug() << "Y = " << e->y() << endl;
-        kordinate.append(QString::number(e->x())).append(delimiter);
-        kordinate.append(QString::number(e->y())).append(delimiter);
+        Pixel p;
+        p.x = e->pos().x();
+        p.y = e->pos().y();
+        p.boja = this->bojaOlovke;
+        dots.append(p);
     }
 
     this->repaint();
 
     QWidget::mouseMoveEvent(e);
-}
-
-void Widget::keyPressEvent(QKeyEvent *e)
-{
-//    if(e->key() == Qt::Key_F1){
-//        QHostAddress address("178.221.227.87");
-//        this->tcpSocketZaSlanje->connectToHost(address,4900);
-//    }
-//    else if(e->key() == Qt::Key_F2){
-//        this->dots.clear();
-//        this->dotsPrijatelja.clear();
-//    }
-
-
-    QWidget::keyPressEvent(e);
 }
 
 void Widget::resizeEvent(QResizeEvent *e)
@@ -123,38 +133,25 @@ void Widget::checkData()
 
 }
 
-void Widget::ubaciKordinate(QByteArray paket)
+void Widget::ubaciKordinate(QByteArray p)
 {
-    int brojTacaka;
-    QList<QString> listaTacaka;
-    QString tacka;
-    for(int i=0;i<paket.size();i++){
-        if(paket.at(i) != '%')
-            tacka.append(paket.at(i));
-        else{
-            listaTacaka.append(tacka);
-            brojTacaka++;
-            tacka.clear();
-        }
+    QByteArray paket(p);
+    QDataStream in(&paket, QIODevice::ReadOnly);
+
+    int brojPiksela;
+    in >> brojPiksela;
+
+    qDebug() << "Broj piksela za crtanje je: " << brojPiksela;
+
+    for(int i=0; i < brojPiksela; i++)
+    {
+        Pixel p;
+        in >> p.x >> p.y >> p.boja;
+        qDebug() << "P.x: " << p.x << "P.y: " << p.y << "P.boja: " << p.boja << endl;
+        dotsPrijatelja.append(p);
     }
 
-    int counter = 0;
-    int iks;
-    int ipsilon;
-
-    for(int i=0; i < listaTacaka.count(); i++){
-        if(i % 2 == 0){
-            iks = listaTacaka.at(i).toInt();
-            counter++;
-        }else{
-            ipsilon = listaTacaka.at(i).toInt();
-            counter++;
-        }
-        if(counter == 2){
-            dotsPrijatelja.append(QPoint(iks, ipsilon));
-            counter = 0;
-        }
-    }
+    in.device()->close();
 
     this->repaint();
 }

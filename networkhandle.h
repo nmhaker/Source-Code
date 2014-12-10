@@ -100,7 +100,7 @@ private slots:
     void handle_response_118(QString str);
     void handle_response_119(QString str);
     void handle_response_120(QString str);
-    void handle_response_121(QString str);
+    void handle_response_121(QByteArray msg);
     void handle_response_122(QString str);
     void handle_response_123(QString str);
     void handle_response_124(QString str);

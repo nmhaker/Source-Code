@@ -16,7 +16,7 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
 
     zatvoriButton = new QPushButton("Zatvori prozor", this->panel);
     zatvoriButton->move(0,this->height()-zatvoriButton->height());
-    connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
 
     _primaoc = primaoc;
 
@@ -27,8 +27,6 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     connect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
 
     tajmerZaKoordinate->start();
-
-    this->setWindowFlags(Qt::FramelessWindowHint);
 
     this->showMaximized();
 }

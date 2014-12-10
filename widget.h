@@ -36,14 +36,15 @@ protected:
     void mousePressEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
-    void keyPressEvent(QKeyEvent *);
     void resizeEvent(QResizeEvent *);
 
 private:
     Ui::Widget *ui;
 
-    QVector<QPoint> dots;
-    QVector<QPoint> dotsPrijatelja;
+    QVector<Pixel> dots;
+    QVector<Pixel> dotsPrijatelja;
+
+    int poslednjiBrojDots;
 
     QByteArray kordinate;
 
@@ -58,7 +59,7 @@ signals:
 
 public slots:
 
-    void ubaciKordinate(QByteArray paket);
+    void ubaciKordinate(QByteArray p);
     void postaviBoju(QColor c);
 };
 

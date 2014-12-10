@@ -198,8 +198,11 @@ void NetworkHandle::sendCoordinates(QByteArray paket, QString primaocPaketa)
     params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "13");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("data", paket);
+    params.addQueryItem("data", paket.data());
     params.addQueryItem("primaoc", primaocPaketa);
+
+    qDebug() << "DATA paketa je: " << paket.data() << endl;
+    qDebug() << "SIZE paketa je: " << paket.size() << endl;
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -525,11 +528,12 @@ void NetworkHandle::handle_response_120(QString str)
     qDebug() << "Uspesno poslata koordinata" << endl;
 }
 
-void NetworkHandle::handle_response_121(QString str)
+void NetworkHandle::handle_response_121(QByteArray msg)
 {
-    qDebug() << "Primam koordinate: " << str << endl;
-    str.remove(0, 12);
-    emit emitPristigleKoordinate(str.toUtf8());
+    QByteArray temp(msg);
+    qDebug() << "Primam koordinate: " << temp << endl;
+    temp.remove(0, 12);
+    emit emitPristigleKoordinate(temp);
 }
 
 void NetworkHandle::handle_response_122(QString str)
@@ -662,7 +666,7 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
         }
         else if(str.contains("RESPONSE_121"))
         {
-             handle_response_121(str);
+             handle_response_121(msg);
         }
         else if(str.contains("RESPONSE_122"))
         {
