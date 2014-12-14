@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QMainWindow>
+#include <QTextCodec>
 
 
 class NetworkHandle : public QObject

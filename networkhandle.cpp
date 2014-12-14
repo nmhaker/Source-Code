@@ -194,14 +194,21 @@ void NetworkHandle::getMyFriends()
 
 void NetworkHandle::sendCoordinates(QByteArray paket, QString primaocPaketa)
 {
+
+    QDataStream in(paket);
+
+    quint32 i;
+    in >> i;
+
+    qDebug() << "i je : " << i << endl;
+
     QUrlQuery params;
     params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "13");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("data", paket.data());
+    params.addQueryItem("data", paket);
     params.addQueryItem("primaoc", primaocPaketa);
 
-    qDebug() << "DATA paketa je: " << paket.data() << endl;
     qDebug() << "SIZE paketa je: " << paket.size() << endl;
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
@@ -531,8 +538,9 @@ void NetworkHandle::handle_response_120(QString str)
 void NetworkHandle::handle_response_121(QByteArray msg)
 {
     QByteArray temp(msg);
-    qDebug() << "Primam koordinate: " << temp << endl;
+    qDebug() << "Primam koordinate: "<< endl << temp << endl;
     temp.remove(0, 12);
+    qDebug() << "Posle trimovanja: " << temp << endl;
     emit emitPristigleKoordinate(temp);
 }
 
@@ -559,10 +567,13 @@ void NetworkHandle::handleRequestResponse(QNetworkReply *r)
 {
 
         QByteArray msg = r->readAll();
+
         QString str;
 
-        for(int i=0;i<msg.length();i++)
+        for(int i=0;i<msg.size();i++)
             str.append(msg.at(i));
+
+        qDebug() << msg.size() << " -- " << str.size() << endl;
 
         if(str.contains("ERROR_3"))
         {

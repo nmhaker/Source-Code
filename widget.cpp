@@ -71,12 +71,13 @@ void Widget::mousePressEvent(QMouseEvent *e)
 
 void Widget::mouseReleaseEvent(QMouseEvent *e)
 {
-
     pretisnutoDugme = false;
 
-    QDataStream out(&kordinate, QIODevice::WriteOnly);
+    QByteArray kordinate;
 
-    out << dots.size()+1-poslednjiBrojDots;
+    QDataStream out(&kordinate, QIODevice::ReadWrite);
+
+    out << (quint32)dots.size()+1-poslednjiBrojDots;
     qDebug() << "Ukupan broj tacaka spremnih za obradu je: " << dots.size()-poslednjiBrojDots+1 << endl;
 
     foreach(Pixel tacka, dots){
@@ -95,11 +96,22 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
     out << p.x;
     out << p.y;
     out << p.boja;
-    qDebug() << "Size paketa pre samoga slanja je : " << kordinate.size();
+
+    QByteArray buffer;
+
+    int count = kordinate.size();
+    const char *temp = new char[count];
+    temp = kordinate.constData();
+    buffer.append(temp, count);
+    delete [] temp;
+
+    qDebug() << "Size paketa pre samoga slanja je : " << buffer.size();
+
+    emit crtano(buffer);
+
     out.device()->reset();
     out.device()->close();
 
-    emit crtano(kordinate);
 
     poslednjiBrojDots = dots.size();
 
@@ -135,21 +147,20 @@ void Widget::checkData()
 
 void Widget::ubaciKordinate(QByteArray p)
 {
-    QByteArray paket(p);
-    QDataStream in(&paket, QIODevice::ReadOnly);
+    QDataStream in(&p, QIODevice::ReadOnly);
 
-    int brojPiksela;
+    quint64 brojPiksela;
     in >> brojPiksela;
 
     qDebug() << "Broj piksela za crtanje je: " << brojPiksela;
 
-    for(int i=0; i < brojPiksela; i++)
-    {
-        Pixel p;
-        in >> p.x >> p.y >> p.boja;
-        qDebug() << "P.x: " << p.x << "P.y: " << p.y << "P.boja: " << p.boja << endl;
-        dotsPrijatelja.append(p);
-    }
+//    for(int i=0; i < brojPiksela; i++)
+//    {
+//        Pixel p;
+//        in >> p.x >> p.y >> p.boja;
+//        qDebug() << "P.x: " << p.x << "P.y: " << p.y << "P.boja: " << p.boja << endl;
+//        dotsPrijatelja.append(p);
+//    }
 
     in.device()->close();
 

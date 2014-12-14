@@ -9,6 +9,8 @@
 
 #include <QDebug>
 #include <QColor>
+#include <QBuffer>
+#include <QTextCodec>
 
 namespace Ui {
 class Widget;

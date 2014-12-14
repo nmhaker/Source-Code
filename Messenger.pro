@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     statuswidget.cpp \
     listviewzaporuke.cpp \
     dugmad.cpp \
-    painterHolderTester.cpp
+    painterHolderTester.cpp \
+    serializator.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     listwidgetzaprijatelje.h \
     statuswidget.h \
     listviewzaporuke.h \
-    dugmad.h
+    dugmad.h \
+    serializator.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
