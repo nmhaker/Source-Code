@@ -42,7 +42,6 @@ void Widget::paintEvent(QPaintEvent *e)
         }
     }
 
-    painter.setPen(QPen(Qt::red));
     for(int i=0; i < dotsPrijatelja.count(); i++){
         if(i > 1){
             if(dotsPrijatelja.at(i-1).x != -100 && dotsPrijatelja.at(i).x != -100)
@@ -53,7 +52,7 @@ void Widget::paintEvent(QPaintEvent *e)
         }else{
             if(dotsPrijatelja.at(i).x != -100)
             {
-                painter.setPen(dotsPrijatelja.at(i-1).boja);
+                painter.setPen(dotsPrijatelja.at(i).boja);
                 painter.drawPoint(QPoint(dotsPrijatelja.at(i).x, dotsPrijatelja.at(i).y));
             }
         }
@@ -71,20 +70,17 @@ void Widget::mousePressEvent(QMouseEvent *e)
 
 void Widget::mouseReleaseEvent(QMouseEvent *e)
 {
-
     pretisnutoDugme = false;
 
     QDataStream out(&kordinate, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_3);
 
-    out << dots.size()+1-poslednjiBrojDots;
-    qDebug() << "Ukupan broj tacaka spremnih za obradu je: " << dots.size()-poslednjiBrojDots+1 << endl;
+//    out << dots.size()+1-poslednjiBrojDots;
 
-    foreach(Pixel tacka, dots){
-        out << tacka.x;
-        out << tacka.y;
-        out << tacka.boja;
-        qDebug() << "Unutar foreach" << endl;
-    }
+//    for(int i=poslednjiBrojDots; i < dots.size() - poslednjiBrojDots; i++)
+//    {
+//        out << dots.at(i).x << dots.at(i).y << dots.at(i).boja;
+//    }
 
     Pixel p;
     p.x = -100;
@@ -92,14 +88,20 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
     p.boja = Qt::black;
     dots.append(p);
 
-    out << p.x;
-    out << p.y;
-    out << p.boja;
-    qDebug() << "Size paketa pre samoga slanja je : " << kordinate.size();
-    out.device()->reset();
-    out.device()->close();
+    QVector<Pixel> novoDodavanje;
+
+    for(int i=poslednjiBrojDots; i < dots.size(); i++)
+    {
+        novoDodavanje.append(dots.at(i));
+    }
+
+    out << novoDodavanje;
+
+    qDebug() << "Poslato pixela: " << dots.size() << endl;
 
     emit crtano(kordinate);
+
+    out.device()->close();
 
     poslednjiBrojDots = dots.size();
 
@@ -114,6 +116,8 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
         p.y = e->pos().y();
         p.boja = this->bojaOlovke;
         dots.append(p);
+
+        qDebug() << p.x << " , " << p.y << " , " << p.boja << endl;
     }
 
     this->repaint();
@@ -133,22 +137,52 @@ void Widget::checkData()
 
 }
 
+QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v)
+{
+    s << quint32(v.size());
+
+    for (int i = 0; i < v.size(); i++)
+    {
+        s << v.at(i).x;
+        s << v.at(i).y;
+        s << v.at(i).boja;
+    }
+    return s;
+}
+
+QDataStream& operator>>(QDataStream& s, QVector<Pixel>& v)
+{
+    v.clear();
+    quint32 c;
+    s >> c;
+    v.resize(c);
+    for(int i = 0; i < c; i++) {
+        s >> v[i].x;
+        s >> v[i].y;
+        s >> v[i].boja;
+    }
+    return s;
+}
+
 void Widget::ubaciKordinate(QByteArray p)
 {
-    QByteArray paket(p);
-    QDataStream in(&paket, QIODevice::ReadOnly);
+    QByteArray decoded(QByteArray::fromHex(p));
 
-    int brojPiksela;
-    in >> brojPiksela;
+    QDataStream in(decoded);
+    in.setVersion(QDataStream::Qt_5_3);
 
-    qDebug() << "Broj piksela za crtanje je: " << brojPiksela;
+    qDebug() << "Pristigao paket" << endl;
 
-    for(int i=0; i < brojPiksela; i++)
+    QVector<Pixel> vektorPiksela;
+
+    in >> vektorPiksela;
+
+    qDebug() << "Broj piksela za obradu je: " << vektorPiksela.size() << endl;
+
+    for(int i=0; i < vektorPiksela.size(); i++)
     {
-        Pixel p;
-        in >> p.x >> p.y >> p.boja;
-        qDebug() << "P.x: " << p.x << "P.y: " << p.y << "P.boja: " << p.boja << endl;
-        dotsPrijatelja.append(p);
+        dotsPrijatelja.append(vektorPiksela.at(i));
+        qDebug() << vektorPiksela.at(i).x << " , " << vektorPiksela.at(i).y << " , " << vektorPiksela.at(i).boja;
     }
 
     in.device()->close();

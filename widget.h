@@ -15,8 +15,8 @@ class Widget;
 }
 
 struct Pixel{
-    int x;
-    int y;
+    quint32 x;
+    quint32 y;
     QColor boja;
 };
 
@@ -46,16 +46,16 @@ private:
 
     int poslednjiBrojDots;
 
-    QByteArray kordinate;
-
     bool pretisnutoDugme;
 
     void checkData();
 
     QColor bojaOlovke;
 
+    QByteArray kordinate;
+
 signals:
-    void crtano(QByteArray paket);
+    void crtano(QByteArray &paket);
 
 public slots:
 
@@ -63,4 +63,8 @@ public slots:
     void postaviBoju(QColor c);
 };
 
+QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v);
+QDataStream& operator>>(QDataStream& s, QVector<Pixel>& v);
+
 #endif // WIDGET_H
+

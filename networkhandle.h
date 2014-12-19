@@ -9,7 +9,8 @@
 #include <QMessageBox>
 #include <QObject>
 #include <QMainWindow>
-
+#include <QBuffer>
+#include <QFile>
 
 class NetworkHandle : public QObject
 {
@@ -54,7 +55,7 @@ public slots:
     void getFriends();
     void getMyFriends();
 
-    void sendCoordinates(QByteArray paket, QString primaocPaketa);
+    void sendCoordinates(QByteArray &paket, QString primaocPaketa);
     void downloadCoordinates(QString posiljaoc);
 
     void fixDatabase();

@@ -20,7 +20,7 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
 
     _primaoc = primaoc;
 
-    connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray)), this, SLOT(preusmeriSignal(QByteArray)));
+    connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray&)), this, SLOT(preusmeriSignal(QByteArray&)));
 
     tajmerZaKoordinate = new QTimer(this);
     tajmerZaKoordinate->setInterval(1000);
@@ -60,7 +60,7 @@ void PainterHolder::primiKordinate(QByteArray paket)
     this->ekranZaCrtanje->ubaciKordinate(paket);
 }
 
-void PainterHolder::preusmeriSignal(QByteArray s)
+void PainterHolder::preusmeriSignal(QByteArray &s)
 {
     emit saljiPaket(s, _primaoc);
 }

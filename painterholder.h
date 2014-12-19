@@ -57,7 +57,7 @@ private:
     Widget *ekranZaCrtanje;
 
 signals:
-    void saljiPaket(QByteArray paket, QString primaocPaketa);
+    void saljiPaket(QByteArray &paket, QString primaocPaketa);
     void zahtevZaKoordinate(QString primaoc);
     void gasenjeCrtaca();
 
@@ -65,7 +65,7 @@ signals:
 public slots:
 
     void primiKordinate(QByteArray paket);
-    void preusmeriSignal(QByteArray s);
+    void preusmeriSignal(QByteArray &s);
     void posaljiZahtevZaKoordinate();
 
     void postaviPrimaoca(QString p);

@@ -175,7 +175,7 @@ void MainWindow::otvoriCrtac(){
         this->crtac->move(this->x(),this->y());
         this->crtac->show();
 
-        connect(this->crtac, SIGNAL(saljiPaket(QByteArray, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray,QString)));
+        connect(this->crtac, SIGNAL(saljiPaket(QByteArray&, QString)), this->networkHandle, SLOT(sendCoordinates(QByteArray&,QString)));
         connect(this->crtac, SIGNAL(zahtevZaKoordinate(QString)), this->networkHandle, SLOT(downloadCoordinates(QString)));
         connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
     }else

@@ -3,7 +3,7 @@
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEVELOPMENT";
+    this->_mode = "DEPLOY";
     this->_online = false;
 
     this->_primaoc = "NOT_SET";
@@ -192,17 +192,17 @@ void NetworkHandle::getMyFriends()
     this->_networkAccessManager->post(*(this->_networkRequest), data);
 }
 
-void NetworkHandle::sendCoordinates(QByteArray paket, QString primaocPaketa)
+void NetworkHandle::sendCoordinates(QByteArray &paket, QString primaocPaketa)
 {
+
+    qDebug() << paket.toHex() << endl;
+
     QUrlQuery params;
     params.addQueryItem("key", _secretKey);
     params.addQueryItem("action", "13");
     params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("data", paket.data());
+    params.addQueryItem("data", paket.toHex());
     params.addQueryItem("primaoc", primaocPaketa);
-
-    qDebug() << "DATA paketa je: " << paket.data() << endl;
-    qDebug() << "SIZE paketa je: " << paket.size() << endl;
 
     QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
@@ -308,7 +308,7 @@ void NetworkHandle::handle_empty(QString str)
 {
     qDebug() << "UPOZORENJE" <<  "Prazan RESPONSE, moguc problem: \n Nemate internet konekciju \n Server trenutno nedostupan" << endl << str << endl;
     emit showMessageNotification("UPOZORENJE" , "Greska u serveru, proverite internet konekciju, ili kontaktirajte administratora");
-    emit shutdownApplication();
+    //emit shutdownApplication();
 }
 
 void NetworkHandle::handle_error_3(QString str)
@@ -319,8 +319,9 @@ void NetworkHandle::handle_error_3(QString str)
 
 void NetworkHandle::handle_error_101(QString str)
 {
-    emit showMessageNotification("Kriticna Greska", "Greska u upitu u bazi podataka");
-    emit shutdownApplication();
+    qDebug() << "Neka greska u bazi podataka: " << str << endl;
+    emit showMessageNotification("Kriticna Greska", "Greska u upitu u bazi podataka: " + str.remove(0,9) + " poslednja radnja nije odradjena kako treba, molimo ponovite radnju ponovo");
+    //emit shutdownApplication();
 }
 
 void NetworkHandle::handle_error_103(QString str)
@@ -531,8 +532,10 @@ void NetworkHandle::handle_response_120(QString str)
 void NetworkHandle::handle_response_121(QByteArray msg)
 {
     QByteArray temp(msg);
-    qDebug() << "Primam koordinate: " << temp << endl;
+    qDebug() << "Primam kordinate, pre trimovanja: " << temp;
     temp.remove(0, 12);
+    qDebug() << "Primam kordinate, posle trimovanja: " << temp;
+
     emit emitPristigleKoordinate(temp);
 }
 
