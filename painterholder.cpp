@@ -18,6 +18,8 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     zatvoriButton->move(0,this->height()-zatvoriButton->height());
     connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
 
+    connect(panel, SIGNAL(zapamtiCrtez()), this->ekranZaCrtanje, SLOT(zapamtiCrtez()));
+
     _primaoc = primaoc;
 
     connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray&)), this, SLOT(preusmeriSignal(QByteArray&)));
@@ -95,6 +97,12 @@ PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
     izaberiBoju = new QPushButton("Izaberi Boju", this);
     izaberiBoju->setGeometry(0,0,200,25);
     connect(izaberiBoju, SIGNAL(clicked()), this, SLOT(prikaziColorDialog()));
+
+    saveImage = new QPushButton(this);
+    saveImage->setGeometry(0,25,200,25);
+    connect(saveImage, SIGNAL(clicked()), this, SIGNAL(zapamtiCrtez()));
+
+
 }
 
 void PanelKontrola::paintEvent(QPaintEvent *e)

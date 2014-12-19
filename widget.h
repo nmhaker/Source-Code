@@ -9,6 +9,8 @@
 
 #include <QDebug>
 #include <QColor>
+#include <QDateTime>
+#include <QFileDialog>
 
 namespace Ui {
 class Widget;
@@ -61,6 +63,7 @@ public slots:
 
     void ubaciKordinate(QByteArray p);
     void postaviBoju(QColor c);
+    void zapamtiCrtez();
 };
 
 QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v);

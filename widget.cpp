@@ -194,3 +194,13 @@ void Widget::postaviBoju(QColor c)
 {
     this->bojaOlovke = c;
 }
+
+void Widget::zapamtiCrtez()
+{
+    QPixmap pixmap(this->size());
+    this->render(&pixmap);
+    QDateTime d;
+    QString dest = QFileDialog::getExistingDirectory();
+    pixmap.save(dest + "/crtez_" + d.toString() + ".png");
+    qDebug() << "Cuvam sliku u: " << dest + "/crtez_" + d.toString() + ".png";
+}

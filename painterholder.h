@@ -25,12 +25,14 @@ private:
     QColorDialog *colorDialog;
     QPushButton *izaberiBoju;
 
+    QPushButton *saveImage;
+
 public slots:
     void prikaziColorDialog();
 
-
 signals:
     void izabranaBoja(QColor);
+    void zapamtiCrtez();
 };
 
 class PainterHolder : public QWidget
