@@ -2,12 +2,12 @@
 #include <QApplication>
 
 
-//int main(int argc, char *argv[])
-//{
-//    QApplication a(argc, argv);
+int main(int argc, char *argv[])
+{
+    QApplication a(argc, argv);
 
-//    PainterHolder p;
-//    p.show();
+    PainterHolder p;
+    p.show();
 
-//    return a.exec();
-//}
+    return a.exec();
+}

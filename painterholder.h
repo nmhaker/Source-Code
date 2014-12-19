@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QColorDialog>
+#include <QLabel>
 
 #include "widget.h"
 
@@ -22,13 +23,17 @@ protected:
     void enterEvent(QEvent *);
 
 private:
+    QColor boja;
     QColorDialog *colorDialog;
     QPushButton *izaberiBoju;
+    QWidget *colorShown;
+    QLabel *label;
 
     QPushButton *saveImage;
 
 public slots:
     void prikaziColorDialog();
+    void postaviBoju(QColor c);
 
 signals:
     void izabranaBoja(QColor);

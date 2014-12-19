@@ -98,11 +98,18 @@ PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
     izaberiBoju->setGeometry(0,0,200,25);
     connect(izaberiBoju, SIGNAL(clicked()), this, SLOT(prikaziColorDialog()));
 
-    saveImage = new QPushButton(this);
-    saveImage->setGeometry(0,25,200,25);
+    label = new QLabel("Boja:", this);
+    label->setGeometry(20,25, 40, 25);
+    label->setStyleSheet("text: rgb(255,255,255);");
+    label->show();
+
+    colorShown = new QWidget(this);
+    colorShown->setGeometry(75,25,150,25);
+    colorShown->setStyleSheet("background-color: rgba(" + QString::number(this->boja.red()) + "," + QString::number(this->boja.green()) + "," + QString::number(this->boja.blue()) + "," + QString::number(this->boja.alpha()) + ");" );
+
+    saveImage = new QPushButton("Zapamti Crtez -> PNG", this);
+    saveImage->setGeometry(0,50,200,25);
     connect(saveImage, SIGNAL(clicked()), this, SIGNAL(zapamtiCrtez()));
-
-
 }
 
 void PanelKontrola::paintEvent(QPaintEvent *e)
@@ -127,4 +134,11 @@ void PanelKontrola::prikaziColorDialog()
     this->colorDialog->show();
 
     connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SIGNAL(izabranaBoja(QColor)));
+    connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SLOT(postaviBoju(QColor)));
+}
+
+void PanelKontrola::postaviBoju(QColor c)
+{
+    this->boja = c;
+    colorShown->setStyleSheet("background-color: rgba(" + QString::number(this->boja.red()) + "," + QString::number(this->boja.green()) + "," + QString::number(this->boja.blue()) + "," + QString::number(this->boja.alpha()) + ");" );
 }
