@@ -23,7 +23,6 @@ SOURCES += main.cpp\
     splashscreen.cpp \
     buttonaddfriend.cpp \
     dialogzadodavanjeprijatelja.cpp \
-    pomerac.cpp \
     painterholder.cpp \
     widget.cpp \
     listwidgetzaprijatelje.cpp \
@@ -42,7 +41,6 @@ HEADERS  += mainwindow.h \
     splashscreen.h \
     buttonaddfriend.h \
     dialogzadodavanjeprijatelja.h \
-    pomerac.h \
     painterholder.h \
     widget.h \
     listwidgetzaprijatelje.h \

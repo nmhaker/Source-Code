@@ -1,4 +1,4 @@
-#ifndef NETWORKHANDLE_H
+    #ifndef NETWORKHANDLE_H
 #define NETWORKHANDLE_H
 
 #include <QNetworkAccessManager>

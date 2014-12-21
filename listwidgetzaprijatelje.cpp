@@ -8,13 +8,15 @@ PopupWidgetMenu::PopupWidgetMenu(QWidget *parent) : QDialog(parent)
 
     //Setup UI
 
-    //this->vLay = new QVBoxLayout(this);
-    this->deleteFriend_button = new QPushButton("Izbrisi Prijatelja", this);
-    //this->vLay->addWidget(this->deleteFriend_button);
-    this->deleteFriend_button->setGeometry(QRect(0,0,75,25));
-    //this->setGeometry(vLay->geometry());
+    this->setGeometry(0,0, 100, 50);
 
+    this->deleteFriend_button = new QPushButton("Izbrisi Prijatelja", this);
+    this->deleteFriend_button->setGeometry(QRect(0,0,100,25));
     connect(this->deleteFriend_button, SIGNAL(clicked()), this, SLOT(handle_DeleteFriend()));
+
+    this->pokreniCrtanje_button = new QPushButton("Otvori Crtac", this);
+    this->pokreniCrtanje_button->setGeometry(QRect(0,25,100,25));
+    connect(this->pokreniCrtanje_button, SIGNAL(clicked()), this, SLOT(handle_PokreniCrtanje()));
 
     timer = new QTimer(this);
     timer->setInterval(2000);
@@ -25,6 +27,12 @@ PopupWidgetMenu::PopupWidgetMenu(QWidget *parent) : QDialog(parent)
 void PopupWidgetMenu::handle_DeleteFriend()
 {
     emit obrisiPrijatelja();
+    this->close();
+}
+
+void PopupWidgetMenu::handle_PokreniCrtanje()
+{
+    emit pokreniCrtac();
     this->close();
 }
 
@@ -48,6 +56,7 @@ void ListWidgetZaPrijatelje::showMenu(const QPoint &pos)
         this->popupWidget->show();
 
         connect(this->popupWidget, SIGNAL(obrisiPrijatelja()), this, SLOT(handleObrisiPrijatelja()));
+        connect(this->popupWidget, SIGNAL(pokreniCrtac()), this, SLOT(handlePokreniCrtac()));
 
         lastPoint = pos;
 
@@ -60,6 +69,12 @@ void ListWidgetZaPrijatelje::handleObrisiPrijatelja()
 {
     emit posaljiImePrijateljaZaBrisanje(this->itemAt(lastPoint)->text());
     qDebug() << "Saljem ime primaoca za brisanje: " << this->itemAt(lastPoint)->text() << endl;
+}
+
+void ListWidgetZaPrijatelje::handlePokreniCrtac()
+{
+    emit otvoriCrtac(this->itemAt(lastPoint)->text());
+    qDebug() << "Otvaram crtac za prijatelja: " << this->itemAt(lastPoint)->text();
 }
 
 void ListWidgetZaPrijatelje::primiStanjeLogovanja(bool p)

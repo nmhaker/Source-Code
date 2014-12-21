@@ -22,7 +22,6 @@
 #include "model.h"
 #include "buttonaddfriend.h"
 #include "dialogzadodavanjeprijatelja.h"
-#include "pomerac.h"
 #include "painterholder.h"
 #include "statuswidget.h"
 
@@ -52,7 +51,7 @@ private:
     QPushButton *dugmeLogOut;
     QPushButton *dugmeSrednje;
     QPushButton *dugmeRegister;
-    QPushButton *dugmeExit;
+    QPushButton *dugmeSettings;
     QPushButton *buttonAddFriend;
 
     NetworkHandle *networkHandle;
@@ -70,8 +69,6 @@ private:
 
     bool spremnoZaIzlogovanje;
 
-    Pomerac *pomerac;
-
     PainterHolder *crtac;
 
     StatusWidget *statusWidget;
@@ -82,7 +79,7 @@ public slots:
     void ulogujSe();
     void izlogujSe();
     void registrujSe();
-    void izadji();
+    bool izadji();
     void posaljiPoruku();
     void primiPoruku();
     void pripremiZaGasenje();
@@ -100,8 +97,9 @@ public slots:
     void refreshujMessageView();
 
     void omoguciKontroluZaSlanjePoruka(bool p);
-    void updatePozicijuProzora(const QPoint &p);
-    void otvoriCrtac();
+    void otvoriCrtac(QString);
+
+    void opcije();
 
 
 signals:

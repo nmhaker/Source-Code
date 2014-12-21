@@ -28,7 +28,7 @@ void DugmeZaCrtac::paintEvent(QPaintEvent *e)
 StatusWidget::StatusWidget(QWidget *parent, QRect mainWindowRect) :
     QWidget(parent)
 {
-    this->setGeometry(mainWindowRect.width()-45,25,50,mainWindowRect.height()-44);
+    this->setGeometry(mainWindowRect.width()-45,0,50,mainWindowRect.height()-44);
     this->setStyleSheet("background-color: black;");
 
     dugmeZaCrtac = new DugmeZaCrtac(this);

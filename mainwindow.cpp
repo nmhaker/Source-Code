@@ -7,44 +7,44 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     ui->setupUi(this);
 
     //Podesavanje izgleda aplikacije, SKIDANJE OKVIRA PROZORA :)
-    this->setWindowFlags(Qt::FramelessWindowHint);
+    //this->setWindowFlags(Qt::FramelessWindowHint);
 
     //Namestanje dugmadi------------------------------
 
     QString stylesheetDugmica = "[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}";
 
-    dugmeLogIn = new QPushButton("Log In", this);
+    dugmeLogIn = new QPushButton("Uloguj se", this);
     dugmeLogIn->setStyleSheet(stylesheetDugmica);
     dugmeLogIn->setVisible(true);
-    dugmeLogIn->setGeometry(0,25,100,60);
+    dugmeLogIn->setGeometry(0,0,100,60);
 
     connect(dugmeLogIn, SIGNAL(clicked()), this, SLOT(ulogujSe()));
 
-    dugmeLogOut = new QPushButton("Log Out", this);
+    dugmeLogOut = new QPushButton("Izloguj se", this);
     dugmeLogOut->setVisible(true);
     dugmeLogOut->setStyleSheet(stylesheetDugmica);
-    dugmeLogOut->setGeometry(100,25,100,60);
+    dugmeLogOut->setGeometry(100,0,100,60);
 
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
     dugmeSrednje = new QPushButton(this);
     dugmeSrednje->setStyleSheet(stylesheetDugmica);
     dugmeSrednje->setVisible(true);
-    dugmeSrednje->setGeometry(200,25,100,60);
+    dugmeSrednje->setGeometry(200,0,100,60);
 
-    dugmeRegister = new QPushButton("Register", this);
+    dugmeRegister = new QPushButton("Registracija", this);
     dugmeRegister->setStyleSheet(stylesheetDugmica);
     dugmeRegister->setVisible(true);
-    dugmeRegister->setGeometry(300,25,100,60);
+    dugmeRegister->setGeometry(300,0,100,60);
 
     connect(dugmeRegister, SIGNAL(clicked()), this, SLOT(registrujSe()));
 
-    dugmeExit = new QPushButton("Exit", this);
-    dugmeExit->setStyleSheet(stylesheetDugmica);
-    dugmeExit->setVisible(true);
-    dugmeExit->setGeometry(400,25,100,60);
+    dugmeSettings = new QPushButton("Opcije", this);
+    dugmeSettings->setStyleSheet(stylesheetDugmica);
+    dugmeSettings->setVisible(true);
+    dugmeSettings->setGeometry(400,0,110,60);
 
-    connect(dugmeExit, SIGNAL(clicked()), this, SLOT(izadji()));
+    connect(dugmeSettings, SIGNAL(clicked()), this, SLOT(opcije()));
 
     buttonAddFriend = new ButtonAddFriend(this->ui->label);
     buttonAddFriend->setStyleSheet("[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}");
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Srednje dugme za Status korisnika
     userState = new QLabel(this);
-    userState->setGeometry(QRect(200,30,100,50));
+    userState->setGeometry(QRect(200,5,100,50));
     userState->setStyleSheet("background-color:rgba(255,255,255,0);color:rgb(255,255,255);font-size:20px;");
     userState->setAlignment(Qt::AlignCenter);
     userState->setText("offline");
@@ -92,15 +92,10 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     //Namestanje fonta za label
     this->ui->label->setFont(QFont("Times New Roman", 15));
 
-    //Kreiranje pomeraca, da bih mogao da pomeram prozor :), i pomeranje u odnosu na njega
-    this->pomerac = new Pomerac(this);
-    this->pomerac->show();
-    connect(this->pomerac, SIGNAL(pozicijaPromenjena(const QPoint&)), this, SLOT(updatePozicijuProzora(const QPoint&)));
-
     //Kreiranje statusWidgeta
-    statusWidget = new StatusWidget(this, this->geometry());
-    statusWidget->show();
-    connect(statusWidget, SIGNAL(dugmeZaCrtac_clicked()), this, SLOT(otvoriCrtac()));
+//    statusWidget = new StatusWidget(this, this->geometry());
+//    statusWidget->show();
+//    connect(statusWidget, SIGNAL(dugmeZaCrtac_clicked()), this, SLOT(otvoriCrtac()));
 
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
@@ -109,6 +104,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(this->ui->listWidget_2, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(postaviPrimaoca(QListWidgetItem*)));
     connect(this->ui->listWidget_2, SIGNAL(posaljiImePrijateljaZaBrisanje(QString)), this->networkHandle, SLOT(obrisiPrijatelja(QString)));
     connect(this->ui->listWidget_2, SIGNAL(potrebnoStanjeLogovanja()), this->networkHandle, SLOT(dajStanjeLogovanja()));
+    connect(this->ui->listWidget_2, SIGNAL(otvoriCrtac(QString)), this, SLOT(otvoriCrtac(QString)));
 
     connect(this->model, SIGNAL(primiPoruku(QString)), this->networkHandle, SLOT(receiveMessageFrom(QString)));
     connect(this->model, SIGNAL(refreshedModel()), this, SLOT(refreshujMessageView()));
@@ -150,26 +146,25 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
 MainWindow::~MainWindow()
 {
+    this->izadji();
     delete userState;
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
-    //Proveri da li je online, ako jeste prekini gasenje
-//    if(this->networkHandle->isOnline())
-//    {
-//        QMessageBox::StandardButton resBtn = QMessageBox::warning( this, "Messenger", tr("Prvo se izlogujte, pre nego sto zatvorite aplikaciju"), QMessageBox::Yes);
-//        if (resBtn == QMessageBox::Yes) {
-//            e->ignore();
-//        }
-//    }else
-//    {
-//        e->accept();
-//    }
+    if(izadji())
+    {
+        e->accept();
+    }else{
+        e->ignore();
+    }
 }
 
-void MainWindow::otvoriCrtac(){
+void MainWindow::otvoriCrtac(QString s)
+{
+    this->networkHandle->postaviPrimaoca(s);
+
     if(this->networkHandle->getPrimaoca() != "NOT_SET"){
         this->crtac = new PainterHolder(0, this->networkHandle->getPrimaoca());
         this->crtac->move(this->x(),this->y());
@@ -180,6 +175,11 @@ void MainWindow::otvoriCrtac(){
         connect(this->networkHandle, SIGNAL(emitPristigleKoordinate(QByteArray)), this->crtac, SLOT(primiKordinate(QByteArray)));
     }else
         QMessageBox::warning(this, "Upozorenje", "Niste izabrali korisnika", QMessageBox::Ok);
+}
+
+void MainWindow::opcije()
+{
+
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -195,7 +195,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->izadji();
     else if(e->key() == Qt::Key_F5)
     {
-        otvoriCrtac();
+        otvoriCrtac(this->networkHandle->getPrimaoca());
     }else if(e->key() == Qt::Key_F6)
         emit poveziKreatora();
 }
@@ -286,11 +286,6 @@ void MainWindow::omoguciKontroluZaSlanjePoruka(bool p)
         this->ui->lineEdit->setDisabled(true);
 }
 
-void MainWindow::updatePozicijuProzora(const QPoint &p)
-{
-    this->move(p);
-}
-
 void MainWindow::ulogujSe()
 {
     if(!this->networkHandle->isOnline())
@@ -338,16 +333,16 @@ void MainWindow::registrujSe()
     this->registerForm->show();
 }
 
-void MainWindow::izadji()
+bool MainWindow::izadji()
 {
     if(this->networkHandle->isOnline())
     {
         QMessageBox::warning(this, "Upozorenje", "Prvo se izlogujte!!!", QMessageBox::Ok);
+        return false;
     }
     else
     {
-        this->statusWidget->close();
-        this->close();
+        return true;
     }
 }
 

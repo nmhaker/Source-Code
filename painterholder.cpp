@@ -24,7 +24,7 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
 
     connect(this->ekranZaCrtanje, SIGNAL(crtano(QByteArray&)), this, SLOT(preusmeriSignal(QByteArray&)));
 
-    tajmerZaKoordinate = new QTimer(this);
+    tajmerZaKoordinate = new QTimer();
     tajmerZaKoordinate->setInterval(1000);
     connect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
 
@@ -35,10 +35,7 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
 
 PainterHolder::~PainterHolder()
 {
-    disconnect(tajmerZaKoordinate, SIGNAL(timeout()), this, SLOT(posaljiZahtevZaKoordinate()));
     tajmerZaKoordinate->stop();
-    delete tajmerZaKoordinate;
-    emit gasenjeCrtaca();
 }
 
 void PainterHolder::resizeEvent(QResizeEvent *e)
@@ -55,6 +52,13 @@ void PainterHolder::keyPressEvent(QKeyEvent *e)
         this->tajmerZaKoordinate->stop();
 
     QWidget::keyPressEvent(e);
+}
+
+void PainterHolder::closeEvent(QCloseEvent *e)
+{
+    emit gasenjeCrtaca();
+    this->tajmerZaKoordinate->stop();
+    QWidget::closeEvent(e);
 }
 
 void PainterHolder::primiKordinate(QByteArray paket)

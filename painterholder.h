@@ -45,11 +45,12 @@ class PainterHolder : public QWidget
     Q_OBJECT
 public:
     explicit PainterHolder(QWidget *parent = 0, QString primaoc = "NONE");
-    virtual ~PainterHolder();
+    ~PainterHolder();
 protected:
 
     void resizeEvent(QResizeEvent *e);
     void keyPressEvent(QKeyEvent *);
+    void closeEvent(QCloseEvent *e);
 
 private:
 

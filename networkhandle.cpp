@@ -1,9 +1,11 @@
 #include "networkhandle.h"
 
+static const char* os = "ubuntu";
+
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEPLOY";
+    this->_mode = "DEVELOPMENT";
     this->_online = false;
 
     this->_primaoc = "NOT_SET";
@@ -42,7 +44,13 @@ void NetworkHandle::prepareConnection()
 
     if(this->_mode == "DEVELOPMENT")
     {
-        this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
+        //Specijalno za ubuntu 14.04 na kompu
+        if(os == "ubuntu")
+        {
+            this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server/Server.php"));
+        }else{
+            this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
+        }
     }
     else if(this->_mode == "DEPLOY")
         this->_networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server/Server.php"));
