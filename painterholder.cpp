@@ -13,11 +13,6 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     ekranZaCrtanje = new Widget(this);
     ekranZaCrtanje->setGeometry(0,0,this->width() - panel->width(), this->height());
 
-
-    zatvoriButton = new QPushButton("Zatvori prozor", this->panel);
-    zatvoriButton->move(0,this->height()-zatvoriButton->height());
-    connect(zatvoriButton, SIGNAL(clicked()), this, SLOT(deleteLater()));
-
     connect(panel, SIGNAL(zapamtiCrtez()), this->ekranZaCrtanje, SLOT(zapamtiCrtez()));
 
     _primaoc = primaoc;

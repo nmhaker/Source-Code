@@ -24,6 +24,7 @@
 #include "dialogzadodavanjeprijatelja.h"
 #include "painterholder.h"
 #include "statuswidget.h"
+#include "podesavanja.h"
 
 namespace Ui {
 class MainWindow;
@@ -72,6 +73,8 @@ private:
     PainterHolder *crtac;
 
     StatusWidget *statusWidget;
+
+    Podesavanja *podesavanja;
 
 
 public slots:

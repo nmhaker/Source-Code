@@ -44,13 +44,7 @@ void NetworkHandle::prepareConnection()
 
     if(this->_mode == "DEVELOPMENT")
     {
-        //Specijalno za ubuntu 14.04 na kompu
-        if(os == "ubuntu")
-        {
-            this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server/Server.php"));
-        }else{
-            this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
-        }
+        this->_networkRequest = new QNetworkRequest(QUrl("http://localhost/server/Server.php"));
     }
     else if(this->_mode == "DEPLOY")
         this->_networkRequest = new QNetworkRequest(QUrl("http://milutinac.eu5.org/Server/Server.php"));
@@ -257,15 +251,20 @@ void NetworkHandle::poveziKreatora()
 
 void NetworkHandle::dodajNovogPrijatelja(QString i_p)
 {
-    QUrlQuery params;
-    params.addQueryItem("key", _secretKey);
-    params.addQueryItem("action", "12");
-    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("ime_prijatelja", i_p);
+    if(this->_online)
+    {
+        QUrlQuery params;
+        params.addQueryItem("key", _secretKey);
+        params.addQueryItem("action", "12");
+        params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+        params.addQueryItem("ime_prijatelja", i_p);
 
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+        QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
-    this->_networkAccessManager->post(*(this->_networkRequest), data);
+        this->_networkAccessManager->post(*(this->_networkRequest), data);
+    }else{
+        qDebug() << "Niste ulogovani" << endl;
+    }
 }
 
 void NetworkHandle::obrisiPrijatelja(const QString &ime_prijatelja)
@@ -296,15 +295,20 @@ void NetworkHandle::proveriDostupnostImenaKorisnika(QString i_p)
 
 void NetworkHandle::obrisiRazgovor()
 {
-    QUrlQuery params;
-    params.addQueryItem("key", _secretKey);
-    params.addQueryItem("action", "16");
-    params.addQueryItem("korisnicko_ime", _korisnicko_ime);
-    params.addQueryItem("ime_prijatelja", _primaoc);
+    if(this->_online)
+        {
+        QUrlQuery params;
+        params.addQueryItem("key", _secretKey);
+        params.addQueryItem("action", "16");
+        params.addQueryItem("korisnicko_ime", _korisnicko_ime);
+        params.addQueryItem("ime_prijatelja", _primaoc);
 
-    QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
+        QByteArray data = params.query(QUrl::FullyEncoded).toUtf8();
 
-    this->_networkAccessManager->post(*(this->_networkRequest), data);
+        this->_networkAccessManager->post(*(this->_networkRequest), data);
+    }else{
+        qDebug() << "Niste ulogovani" << endl;
+    }
 }
 
 void NetworkHandle::dajStanjeLogovanja()

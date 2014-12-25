@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     //Namestanje dugmadi------------------------------
 
     QString stylesheetDugmica = "[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :hover{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(50, 50, 50, 255), stop:1 rgba(107, 107, 107, 255)); color:rgb(0,255,0);}";
-
+    QString stylesheetSrednjeg = "[focus=false]{ background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); } :active { background-color: qlineargradient(spread:reflect, x1:0.469, y1:0.522682, x2:0.469, y2:0, stop:0.473958 rgba(25, 25, 25, 255), stop:1 rgba(67, 67, 67, 255)); color: rgb(0,255,0); }color:rgb(0,255,0);}";
     dugmeLogIn = new QPushButton("Uloguj se", this);
     dugmeLogIn->setStyleSheet(stylesheetDugmica);
     dugmeLogIn->setVisible(true);
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     connect(dugmeLogOut, SIGNAL(clicked()), this, SLOT(izlogujSe()));
 
     dugmeSrednje = new QPushButton(this);
-    dugmeSrednje->setStyleSheet(stylesheetDugmica);
+    dugmeSrednje->setStyleSheet(stylesheetSrednjeg);
     dugmeSrednje->setVisible(true);
     dugmeSrednje->setGeometry(200,0,100,60);
 
@@ -92,10 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
     //Namestanje fonta za label
     this->ui->label->setFont(QFont("Times New Roman", 15));
 
-    //Kreiranje statusWidgeta
-//    statusWidget = new StatusWidget(this, this->geometry());
-//    statusWidget->show();
-//    connect(statusWidget, SIGNAL(dugmeZaCrtac_clicked()), this, SLOT(otvoriCrtac()));
+
 
     // Povezivanje SIGNALA I SLOTOVA------------------------------
     connect(this, SIGNAL(poveziKreatora()), this->networkHandle, SLOT(poveziKreatora()));
@@ -179,7 +176,8 @@ void MainWindow::otvoriCrtac(QString s)
 
 void MainWindow::opcije()
 {
-
+    this->podesavanja = new Podesavanja();
+    this->podesavanja->show();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent *e)
@@ -394,11 +392,17 @@ void MainWindow::pripremiZaGasenje()
 
 void MainWindow::dodajNovogPrijatelja()
 {
-    this->addFriendForm = new DialogZaDodavanjePrijatelja();
-    connect(this->addFriendForm, SIGNAL(salji(QString)), this->networkHandle, SLOT(dodajNovogPrijatelja(QString)));
-    connect(this->addFriendForm, SIGNAL(proveri(QString)), this->networkHandle, SLOT(proveriDostupnostImenaKorisnika(QString)));
-    connect(this->networkHandle, SIGNAL(postojiKorisnik(bool)), this->addFriendForm, SLOT(izbaciObavestenje(bool)));
-    this->addFriendForm->show();
+    if(this->networkHandle->isOnline())
+    {
+        this->addFriendForm = new DialogZaDodavanjePrijatelja();
+        connect(this->addFriendForm, SIGNAL(salji(QString)), this->networkHandle, SLOT(dodajNovogPrijatelja(QString)));
+        connect(this->addFriendForm, SIGNAL(proveri(QString)), this->networkHandle, SLOT(proveriDostupnostImenaKorisnika(QString)));
+        connect(this->networkHandle, SIGNAL(postojiKorisnik(bool)), this->addFriendForm, SLOT(izbaciObavestenje(bool)));
+        this->addFriendForm->show();
+    }else{
+        qDebug() << "Niste ulogovani" << endl;
+        this->ulogujSe();
+    }
 }
 
 

@@ -58,8 +58,6 @@ private:
 
     QTimer *tajmerZaKoordinate;
 
-    QPushButton *zatvoriButton;
-
     QHBoxLayout *hLay;
     PanelKontrola *panel;
     Widget *ekranZaCrtanje;
