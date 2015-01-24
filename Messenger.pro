@@ -54,6 +54,7 @@ FORMS    += mainwindow.ui \
     loginform.ui \
     registerform.ui \
     dialogzadodavanjeprijatelja.ui \
-    widget.ui
+    widget.ui \
+    podesavanja.ui
 
 RESOURCES = slike.qrc

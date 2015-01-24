@@ -11,6 +11,7 @@
 
 #include "widget.h"
 
+//PANELKONTROLA
 class PanelKontrola : public QWidget
 {
     Q_OBJECT
@@ -39,6 +40,8 @@ signals:
     void izabranaBoja(QColor);
     void zapamtiCrtez();
 };
+
+//PAINTERHOLDER
 
 class PainterHolder : public QWidget
 {
