@@ -4,12 +4,13 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     QWidget(parent)
 {
     this->setMinimumSize(600,600);
+    this->setMouseTracking(true);
 
     ekranZaCrtanje = new Widget(this);
     ekranZaCrtanje->setGeometry(0,0,this->width(), this->height());
 
     panel = new PanelKontrola(this);
-    panel->setGeometry(this->width()/2 - 100,5,200,50);
+    panel->setGeometry(this->width()/2 - 100,5,300,50);
 
     connect(panel, SIGNAL(izabranaBoja(QColor)), this, SLOT(primiBojuOlovke(QColor)));
 
@@ -26,6 +27,12 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     tajmerZaKoordinate->start();
 
     this->showMaximized();
+
+    connect(panel, SIGNAL(izabranAlat(Alat)), this, SLOT(postaviAlat(Alat)));
+
+    QPixmap *p_gumica = new QPixmap(":/dugmadi/images/Eraser-icon.png");
+    kursorGumica = new QCursor(p_gumica->scaled(40,40));
+
 }
 
 PainterHolder::~PainterHolder()
@@ -36,7 +43,7 @@ PainterHolder::~PainterHolder()
 void PainterHolder::resizeEvent(QResizeEvent *e)
 {
     this->ekranZaCrtanje->resize(e->size().width(),e->size().height());
-    this->panel->setGeometry(e->size().width()/2 -100,5,200,50);
+    this->panel->setGeometry(e->size().width()/2 -100,5,300,50);
 
     QWidget::resizeEvent(e);
 }
@@ -54,6 +61,16 @@ void PainterHolder::closeEvent(QCloseEvent *e)
     emit gasenjeCrtaca();
     this->tajmerZaKoordinate->stop();
     QWidget::closeEvent(e);
+}
+
+void PainterHolder::mouseMoveEvent(QMouseEvent *e)
+{
+    if(trenutniAlat == Olovka)
+        this->setCursor(Qt::CrossCursor);
+    else
+        this->setCursor(*kursorGumica);
+
+    QWidget::mouseMoveEvent(e);
 }
 
 void PainterHolder::primiKordinate(QByteArray paket)
@@ -89,39 +106,49 @@ void PainterHolder::primiBojuOlovke(QColor c)
     this->ekranZaCrtanje->postaviBoju(c);
 }
 
+void PainterHolder::postaviAlat(Alat a)
+{
+    this->trenutniAlat = a;
+    this->ekranZaCrtanje->postaviAlat(a);
+}
+
 //PANELKONTROLA
 
 PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
 {
     this->boja = QColor(0,0,255,255);
 
+    olovka = new QPushButton(this);
+    olovka->setGeometry(0,0,50,50);
+    QPixmap p_olovka(":/dugmadi/images/icon_pen.png");
+    QIcon icon_olovka(p_olovka);
+    olovka->setIcon(icon_olovka);
+    connect(olovka, SIGNAL(clicked()), this, SLOT(postaviTrenutniAlatOlovku()));
+
     QPixmap p_pick(":/dugmadi/images/pick_color_icon.png");
-
-    QIcon icon_pick_color(p_pick.scaled(50,50));
-
+    QIcon icon_pick_color(p_pick);
     izaberiBoju = new QPushButton(this);
     izaberiBoju->setIcon(icon_pick_color);
-    izaberiBoju->setGeometry(0,0,50,50);
+    izaberiBoju->setGeometry(50,0,50,50);
     connect(izaberiBoju, SIGNAL(clicked()), this, SLOT(prikaziColorDialog()));
 
-//    label = new QLabel("Boja:", this);
-//    label->setGeometry(20,25, 40, 25);
-//    label->setStyleSheet("text: rgb(255,255,255);");
-//    label->show();
-
     colorShown = new QWidget(this);
-    colorShown->setGeometry(50,0,100,50);
+    colorShown->setGeometry(100,0,100,50);
     colorShown->setStyleSheet("background-color: rgba(" + QString::number(this->boja.red()) + "," + QString::number(this->boja.green()) + "," + QString::number(this->boja.blue()) + "," + QString::number(this->boja.alpha()) + ");" );
 
     saveImage = new QPushButton(this);
-
     QPixmap p_save(":/dugmadi/images/save_icon.png");
-
-    QIcon icon_save_image(p_save.scaled(50,50));
+    QIcon icon_save_image(p_save);
     saveImage->setIcon(icon_save_image);
-
-    saveImage->setGeometry(150,0,50,50);
+    saveImage->setGeometry(200,0,50,50);
     connect(saveImage, SIGNAL(clicked()), this, SIGNAL(zapamtiCrtez()));
+
+    gumica = new QPushButton(this);
+    gumica->setGeometry(250,0,50,50);
+    QPixmap p_gumica(":/dugmadi/images/Eraser-icon.png");
+    QIcon icon_gumica(p_gumica);
+    gumica->setIcon(icon_gumica);
+    connect(gumica, SIGNAL(clicked()), this, SLOT(postaviTrenutniAlatGumicu()));
 }
 
 void PanelKontrola::paintEvent(QPaintEvent *e)
@@ -148,7 +175,6 @@ void PanelKontrola::prikaziColorDialog()
 
     connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SIGNAL(izabranaBoja(QColor)));
     connect(colorDialog, SIGNAL(colorSelected(QColor)), this, SLOT(postaviBoju(QColor)));
-
 }
 
 void PanelKontrola::postaviBoju(QColor c)
@@ -156,3 +182,14 @@ void PanelKontrola::postaviBoju(QColor c)
     this->boja = c;
     colorShown->setStyleSheet("background-color: rgba(" + QString::number(this->boja.red()) + "," + QString::number(this->boja.green()) + "," + QString::number(this->boja.blue()) + "," + QString::number(this->boja.alpha()) + ");" );
 }
+
+void PanelKontrola::postaviTrenutniAlatOlovku()
+{
+    emit izabranAlat(Olovka);
+}
+
+void PanelKontrola::postaviTrenutniAlatGumicu()
+{
+    emit izabranAlat(Gumica);
+}
+

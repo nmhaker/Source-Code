@@ -72,45 +72,50 @@ void Widget::mouseReleaseEvent(QMouseEvent *e)
 {
     pretisnutoDugme = false;
 
-    QDataStream out(&kordinate, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_5_3);
-
-//    out << dots.size()+1-poslednjiBrojDots;
-
-//    for(int i=poslednjiBrojDots; i < dots.size() - poslednjiBrojDots; i++)
-//    {
-//        out << dots.at(i).x << dots.at(i).y << dots.at(i).boja;
-//    }
-
-    Pixel p;
-    p.x = -100;
-    p.y = 0;
-    p.boja = Qt::black;
-    dots.append(p);
-
-    QVector<Pixel> novoDodavanje;
-
-    for(int i=poslednjiBrojDots; i < dots.size(); i++)
+    if(trenutniAlat == Olovka)
     {
-        novoDodavanje.append(dots.at(i));
+        QDataStream out(&kordinate, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+
+        Pixel p;
+        p.x = -100;
+        p.y = 0;
+        p.boja = Qt::black;
+        dots.append(p);
+
+        QVector<Pixel> novoDodavanje;
+
+        for(int i=poslednjiBrojDots; i < dots.size(); i++)
+        {
+            novoDodavanje.append(dots.at(i));
+        }
+
+        out << novoDodavanje;
+
+        qDebug() << "Poslato pixela: " << dots.size() << endl;
+
+        emit crtano(kordinate);
+
+        out.device()->close();
+
+        poslednjiBrojDots = dots.size();
+    }else if(trenutniAlat == Gumica){
+        QDataStream out(&kordinate, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << zaBrisanje;
+        emit crtano(kordinate);
+        qDebug() << "Poslat paket" << endl;
+        qDebug() << kordinate << endl;
+        out.device()->close();
+        this->zaBrisanje.clear();
     }
-
-    out << novoDodavanje;
-
-    qDebug() << "Poslato pixela: " << dots.size() << endl;
-
-    emit crtano(kordinate);
-
-    out.device()->close();
-
-    poslednjiBrojDots = dots.size();
 
     QWidget::mouseReleaseEvent(e);
 }
 
 void Widget::mouseMoveEvent(QMouseEvent *e)
 {
-    if(pretisnutoDugme){
+    if(pretisnutoDugme && trenutniAlat == Olovka){
         Pixel p;
         p.x = e->pos().x();
         p.y = e->pos().y();
@@ -118,6 +123,34 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
         dots.append(p);
 
         qDebug() << p.x << " , " << p.y << " , " << p.boja << endl;
+
+    }else if(pretisnutoDugme && trenutniAlat == Gumica){
+
+        qDebug() << "BRISEEM!" << endl;
+        PixeliGumice p;
+        p.x = e->pos().x() - 25;
+        p.y = e->pos().y() - 25;
+        p.w = 50;
+        p.h = 50;
+
+        zaBrisanje.append(p);
+
+        //this->dbg->updateCoordinates(p.x,p.y,p.w,p.h);
+
+        for(int i = 0; i < dots.count(); i++)
+        {
+            if((dots.at(i).x >= p.x && dots.at(i).x <=p.w+p.x) && (dots.at(i).y >= p.y && dots.at(i).y <= p.h+p.y))
+            {
+                dots.remove(i);
+            }
+        }
+        for(int i = 0; i < dotsPrijatelja.count(); i++)
+        {
+            if((dotsPrijatelja.at(i).x >= p.x && dotsPrijatelja.at(i).x <=p.w+p.x) && (dotsPrijatelja.at(i).y >= p.y && dotsPrijatelja.at(i).y <= p.h+p.y))
+            {
+                dotsPrijatelja.remove(i);
+            }
+        }
     }
 
     this->repaint();
@@ -125,67 +158,58 @@ void Widget::mouseMoveEvent(QMouseEvent *e)
     QWidget::mouseMoveEvent(e);
 }
 
-void Widget::resizeEvent(QResizeEvent *e)
-{
-//    this->setGeometry(0,0,e->size().width()-200, e->size().height());
-
-    QWidget::resizeEvent(e);
-}
-
-void Widget::checkData()
-{
-
-}
-
-QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v)
-{
-    s << quint32(v.size());
-
-    for (int i = 0; i < v.size(); i++)
-    {
-        s << v.at(i).x;
-        s << v.at(i).y;
-        s << v.at(i).boja;
-    }
-    return s;
-}
-
-QDataStream& operator>>(QDataStream& s, QVector<Pixel>& v)
-{
-    v.clear();
-    quint32 c;
-    s >> c;
-    v.resize(c);
-    for(int i = 0; i < c; i++) {
-        s >> v[i].x;
-        s >> v[i].y;
-        s >> v[i].boja;
-    }
-    return s;
-}
 
 void Widget::ubaciKordinate(QByteArray p)
 {
+    qDebug() << "Pristigao paket: " << endl;
+    qDebug() << p << endl;
+
     QByteArray decoded(QByteArray::fromHex(p));
 
     QDataStream in(decoded);
     in.setVersion(QDataStream::Qt_5_3);
 
-    qDebug() << "Pristigao paket" << endl;
+    int a;
+    in >> a;
 
-    QVector<Pixel> vektorPiksela;
-
-    in >> vektorPiksela;
-
-    qDebug() << "Broj piksela za obradu je: " << vektorPiksela.size() << endl;
-
-    for(int i=0; i < vektorPiksela.size(); i++)
+    if(a == Gumica)
     {
-        dotsPrijatelja.append(vektorPiksela.at(i));
-        qDebug() << vektorPiksela.at(i).x << " , " << vektorPiksela.at(i).y << " , " << vektorPiksela.at(i).boja;
-    }
+        QVector<PixeliGumice> pg;
+        in >> pg;
 
-    in.device()->close();
+
+        for(int ii = 0; ii < pg.count();ii++)
+        {
+            for(int i = 0; i < dots.count(); i++)
+            {
+                if((dots.at(i).x >= pg.at(ii).x && dots.at(i).x <=pg.at(ii).w+pg.at(ii).x) && (dots.at(i).y >= pg.at(ii).y && dots.at(i).y <= pg.at(ii).h+pg.at(ii).y))
+                {
+                    dots.remove(i);
+                }
+            }
+        }
+        for(int ii=0; ii < pg.count(); ii++)
+        {
+            for(int i = 0; i < dotsPrijatelja.count(); i++)
+            {
+                if((dotsPrijatelja.at(i).x >= pg.at(ii).x && dotsPrijatelja.at(i).x <=pg.at(ii).w+pg.at(ii).x) && (dotsPrijatelja.at(i).y >= pg.at(ii).y && dotsPrijatelja.at(i).y <= pg.at(ii).h+pg.at(ii).y))
+                {
+                    dotsPrijatelja.remove(i);
+                }
+            }
+        }
+        in.device()->close();
+    }else if(a == Olovka)
+    {
+        QVector<Pixel> vektorPiksela;
+        in >> vektorPiksela;
+
+        for(int i=0; i < vektorPiksela.size(); i++)
+        {
+            dotsPrijatelja.append(vektorPiksela.at(i));
+        }
+        in.device()->close();
+    }
 
     this->repaint();
 }
@@ -204,3 +228,73 @@ void Widget::zapamtiCrtez()
     pixmap.save(dest + "/crtez_" + d.toString() + ".png");
     qDebug() << "Cuvam sliku u: " << dest + "/crtez_" + d.toString() + ".png";
 }
+
+void Widget::postaviAlat(Alat a)
+{
+    this->trenutniAlat = a;
+}
+
+QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v)
+{
+    s << Olovka;
+    s << quint32(v.size());
+
+    for (int i = 0; i < v.size(); i++)
+    {
+        s << v.at(i).x;
+        s << v.at(i).y;
+        s << v.at(i).boja;
+    }
+    return s;
+}
+
+QDataStream& operator>>(QDataStream& s, QVector<Pixel>& v)
+{
+
+    v.clear();
+    quint32 c;
+    s >> c;
+    v.resize(c);
+    for(int i = 0; i < c; i++) {
+        s >> v[i].x;
+        s >> v[i].y;
+        s >> v[i].boja;
+    }
+
+    return s;
+}
+
+QDataStream &operator<<(QDataStream &s, const QVector<PixeliGumice> &v)
+{
+    s << Gumica;
+    s << quint32(v.size());
+
+    for(int i=0;i < v.size();i++)
+    {
+        s << v.at(i).x;
+        s << v.at(i).y;
+        s << v.at(i).w;
+        s << v.at(i).h;
+    }
+    return s;
+}
+
+
+QDataStream &operator>>(QDataStream &s, QVector<PixeliGumice> &v)
+{
+
+    v.clear();
+    quint32 c;
+    s >> c;
+    v.resize(c);
+    for(int i = 0; i < c;i++)
+    {
+        s >> v[i].x;
+        s >> v[i].y;
+        s >> v[i].w;
+        s >> v[i].h;
+    }
+
+    return s;
+}
+

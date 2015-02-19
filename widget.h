@@ -11,6 +11,8 @@
 #include <QColor>
 #include <QDateTime>
 #include <QFileDialog>
+#include "debugprozor.h"
+
 
 namespace Ui {
 class Widget;
@@ -20,6 +22,19 @@ struct Pixel{
     quint32 x;
     quint32 y;
     QColor boja;
+};
+
+struct PixeliGumice{
+    quint32 x;
+    quint32 y;
+    quint32 w;
+    quint32 h;
+};
+
+
+enum Alat{
+    Olovka,
+    Gumica
 };
 
 using namespace std;
@@ -38,7 +53,6 @@ protected:
     void mousePressEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
-    void resizeEvent(QResizeEvent *);
 
 private:
     Ui::Widget *ui;
@@ -46,15 +60,19 @@ private:
     QVector<Pixel> dots;
     QVector<Pixel> dotsPrijatelja;
 
+    QVector<PixeliGumice> zaBrisanje;
+
     int poslednjiBrojDots;
 
     bool pretisnutoDugme;
 
-    void checkData();
-
     QColor bojaOlovke;
 
     QByteArray kordinate;
+
+    Alat trenutniAlat = Olovka;
+
+    DebugProzor *dbg;
 
 signals:
     void crtano(QByteArray &paket);
@@ -64,10 +82,15 @@ public slots:
     void ubaciKordinate(QByteArray p);
     void postaviBoju(QColor c);
     void zapamtiCrtez();
+//    void brisiKordinate();
+    void postaviAlat(Alat a);
 };
 
 QDataStream& operator<<(QDataStream& s, const QVector<Pixel>& v);
 QDataStream& operator>>(QDataStream& s, QVector<Pixel>& v);
+
+QDataStream& operator<<(QDataStream& s, const QVector<PixeliGumice>& v);
+QDataStream& operator>>(QDataStream& s, QVector<PixeliGumice>& v);
 
 #endif // WIDGET_H
 

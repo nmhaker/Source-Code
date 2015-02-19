@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     listviewzaporuke.cpp \
     dugmad.cpp \
     painterHolderTester.cpp \
-    podesavanja.cpp
+    podesavanja.cpp \
+    debugprozor.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -48,13 +49,15 @@ HEADERS  += mainwindow.h \
     statuswidget.h \
     listviewzaporuke.h \
     dugmad.h \
-    podesavanja.h
+    podesavanja.h \
+    debugprozor.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \
     registerform.ui \
     dialogzadodavanjeprijatelja.ui \
     widget.ui \
-    podesavanja.ui
+    podesavanja.ui \
+    debugprozor.ui
 
 RESOURCES = slike.qrc

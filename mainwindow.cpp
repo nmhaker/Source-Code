@@ -69,7 +69,7 @@ MainWindow::MainWindow(QWidget *parent) :  QMainWindow(parent), ui(new Ui::MainW
 
     //Tajmer
     timer = new QTimer(this);
-    timer->setInterval(1000);
+    timer->setInterval(500);
     connect(timer,SIGNAL(timeout()), this, SLOT(primiPoruku()));
 
     timerZaGasenje = new QTimer(this);

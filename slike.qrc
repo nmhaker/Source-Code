@@ -9,5 +9,7 @@
         <file>images/DugmeZaBrisanje.jpg</file>
         <file>images/save_icon.png</file>
         <file>images/pick_color_icon.png</file>
+        <file>images/Eraser-icon.png</file>
+        <file>images/icon_pen.png</file>
     </qresource>
 </RCC>

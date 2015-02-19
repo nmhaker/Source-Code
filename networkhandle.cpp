@@ -5,7 +5,7 @@ static const char* os = "ubuntu";
 NetworkHandle::NetworkHandle() : QObject()
 {
     this->_korisnicko_ime = "NOT_SET";
-    this->_mode = "DEVELOPMENT";
+    this->_mode = "DEPLOY";
     this->_online = false;
 
     this->_primaoc = "NOT_SET";

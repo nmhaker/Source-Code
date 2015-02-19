@@ -8,10 +8,12 @@
 #include <QHBoxLayout>
 #include <QColorDialog>
 #include <QLabel>
+#include <QBitmap>
 
 #include "widget.h"
 
 //PANELKONTROLA
+
 class PanelKontrola : public QWidget
 {
     Q_OBJECT
@@ -26,19 +28,26 @@ protected:
 private:
     QColor boja;
     QColorDialog *colorDialog;
-    QPushButton *izaberiBoju;
+
     QWidget *colorShown;
     QLabel *label;
 
+    QPushButton *izaberiBoju;
     QPushButton *saveImage;
+
+    QPushButton *olovka;
+    QPushButton *gumica;
 
 public slots:
     void prikaziColorDialog();
     void postaviBoju(QColor c);
+    void postaviTrenutniAlatOlovku();
+    void postaviTrenutniAlatGumicu();
 
 signals:
     void izabranaBoja(QColor);
     void zapamtiCrtez();
+    void izabranAlat(Alat a);
 };
 
 //PAINTERHOLDER
@@ -54,6 +63,7 @@ protected:
     void resizeEvent(QResizeEvent *e);
     void keyPressEvent(QKeyEvent *);
     void closeEvent(QCloseEvent *e);
+    void mouseMoveEvent(QMouseEvent *);
 
 private:
 
@@ -65,11 +75,15 @@ private:
     PanelKontrola *panel;
     Widget *ekranZaCrtanje;
 
+    Alat trenutniAlat = Olovka;
+
+    QCursor *kursorOlovka;
+    QCursor *kursorGumica;
+
 signals:
     void saljiPaket(QByteArray &paket, QString primaocPaketa);
     void zahtevZaKoordinate(QString primaoc);
     void gasenjeCrtaca();
-
 
 public slots:
 
@@ -79,6 +93,8 @@ public slots:
 
     void postaviPrimaoca(QString p);
     void primiBojuOlovke(QColor);
+
+    void postaviAlat(Alat a);
 
 };
 
