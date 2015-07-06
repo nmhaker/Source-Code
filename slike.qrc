@@ -12,4 +12,7 @@
         <file>images/Eraser-icon.png</file>
         <file>images/icon_pen.png</file>
     </qresource>
+    <qresource prefix="/profil">
+        <file>images/noImg.jpg</file>
+    </qresource>
 </RCC>

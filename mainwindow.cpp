@@ -190,7 +190,7 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
     else if(e->key() == Qt::Key_F3)
         this->registrujSe();
     else if(e->key() == Qt::Key_F4)
-        this->izadji();
+        this->opcije();
     else if(e->key() == Qt::Key_F5)
     {
         otvoriCrtac(this->networkHandle->getPrimaoca());

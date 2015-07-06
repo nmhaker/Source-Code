@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     dugmad.cpp \
     painterHolderTester.cpp \
     podesavanja.cpp \
-    debugprozor.cpp
+    debugprozor.cpp \
+    widgetprofilepicture.cpp
 
 HEADERS  += mainwindow.h \
     loginform.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwindow.h \
     listviewzaporuke.h \
     dugmad.h \
     podesavanja.h \
-    debugprozor.h
+    debugprozor.h \
+    widgetprofilepicture.h
 
 FORMS    += mainwindow.ui \
     loginform.ui \

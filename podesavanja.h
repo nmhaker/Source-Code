@@ -16,9 +16,17 @@ public:
 
 private:
     Ui::Podesavanja *ui;
-signals:
 
+    QString ime, prezime, staraSifra, novaSifra;
+    QImage profilnaSlika;
+
+
+signals:
+    void podaci(QString ime, QString prezime, QString staraSifra, QString novaSifra, QImage profilnaSlika);
 public slots:
+
+private slots:
+    void saljiPodatke();
 };
 
 #endif // PODESAVANJA_H
