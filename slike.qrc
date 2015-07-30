@@ -15,4 +15,7 @@
     <qresource prefix="/profil">
         <file>images/noImg.jpg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>images/SajtLogo.png</file>
+    </qresource>
 </RCC>

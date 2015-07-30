@@ -29,7 +29,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Mesendzer</string>
+   <string>Chat&amp;Paint</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="slike.qrc">
+    <normaloff>:/images/SajtLogo.png</normaloff>:/images/SajtLogo.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>
@@ -147,6 +151,8 @@ color:white;</string>
    <header>listviewzaporuke.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="slike.qrc"/>
+ </resources>
  <connections/>
 </ui>
