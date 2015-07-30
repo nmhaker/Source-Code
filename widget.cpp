@@ -22,8 +22,9 @@ void Widget::paintEvent(QPaintEvent *e)
     QPainter painter(this);
 
     //Paint pozadinu
+    painter.setPen(QColor(0,0,0,255));
     painter.setBrush(QBrush(QColor(30,30,30,255)));
-    painter.drawRect(this->rect());
+    painter.drawRect(0,0,this->rect().width()-1,this->rect().height()-1);
 
     //Crtaj kordinate korisnika i prijatelja
     for(int i=0; i < dots.count(); i++){

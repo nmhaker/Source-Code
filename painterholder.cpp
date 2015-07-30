@@ -7,7 +7,7 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     this->setMouseTracking(true);
 
     ekranZaCrtanje = new Widget(this);
-    ekranZaCrtanje->setGeometry(0,0,this->width(), this->height());
+    ekranZaCrtanje->setGeometry(0,55,ekranZaCrtanje->width(), ekranZaCrtanje->height());
 
     panel = new PanelKontrola(this);
     panel->setGeometry(this->width()/2 - 100,5,300,50);
@@ -27,6 +27,8 @@ PainterHolder::PainterHolder(QWidget *parent, QString primaoc) :
     tajmerZaKoordinate->start();
 
     this->showMaximized();
+
+    ekranZaCrtanje->resize(this->width(), ekranZaCrtanje->height());
 
     connect(panel, SIGNAL(izabranAlat(Alat)), this, SLOT(postaviAlat(Alat)));
 
@@ -117,9 +119,11 @@ void PainterHolder::postaviAlat(Alat a)
 PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
 {
     this->boja = QColor(0,0,255,255);
+//    this->setStyleSheet("QPushButton:hover{ background-color: red; } ");
 
     olovka = new QPushButton(this);
     olovka->setGeometry(0,0,50,50);
+    olovka->setStyleSheet("background-color: white;");
     QPixmap p_olovka(":/dugmadi/images/icon_pen.png");
     QIcon icon_olovka(p_olovka);
     olovka->setIcon(icon_olovka);
@@ -130,6 +134,7 @@ PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
     izaberiBoju = new QPushButton(this);
     izaberiBoju->setIcon(icon_pick_color);
     izaberiBoju->setGeometry(50,0,50,50);
+    izaberiBoju->setStyleSheet("background-color: white;");
     connect(izaberiBoju, SIGNAL(clicked()), this, SLOT(prikaziColorDialog()));
 
     colorShown = new QWidget(this);
@@ -141,6 +146,7 @@ PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
     QIcon icon_save_image(p_save);
     saveImage->setIcon(icon_save_image);
     saveImage->setGeometry(200,0,50,50);
+    saveImage->setStyleSheet("background-color: white;");
     connect(saveImage, SIGNAL(clicked()), this, SIGNAL(zapamtiCrtez()));
 
     gumica = new QPushButton(this);
@@ -148,6 +154,7 @@ PanelKontrola::PanelKontrola(QWidget *parent) : QWidget(parent)
     QPixmap p_gumica(":/dugmadi/images/Eraser-icon.png");
     QIcon icon_gumica(p_gumica);
     gumica->setIcon(icon_gumica);
+    gumica->setStyleSheet("background-color: white;");
     connect(gumica, SIGNAL(clicked()), this, SLOT(postaviTrenutniAlatGumicu()));
 }
 

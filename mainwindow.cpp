@@ -193,7 +193,11 @@ void MainWindow::keyPressEvent(QKeyEvent *e)
         this->opcije();
     else if(e->key() == Qt::Key_F5)
     {
-        otvoriCrtac(this->networkHandle->getPrimaoca());
+        if(this->networkHandle->isOnline())
+            otvoriCrtac(this->networkHandle->getPrimaoca());
+        else{
+            qDebug() << "Prvo se ULOGUJTE!!" << endl;
+        }
     }else if(e->key() == Qt::Key_F6)
         emit poveziKreatora();
 }
