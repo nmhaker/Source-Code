@@ -38,8 +38,10 @@ QString NetworkHandle::getKorisnika()
 
 void NetworkHandle::prepareConnection()
 {
-    this->_networkAccessManager = new QNetworkAccessManager(this);
+    QNetworkProxy _proxy(QNetworkProxy::HttpProxy, "proxy.rcub.bg.ac.rs", 8080);
 
+    this->_networkAccessManager = new QNetworkAccessManager(this);
+    this->_networkAccessManager->setProxy(_proxy);
     connect(this->_networkAccessManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(handleRequestResponse(QNetworkReply*)));
 
     if(this->_mode == "DEVELOPMENT")
