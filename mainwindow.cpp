@@ -384,7 +384,7 @@ void MainWindow::pripremiZaGasenje()
             this->_storageHandle->incrementPorukeKorisnika();
         }
 
-        if((this->_storageHandle->getBrojSpremnihPorukaPrijatelja() == this->_storageHandle->getBrojPrimljenihPorukaPrijatelja()) and (this->_storageHandle->getBrojSpremnihPorukaKorisnika() == this->_storageHandle->getBrojPrimljenihPorukaKorisnika()))
+        if((this->_storageHandle->getBrojSpremnihPorukaPrijatelja() == this->_storageHandle->getBrojPrimljenihPorukaPrijatelja()) && (this->_storageHandle->getBrojSpremnihPorukaKorisnika() == this->_storageHandle->getBrojPrimljenihPorukaKorisnika()))
         {
             this->spremnoZaIzlogovanje = true;
             timerZaGasenje->setSingleShot(true);
